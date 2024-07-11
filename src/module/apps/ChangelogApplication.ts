@@ -1,4 +1,4 @@
-import {FLAGS, SYSTEM_NAME} from "../constants";
+import { FLAGS, SYSTEM_NAME } from '../constants';
 
 export class ChangelogApplication extends Application {
     override get template(): string {

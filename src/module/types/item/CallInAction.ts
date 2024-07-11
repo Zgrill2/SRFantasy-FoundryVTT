@@ -4,14 +4,13 @@ declare namespace Shadowrun {
      *
      * This is used for summoning spirits and compiling sprites.
      */
-    export interface CallInActionData extends
-        DescriptionPartData,
-        ActionPartData,
-        SummoningData,
-        ImportFlags,
-        CompilationData
-        {
-            // Define actor type to create. Should default to empty string.
-            actor_type: '' | 'sprite' | 'spirit'
-        }
+    export interface CallInActionData
+        extends DescriptionPartData,
+            ActionPartData,
+            SummoningData,
+            ImportFlags,
+            CompilationData {
+        // Define actor type to create. Should default to empty string.
+        actor_type: '' | 'sprite' | 'spirit';
+    }
 }

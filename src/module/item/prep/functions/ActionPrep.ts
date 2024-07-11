@@ -21,7 +21,7 @@ export const ActionPrep = {
     },
     /**
      * remove any possible previous mods that might have been introduced by preparation or alteration in system data.
-     * 
+     *
      * @param action The ActionRollData to alter.
      */
     clearMods(action: Shadowrun.ActionRollData) {
@@ -34,7 +34,7 @@ export const ActionPrep = {
 
     /**
      * Provide the action damage a source for the damage calculation.
-     * 
+     *
      * @param action The ActionRollData to alter.
      * @param item The item to use as a source.
      */
@@ -45,7 +45,7 @@ export const ActionPrep = {
             actorId: item.actor.id as string,
             itemId: item.id as string,
             itemName: item.name as string,
-            itemType: item.type
+            itemType: item.type,
         };
     },
 
@@ -56,7 +56,7 @@ export const ActionPrep = {
      */
     prepareWithAmmo(action: Shadowrun.ActionRollData, equippedAmmo?: SR5Item) {
         // No equipped ammo, just calculate the damage directly.
-        if (!equippedAmmo) {            
+        if (!equippedAmmo) {
             action.damage.element.value = action.damage.element.base;
             action.damage.type.value = action.damage.type.base;
 
@@ -64,7 +64,7 @@ export const ActionPrep = {
         }
 
         // Collect weapon value modifications from used ammunition.
-        //@ts-expect-error // TODO: foundry-vtt-types v10 
+        //@ts-expect-error // TODO: foundry-vtt-types v10
         const ammoData = equippedAmmo.system as AmmoData;
         const limitParts = new PartsList(action.limit.mod);
 
@@ -72,7 +72,11 @@ export const ActionPrep = {
         if (ammoData.replaceDamage) {
             action.damage.override = { name: equippedAmmo.name as string, value: Number(ammoData.damage) };
         } else {
-            action.damage.mod = PartsList.AddUniquePart(action.damage.mod, equippedAmmo.name as string, ammoData.damage);
+            action.damage.mod = PartsList.AddUniquePart(
+                action.damage.mod,
+                equippedAmmo.name as string,
+                ammoData.damage,
+            );
         }
 
         // add mods to ap from ammo
@@ -100,9 +104,9 @@ export const ActionPrep = {
 
     /**
      * Prepare general action data.
-     * 
+     *
      * This is used for all item type having actions and includes weapon value calculation as well.
-     * 
+     *
      * @param action The systems data action property to be altered.
      * @param equippedMods Those item mods that are equipped
      */
@@ -120,7 +124,8 @@ export const ActionPrep = {
             const modification = mod.asModification();
             if (!modification) return;
 
-            if (modification.system.accuracy) limitParts.addUniquePart(mod.name as string, modification.system.accuracy);
+            if (modification.system.accuracy)
+                limitParts.addUniquePart(mod.name as string, modification.system.accuracy);
             if (modification.system.dice_pool) dpParts.addUniquePart(mod.name as string, modification.system.dice_pool);
         });
 
@@ -131,12 +136,12 @@ export const ActionPrep = {
 
     /**
      * Calculate the total values of action data.
-     * 
+     *
      * @param action To be altered action data.
      */
     calculateValues(action: Shadowrun.ActionRollData) {
         action.damage.value = Helpers.calcTotal(action.damage);
         action.damage.ap.value = Helpers.calcTotal(action.damage.ap);
         action.limit.value = Helpers.calcTotal(action.limit);
-    }
-}
+    },
+};

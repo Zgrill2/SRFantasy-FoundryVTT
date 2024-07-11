@@ -3,7 +3,7 @@ declare namespace Shadowrun {
     export type RollEvent = PointerEvent & { shiftKey?: boolean; altKey?: boolean; ctrlKey?: boolean };
 
     type ActorRollOptions = {
-        event?: RollEvent
+        event?: RollEvent;
     };
     type DefenseRollOptions = ActorRollOptions & {
         fireModeDefense?: number;
@@ -11,8 +11,8 @@ declare namespace Shadowrun {
         attack?: AttackData;
     };
     type SpellDefenseOptions = ActorRollOptions & {
-        attack: AttackData
-    }
+        attack: AttackData;
+    };
 
     // Use for actions with attack content
     type AttackData = {
@@ -28,21 +28,21 @@ declare namespace Shadowrun {
 
     // Use for actions with matrix content
     type MatrixActionTestData = {
-        marks: number
-    }
+        marks: number;
+    };
 
     type CombatData = {
-        initiative?: number
-    }
+        initiative?: number;
+    };
 
     type ModifiedDamageData = {
-        incoming: DamageData
-        modified: DamageData
-    }
+        incoming: DamageData;
+        modified: DamageData;
+    };
 
     type DrainData = LabelField & {
         value: number;
-    }
+    };
 
     type SoakRollOptions = ActorRollOptions & {
         damage?: DamageData;
@@ -53,14 +53,14 @@ declare namespace Shadowrun {
 
     type SkillRollOptions = ActorRollOptions & {
         // A specialization should be used.
-        specialization?: boolean
+        specialization?: boolean;
         // Skills should be searched not by id but their label.
-        byLabel?: boolean
-        threshold?: BaseValuePair<number>
+        byLabel?: boolean;
+        threshold?: BaseValuePair<number>;
     };
 
     type SkillDialogOptions = {
-        skill: SkillField
-        attribute?: ActorAttribute
-    }
+        skill: SkillField;
+        attribute?: ActorAttribute;
+    };
 }

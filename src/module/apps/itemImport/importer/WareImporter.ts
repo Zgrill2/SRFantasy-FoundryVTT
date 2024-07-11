@@ -1,7 +1,7 @@
 import { DataImporter } from './DataImporter';
 import { ImportHelper } from '../helper/ImportHelper';
 import { CyberwareParser } from '../parser/ware/CyberwareParser';
-import WareData = Shadowrun.WareData
+import WareData = Shadowrun.WareData;
 import WareItemData = Shadowrun.WareItemData;
 import CyberwareItemData = Shadowrun.CyberwareItemData;
 import BiowareItemData = Shadowrun.BiowareItemData;
@@ -13,17 +13,18 @@ export class WareImporter extends DataImporter<WareItemData, WareData> {
     public files = ['cyberware.xml', 'bioware.xml'];
 
     CanParse(jsonObject: object): boolean {
-        return jsonObject.hasOwnProperty('cyberwares') && jsonObject['cyberwares'].hasOwnProperty('cyberware') ||
-               jsonObject.hasOwnProperty('biowares') && jsonObject['biowares'].hasOwnProperty('bioware');
+        return (
+            (jsonObject.hasOwnProperty('cyberwares') && jsonObject['cyberwares'].hasOwnProperty('cyberware')) ||
+            (jsonObject.hasOwnProperty('biowares') && jsonObject['biowares'].hasOwnProperty('bioware'))
+        );
     }
 
     GetDefaultCyberwareData(): CyberwareItemData {
-        return this.GetDefaultData({type: 'cyberware'}) as CyberwareItemData;
+        return this.GetDefaultData({ type: 'cyberware' }) as CyberwareItemData;
     }
 
     GetDefaultBiowareData(): BiowareItemData {
-        return this.GetDefaultData({type: 'bioware'}) as BiowareItemData;
-
+        return this.GetDefaultData({ type: 'bioware' }) as BiowareItemData;
     }
 
     ExtractTranslation(fileName) {
@@ -32,14 +33,15 @@ export class WareImporter extends DataImporter<WareItemData, WareData> {
         }
 
         let jsonItemi18n = ImportHelper.ExtractDataFileTranslation(DataImporter.jsoni18n, fileName);
-         // TODO: Move ExtractTranslation phase before the parsing phase and initiate it with the filename to parse.
-            if (this.files.length !== 2) console.error('Lazily hacked code will fail for more or less than two files.');
+        // TODO: Move ExtractTranslation phase before the parsing phase and initiate it with the filename to parse.
+        if (this.files.length !== 2) console.error('Lazily hacked code will fail for more or less than two files.');
 
         this.categoryTranslations = ImportHelper.ExtractCategoriesTranslation(jsonItemi18n);
 
-        const {typeKey, listKey} = fileName === 'cyberware.xml' ?
-                {typeKey: 'cyberwares', listKey: 'cyberware'} :
-                {typeKey: 'biowares', listKey: 'bioware'};
+        const { typeKey, listKey } =
+            fileName === 'cyberware.xml'
+                ? { typeKey: 'cyberwares', listKey: 'cyberware' }
+                : { typeKey: 'biowares', listKey: 'bioware' };
 
         this.itemTranslations = ImportHelper.ExtractItemTranslation(jsonItemi18n, typeKey, listKey);
     }
@@ -81,7 +83,9 @@ export class WareImporter extends DataImporter<WareItemData, WareData> {
             item.system.importFlags = this.genImportFlags(item.name, item.type, this.formatAsSlug(category));
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Translate name if needed
             item.name = ImportHelper.MapNameToTranslation(this.itemTranslations, item.name);

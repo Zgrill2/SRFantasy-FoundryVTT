@@ -40,7 +40,7 @@ export class QualityImporter extends DataImporter<Shadowrun.QualityItemData, Sha
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}), this.itemTranslations);
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }), this.itemTranslations);
             let category = ImportHelper.StringValue(jsonData, 'category').toLowerCase();
             //@ts-expect-error TODO: Foundry Where is my foundry base data?
             item.folder = folders[category].id;
@@ -49,7 +49,9 @@ export class QualityImporter extends DataImporter<Shadowrun.QualityItemData, Sha
             item.system.importFlags = this.genImportFlags(item.name, item.type, this.formatAsSlug(category));
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Translate the name
             item.name = ImportHelper.MapNameToTranslation(this.itemTranslations, item.name);

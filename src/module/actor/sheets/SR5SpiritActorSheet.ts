@@ -1,7 +1,6 @@
-import { SR5Item } from "../../item/SR5Item";
-import { SR5Actor } from "../SR5Actor";
-import {SR5BaseActorSheet} from "./SR5BaseActorSheet";
-
+import { SR5Item } from '../../item/SR5Item';
+import { SR5Actor } from '../SR5Actor';
+import { SR5BaseActorSheet } from './SR5BaseActorSheet';
 
 export class SR5SpiritActorSheet extends SR5BaseActorSheet {
     /**
@@ -14,23 +13,18 @@ export class SR5SpiritActorSheet extends SR5BaseActorSheet {
     override getHandledItemTypes(): string[] {
         let itemTypes = super.getHandledItemTypes();
 
-        return [
-            ...itemTypes,
-            'critter_power',
-            'spell',
-            'quality'
-        ];
+        return [...itemTypes, 'critter_power', 'spell', 'quality'];
     }
 
     /**
      * Spirit actors sheets deviate from base actors around the summoning workflows.
-     * 
-     * @param options 
-     * @returns 
+     *
+     * @param options
+     * @returns
      */
     override async getData(options: any) {
         const data = await super.getData(options);
-        
+
         const spirit = this.document.asSpirit();
         if (spirit) {
             if (spirit.system.summonerUuid) {
@@ -43,14 +37,14 @@ export class SR5SpiritActorSheet extends SR5BaseActorSheet {
 
     /**
      * Spirit actor sheets do provide some specific functionality.
-     * @param html 
+     * @param html
      */
     override activateListeners(html) {
         super.activateListeners(html);
 
         html.find('.summoner-remove').on('click', this._onRemoveSummoner.bind(this));
     }
-    
+
     override async _onDrop(event: DragEvent) {
         event.preventDefault();
         event.stopPropagation();
@@ -70,9 +64,9 @@ export class SR5SpiritActorSheet extends SR5BaseActorSheet {
      * Determine if a dropped actor should be used as a spirit summoner.
      * @param dropData Actor drop data.
      */
-    async _addSummonerOnDrop(dropData: { type: string; uuid: string; }) {
+    async _addSummonerOnDrop(dropData: { type: string; uuid: string }) {
         if (dropData.type !== 'Actor') return;
-        const actor = await fromUuid(dropData.uuid) as SR5Actor;
+        const actor = (await fromUuid(dropData.uuid)) as SR5Actor;
         if (!actor.isCharacter()) return;
 
         await this.document.addSummoner(actor);

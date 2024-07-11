@@ -1,8 +1,8 @@
 import { Helpers } from '../helpers';
-import {SafeString} from "handlebars";
+import { SafeString } from 'handlebars';
 import SkillField = Shadowrun.SkillField;
-import {SR5Actor} from "../actor/SR5Actor";
-import {SYSTEM_NAME} from "../constants";
+import { SR5Actor } from '../actor/SR5Actor';
+import { SYSTEM_NAME } from '../constants';
 import { Translation } from '../utils/strings';
 
 export const registerBasicHelpers = () => {
@@ -11,7 +11,7 @@ export const registerBasicHelpers = () => {
         return game.i18n.localize(strId);
     });
 
-    Handlebars.registerHelper('localizeDocumentType', function (document) {  
+    Handlebars.registerHelper('localizeDocumentType', function (document) {
         if (document.type.length < 1) return '';
         const documentClass = document instanceof SR5Actor ? 'ACTOR' : 'ITEM';
         const documentTypeLabel = document.type[0].toUpperCase() + document.type.slice(1);
@@ -43,7 +43,7 @@ export const registerBasicHelpers = () => {
     });
 
     Handlebars.registerHelper('concatStrings', function (...args) {
-        return args.filter(a => typeof a === 'string').join('');
+        return args.filter((a) => typeof a === 'string').join('');
     });
 
     Handlebars.registerHelper('concat', function (strs, c = ',') {
@@ -154,14 +154,14 @@ export const registerBasicHelpers = () => {
     /**
      * Given an object return the value for a given key.
      */
-    Handlebars.registerHelper('objValue', function(obj: Object, key: string) {
-        return obj[key] ||  '';
+    Handlebars.registerHelper('objValue', function (obj: Object, key: string) {
+        return obj[key] || '';
     });
 
     /**
      * Creates an array from a spread set of objects ie. (toArray "foo" "bar") => ["foo", "bar"]
      */
-    Handlebars.registerHelper('toArray', function(...vals) {
+    Handlebars.registerHelper('toArray', function (...vals) {
         const copy = [...vals];
         copy.splice(-1); //Remove handlebars options object from last item in array
         return copy;
@@ -171,7 +171,7 @@ export const registerBasicHelpers = () => {
      * Checks if an element should be displayed based on the value of the MarkImports Setting
      * 'ANY' option returns true as long as the setting isn't set to 'NONE'
      */
-    Handlebars.registerHelper('itemMarking', function(element: string) {
+    Handlebars.registerHelper('itemMarking', function (element: string) {
         const mark = game.settings.get(SYSTEM_NAME, 'MarkImports');
         if (element == 'ANY' && mark != 'NONE') {
             return true;
@@ -185,7 +185,7 @@ export const registerBasicHelpers = () => {
     /**
      * Check whether an actor has any items that are freshly imported
      */
-    Handlebars.registerHelper('hasAnyFreshImports', function(actor: SR5Actor) {
+    Handlebars.registerHelper('hasAnyFreshImports', function (actor: SR5Actor) {
         if (game.settings.get(SYSTEM_NAME, 'MarkImports') != 'NONE') {
             const allItems = actor.items;
             for (const item of allItems) {
@@ -202,14 +202,14 @@ export const registerBasicHelpers = () => {
 
     /**
      * Allow to give two values and either use the first or the second.
-     * 
+     *
      * This matches a ?? b behavior.
-     * 
+     *
      * @param a The first value, use this if it's not undefined.
      * @param v The second value, use this if a is undefined.
      * @returns the value to use
      */
-    Handlebars.registerHelper('or', function(a, b) {
+    Handlebars.registerHelper('or', function (a, b) {
         return a ?? b;
     });
 };

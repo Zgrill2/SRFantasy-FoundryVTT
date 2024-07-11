@@ -1,6 +1,4 @@
-
 export const TestRules = {
-
     /**
      * The modifier value applied for each extended test iteration
      */
@@ -24,8 +22,7 @@ export const TestRules = {
      */
     canExtendTest: (pool: number, threshold: number, extendedHits: number): boolean => {
         // An extended test without a threshold set can extend until no pool is left.
-        if (threshold > 0)
-            return extendedHits < threshold && pool > 0;
+        if (threshold > 0) return extendedHits < threshold && pool > 0;
 
         return pool > 0;
     },
@@ -36,7 +33,7 @@ export const TestRules = {
      * @param threshold Threshold to reach for a test. 0 should none be applied.
      * @returns true, when hits vs threshold score a success
      */
-    success:(hits: number, threshold: number): boolean => {
+    success: (hits: number, threshold: number): boolean => {
         // Don't allow any negative values.
         hits = Math.max(hits, 0);
         threshold = Math.max(threshold, 0);
@@ -69,5 +66,5 @@ export const TestRules = {
      */
     criticalGlitched: (hits: number, glitched: boolean): boolean => {
         return hits === 0 && glitched;
-    }
-}
+    },
+};

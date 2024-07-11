@@ -9,7 +9,11 @@ export class JSONStrategy extends ImportStrategy {
         throw new Error('Unimplemented');
     }
 
-    public objectValue(jsonData: object, key: string | number, fallback: object | null | undefined = undefined): object | null {
+    public objectValue(
+        jsonData: object,
+        key: string | number,
+        fallback: object | null | undefined = undefined,
+    ): object | null {
         throw new Error('Unimplemented');
     }
 }

@@ -1,7 +1,7 @@
-import {FLAGS, SYSTEM_NAME} from './constants';
+import { FLAGS, SYSTEM_NAME } from './constants';
 
 interface DistanceOptions {
-    gridSpaces?: boolean
+    gridSpaces?: boolean;
 }
 
 // directly pulled from DND5e, just changed the
@@ -45,7 +45,6 @@ const measureDistances = function (segments, options: DistanceOptions = {}) {
         else return (ns + nd) * canvas.scene.data.gridDistance;
     });
 };
-
 
 export function canvasInit() {
     //@ts-expect-error

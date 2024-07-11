@@ -5,7 +5,6 @@ import { SR5Actor } from '../../../module/actor/SR5Actor';
 import { SR5Item } from '../../../module/item/SR5Item';
 import { emptySpirit } from './spirits';
 
-
 export const spiritImporterTesting = (context: QuenchBatchContext) => {
     const { describe, it, assert, before, after } = context;
 

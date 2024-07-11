@@ -1,27 +1,26 @@
 import { TestDialog } from '../apps/dialogs/TestDialog';
-import {SuccessTest, SuccessTestData} from "./SuccessTest";
-import {DataDefaults} from "../data/DataDefaults";
-import {SR5} from "../config";
-import {FireModeRules} from "../rules/FireModeRules";
-import { SR5Item } from "../item/SR5Item";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { DataDefaults } from '../data/DataDefaults';
+import { SR5 } from '../config';
+import { FireModeRules } from '../rules/FireModeRules';
+import { SR5Item } from '../item/SR5Item';
 import { TestCreator } from './TestCreator';
 import { WeaponRangeTestBehavior, WeaponRangeTestDataFragment } from '../rules/WeaponRangeRules';
 
 export interface RangedAttackTestData extends SuccessTestData, WeaponRangeTestDataFragment {
-    damage: Shadowrun.DamageData
-    fireModes: Shadowrun.FireModeData[]
-    fireMode: Shadowrun.FireModeData
+    damage: Shadowrun.DamageData;
+    fireModes: Shadowrun.FireModeData[];
+    fireMode: Shadowrun.FireModeData;
     // index of selected fireMode in fireModes
-    fireModeSelected: number
-    ranges: Shadowrun.RangesTemplateData
-    range: number
-    targetRanges: Shadowrun.TargetRangeTemplateData[]
+    fireModeSelected: number;
+    ranges: Shadowrun.RangesTemplateData;
+    range: number;
+    targetRanges: Shadowrun.TargetRangeTemplateData[];
     // index of selected target range in targetRanges
-    targetRangesSelected: number
+    targetRangesSelected: number;
     // Distance to target in meters.
-    distance: number
+    distance: number;
 }
-
 
 export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
     public override item: SR5Item;
@@ -30,19 +29,20 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
         data = super._prepareData(data, options);
 
         data.fireModes = [];
-        data.fireMode = {value: 0, defense: 0, label: ''};
+        data.fireMode = { value: 0, defense: 0, label: '' };
         WeaponRangeTestBehavior.prepareData(this, data);
-
 
         return data;
     }
 
     override _testDialogListeners() {
-        return [{
-            query: '#reset-progressive-recoil',
-            on: 'click',
-            callback: this._handleResetProgressiveRecoil
-        }]
+        return [
+            {
+                query: '#reset-progressive-recoil',
+                on: 'click',
+                callback: this._handleResetProgressiveRecoil,
+            },
+        ];
     }
 
     /**
@@ -74,11 +74,11 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
     /**
      * Weapon fire modes will affect recoil during test.
-     * 
+     *
      * To show the user the effect of recoil, it's applied during selection but progressive recoil is only ever fully applied
      * after the test is executed.
      */
-    _prepareFireMode() {        
+    _prepareFireMode() {
         // No fire modes selectable on dialog for invalid item provided.
         const weapon = this.item.asWeapon;
         if (!weapon) return;
@@ -88,26 +88,28 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
         // To avoid problems when no firemode is configured on the weapon, add at least one to what's available
         if (this.data.fireModes.length === 0) {
             this.data.fireModes.push(SR5.fireModes[0]);
-            ui.notifications?.warn('SR5.Warnings.NoFireModeConfigured', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.NoFireModeConfigured', { localize: true });
         }
 
         // Current firemode selected
         const lastFireMode = this.item.getLastFireMode() || DataDefaults.fireModeData();
         // Try pre-selection based on last fire mode.
-        this.data.fireModeSelected = this.data.fireModes.findIndex(available => lastFireMode.label === available.label);
+        this.data.fireModeSelected = this.data.fireModes.findIndex(
+            (available) => lastFireMode.label === available.label,
+        );
         if (this.data.fireModeSelected == -1) this.data.fireModeSelected = 0;
         this._selectFireMode(this.data.fireModeSelected);
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['attack', 'attack_ranged']
+        return ['attack', 'attack_ranged'];
     }
 
     override get testModifiers(): Shadowrun.ModifierTypes[] {
         return ['global', 'wounds', 'environmental', 'recoil'];
     }
 
-    override async prepareDocumentData(){
+    override async prepareDocumentData() {
         WeaponRangeTestBehavior.prepareDocumentData(this, (weapon) => weapon.system.range.ranges);
         this._prepareFireMode();
 
@@ -128,7 +130,7 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
     /**
      * Save selections made back to documents.
-     * @returns 
+     * @returns
      */
     override async saveUserSelectionAfterDialog() {
         if (!this.actor) return;
@@ -141,7 +143,7 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
     /**
      * Apply test selections made by user in dialog.
-     * @returns 
+     * @returns
      */
     override prepareBaseValues() {
         if (!this.actor) return;
@@ -149,7 +151,7 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
         // Use selection for actual fireMode, overwriting possible previous selection for item.
         this._selectFireMode(this.data.fireModeSelected);
-        
+
         // Alter fire mode by ammunition constraints.
         this.data.fireMode.defense = FireModeRules.fireModeDefenseModifier(this.data.fireMode, this.item.ammoLeft);
 
@@ -167,21 +169,21 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
     /**
      * Enough resources according to test configuration?
-     * 
+     *
      * Ranged weapons need ammunition in enough quantity.
-     * 
+     *
      * NOTE: In this case it's only checked if at least ONE bullet exists.
      *       It's done this way as no matter the fire mode, you can fire it.
      */
     override canConsumeDocumentResources() {
         if (!this.item.isRangedWeapon) return true;
-        
+
         // Ammo consumption
         const fireMode = this.data.fireMode;
         if (fireMode.value === 0) return true;
 
         if (!this.item.hasAmmo(1)) {
-            ui.notifications?.error('SR5.MissingRessource.Ammo', {localize: true});
+            ui.notifications?.error('SR5.MissingRessource.Ammo', { localize: true });
             return false;
         }
 
@@ -190,11 +192,11 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
     /**
      * Ranged Attacks not only can consume edge but also reduce ammunition.
-     * 
+     *
      */
-    override async consumeDocumentRessources() {        
-        if (!await super.consumeDocumentRessources()) return false;
-        if (!await this.consumeWeaponAmmo()) return false;
+    override async consumeDocumentRessources() {
+        if (!(await super.consumeDocumentRessources())) return false;
+        if (!(await this.consumeWeaponAmmo())) return false;
 
         return true;
     }
@@ -211,7 +213,7 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
 
         // Notify user about some but not no ammo. Still fire though.
         if (!this.item.hasAmmo(fireMode.value)) {
-            ui.notifications?.warn('SR5.MissingRessource.SomeAmmo', {localize: true});
+            ui.notifications?.warn('SR5.MissingRessource.SomeAmmo', { localize: true });
         }
 
         await this.item.useAmmo(fireMode.value);
@@ -239,7 +241,7 @@ export class RangedAttackTest extends SuccessTest<RangedAttackTestData> {
      */
     get recoilAfterAttack(): number {
         if (!this.actor) return 0;
-        
+
         const fireMode = this.data.fireMode;
         const fireModeRecoil = fireMode.recoil ? fireMode.value : 0;
         return this.actor.recoil + fireModeRecoil;

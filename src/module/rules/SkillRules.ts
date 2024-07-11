@@ -1,16 +1,15 @@
 import SkillField = Shadowrun.SkillField;
-import {PartsList} from "../parts/PartsList";
-import {SR5} from "../config";
-import {SR} from "../constants";
+import { PartsList } from '../parts/PartsList';
+import { SR5 } from '../config';
+import { SR } from '../constants';
 
 export class SkillRules {
-
     /**
      * Determing if a skills value / level makes defaulting necessary.
-     * 
-     * NOTE: A skill can be altered by an effect, which will leave it's base untouched. 
+     *
+     * NOTE: A skill can be altered by an effect, which will leave it's base untouched.
      *       Therefore it's calculated value must be used as a level
-     * 
+     *
      * @param skill Any legacy or custom skill
      * @returns true, if a roll for the given skill must default.
      */
@@ -53,7 +52,7 @@ export class SkillRules {
      * @param options
      * @param options.specialization If true will add the default specialization bonus onto the level.
      */
-    static level(skill: SkillField, options = {specialization: false}): number {
+    static level(skill: SkillField, options = { specialization: false }): number {
         if (this.mustDefaultToRoll(skill)) {
             return SkillRules.defaultingModifier;
         }

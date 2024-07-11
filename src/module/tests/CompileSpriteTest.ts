@@ -1,34 +1,32 @@
-import { SR5 } from "../config";
-import { DataDefaults } from "../data/DataDefaults";
-import { PartsList } from "../parts/PartsList";
-import { CompilationRules } from "../rules/CompilationRules";
-import { SuccessTest, SuccessTestData, TestOptions } from "./SuccessTest";
-
+import { SR5 } from '../config';
+import { DataDefaults } from '../data/DataDefaults';
+import { PartsList } from '../parts/PartsList';
+import { CompilationRules } from '../rules/CompilationRules';
+import { SuccessTest, SuccessTestData, TestOptions } from './SuccessTest';
 
 interface CompileSpriteTestData extends SuccessTestData {
     // Sprite type selection.
-    spriteTypes: typeof SR5.spriteTypes
-    spriteTypeSelected: string
+    spriteTypes: typeof SR5.spriteTypes;
+    spriteTypeSelected: string;
 
     // Testing values as described on SR5#254
-    level: number
-    fade: number
-    fadeDamage: Shadowrun.DamageData
+    level: number;
+    fade: number;
+    fadeDamage: Shadowrun.DamageData;
 
     // Determine if compilation concluded and fade will apply
-    fadeReady: boolean
+    fadeReady: boolean;
 
     // Reference to prepared sprite actor
-    preparedSpriteUuid: string
+    preparedSpriteUuid: string;
 }
 /**
  * Implement testing workflow for technomancers sprite compilation within FoundryVTT.
- * 
+ *
  * This test is designed to work together with the compilation item type as it's
  * defined within
  */
 export class CompileSpriteTest extends SuccessTest<CompileSpriteTestData> {
-
     override _prepareData(data: any, options: TestOptions) {
         data = super._prepareData(data, options);
 
@@ -79,15 +77,15 @@ export class CompileSpriteTest extends SuccessTest<CompileSpriteTestData> {
 
     /**
      * Skill + Attribute [Limit] as defined in SR5#254 'Compiling a Sprite'
-     * 
+     *
      * Limit 'level' is a dynamic test value, so it's missing here as it can't be taken from actor values
      * but will be injected during test dialog preparations.
      */
     static override _getDefaultTestAction(): Partial<Shadowrun.MinimalActionData> {
         return {
             skill: 'compiling',
-            attribute: 'resonance'
-        }
+            attribute: 'resonance',
+        };
     }
 
     /**
@@ -104,7 +102,7 @@ export class CompileSpriteTest extends SuccessTest<CompileSpriteTestData> {
     prepareLimitValue() {
         const level = Number(this.data.level);
         const label = 'SR5.Level';
-        
+
         const limitParts = new PartsList<number>(this.data.limit.mod);
         limitParts.addUniquePart(label, level);
     }
@@ -120,7 +118,7 @@ export class CompileSpriteTest extends SuccessTest<CompileSpriteTestData> {
      * Notify mancers about incomplete compilation. To avoid pre mature fade tests.
      */
     override async executeFollowUpTest() {
-        if (!this.data.fadeReady) ui.notifications?.warn('SR5.Warnings.CompilationNotConcluded', {localize: true});
+        if (!this.data.fadeReady) ui.notifications?.warn('SR5.Warnings.CompilationNotConcluded', { localize: true });
         await super.executeFollowUpTest();
     }
 
@@ -129,17 +127,17 @@ export class CompileSpriteTest extends SuccessTest<CompileSpriteTestData> {
      */
     warnAboutInvalidLevel() {
         const level = Number(this.data.level);
-        const resonance = (this.actor?.getAttribute('resonance')?.value ?? 0);
+        const resonance = this.actor?.getAttribute('resonance')?.value ?? 0;
 
         if (CompilationRules.validLevel(level, resonance)) return;
 
-        ui.notifications?.warn('SR5.Warnings.InvalidCompilationLevel', {localize: true});
+        ui.notifications?.warn('SR5.Warnings.InvalidCompilationLevel', { localize: true });
     }
 
     /**
      * Derive the actual fade damage from compilation values.
      * NOTE: This will be called by the opposing test via a follow up test action.
-     * 
+     *
      * @param opposingHits Amount of hits from the opposing test (sprite).
      */
     calcFade(opposingHits: number) {

@@ -1,28 +1,25 @@
-import {SuccessTest, SuccessTestData} from "./SuccessTest";
-import {SpellcastingRules} from "../rules/SpellcastingRules";
-import {PartsList} from "../parts/PartsList";
-import {DataDefaults} from "../data/DataDefaults";
-import {DrainRules} from "../rules/DrainRules";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { SpellcastingRules } from '../rules/SpellcastingRules';
+import { PartsList } from '../parts/PartsList';
+import { DataDefaults } from '../data/DataDefaults';
+import { DrainRules } from '../rules/DrainRules';
 import DamageData = Shadowrun.DamageData;
 import MinimalActionData = Shadowrun.MinimalActionData;
 import ModifierTypes = Shadowrun.ModifierTypes;
 
-
 export interface SpellCastingTestData extends SuccessTestData {
-    force: number
-    drain: number
-    reckless: boolean
+    force: number;
+    drain: number;
+    reckless: boolean;
 
-    drainDamage: DamageData
+    drainDamage: DamageData;
 }
-
 
 /**
  * Spellcasting tests as described on SR5#281 in the spellcasting chapter.
  *
  */
 export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
-
     override _prepareData(data, options): any {
         data = super._prepareData(data, options);
 
@@ -34,7 +31,7 @@ export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
         return data;
     }
 
-    override get _dialogTemplate()  {
+    override get _dialogTemplate() {
         return 'systems/shadowrun5e/dist/templates/apps/dialogs/spellcasting-test-dialog.html';
     }
 
@@ -52,7 +49,7 @@ export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
             skill: 'spellcasting',
-            attribute: 'magic'
+            attribute: 'magic',
         };
     }
 
@@ -64,16 +61,21 @@ export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
         if (!spell) return [];
 
         switch (spell.system.category) {
-            case 'combat': return ['spell_combat'];
-            case 'detection': return ['spell_detection'];
-            case 'health': return ['spell_healing'];
-            case 'illusion': return ['spell_illusion'];
-            case 'manipulation': return ['spell_manipulation'];
-            case 'ritual': return ['spell_ritual'];
+            case 'combat':
+                return ['spell_combat'];
+            case 'detection':
+                return ['spell_detection'];
+            case 'health':
+                return ['spell_healing'];
+            case 'illusion':
+                return ['spell_illusion'];
+            case 'manipulation':
+                return ['spell_manipulation'];
+            case 'ritual':
+                return ['spell_ritual'];
         }
 
-        return []
-
+        return [];
     }
 
     override get testModifiers(): ModifierTypes[] {
@@ -107,7 +109,8 @@ export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
         this.data.limit.mod = PartsList.AddUniquePart(
             this.data.limit.mod,
             'SR5.Force',
-            SpellcastingRules.calculateLimit(force));
+            SpellcastingRules.calculateLimit(force),
+        );
     }
 
     override calculateBaseValues() {
@@ -150,6 +153,6 @@ export class SpellCastingTest extends SuccessTest<SpellCastingTestData> {
     override async saveUserSelectionAfterDialog() {
         if (!this.item) return;
 
-        await this.item.setLastSpellForce({value: this.data.force, reckless: false});
+        await this.item.setLastSpellForce({ value: this.data.force, reckless: false });
     }
 }

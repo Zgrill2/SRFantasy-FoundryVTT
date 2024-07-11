@@ -1,12 +1,12 @@
-export interface FormDialogData extends Dialog.Data{
-	templateData: object;
-	templatePath: string;
-	onAfterClose?: Function;
+export interface FormDialogData extends Dialog.Data {
+    templateData: object;
+    templatePath: string;
+    onAfterClose?: Function;
 }
 
 export interface FormDialogOptions extends DialogOptions {
     // When true, will apply dialog form element inputs to this.data.
-    applyFormChangesOnSubmit: boolean | null
+    applyFormChangesOnSubmit: boolean | null;
 }
 
 /**
@@ -30,7 +30,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     constructor(data: FormDialogData, options?: FormDialogOptions) {
         super(data, options);
 
-        const {templateData, templatePath} = data;
+        const { templateData, templatePath } = data;
         this._templateData = templateData;
         this._templatePath = templatePath;
 
@@ -57,9 +57,8 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     override activateListeners(html: JQuery) {
         super.activateListeners(html);
 
-        html.on("change", "input,select,textarea", this._onChangeInput.bind(this));
+        html.on('change', 'input,select,textarea', this._onChangeInput.bind(this));
     }
-
 
     override async submit(button) {
         this.selectedButton = button.name ?? button.label;
@@ -68,7 +67,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
 
         super.submit(button);
         // @ts-expect-error
-        await this.afterSubmit("jQuery" in this.options ? this.element : this.element [0]);
+        await this.afterSubmit('jQuery' in this.options ? this.element : this.element[0]);
     }
 
     async afterSubmit(html: JQuery) {
@@ -86,8 +85,8 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     applyFormData() {
         if (!this.options.applyFormChangesOnSubmit) return;
 
-        if ( !this.form ) throw new Error(`The FormApplication subclass has no registered form element`);
-        const fd = new FormDataExtended(this.form, {editors: {}});
+        if (!this.form) throw new Error(`The FormApplication subclass has no registered form element`);
+        const fd = new FormDataExtended(this.form, { editors: {} });
         //@ts-expect-error // TODO: foundry-vtt-types v10
         const data = fd.object;
 
@@ -111,7 +110,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
         // Merge default Dialog data with whatever's been given.
         return foundry.utils.mergeObject(data, {
             ...this.data,
-            content: ''
+            content: '',
         });
     }
 
@@ -120,7 +119,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
      * Follows Dialog.data.buttons typing.
      */
     get buttons() {
-        return {}
+        return {};
     }
 
     /**
@@ -166,7 +165,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     /** Allow for the selected button to be addressed by its key, not it's localized label.
      */
     _amendButtonsWithName(buttons) {
-        Object.keys(buttons).forEach(name => buttons[name].name = name);
+        Object.keys(buttons).forEach((name) => (buttons[name].name = name));
     }
 
     /**
@@ -175,12 +174,11 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     override async _renderInner(data): Promise<JQuery<HTMLElement>> {
         const templatePath = data.templatePath || this.templateContent;
         if (templatePath)
-            data.content = await renderTemplate(data.templatePath || this.templateContent,
-                                                data.templateData || data);
+            data.content = await renderTemplate(data.templatePath || this.templateContent, data.templateData || data);
 
         const html = await super._renderInner(data);
         this.form = html.filter((i, el) => el instanceof HTMLFormElement)[0] as HTMLFormElement;
-        if ( !this.form ) this.form = html.find("form")[0];
+        if (!this.form) this.form = html.find('form')[0];
         return html;
     }
 
@@ -190,7 +188,7 @@ export class FormDialog extends Dialog<FormDialogOptions> {
     async _onChangeInput(event) {
         const el = event.target;
 
-        if ( this.options.applyFormChangesOnSubmit ) {
+        if (this.options.applyFormChangesOnSubmit) {
             this.applyFormData();
             this.render();
         }

@@ -1,7 +1,7 @@
-import { DataImporter } from "./DataImporter";
-import { ImportHelper } from "../helper/ImportHelper";
-import { Constants } from "./Constants";
-import { UpdateActionFlow } from "../../../item/flows/UpdateActionFlow";
+import { DataImporter } from './DataImporter';
+import { ImportHelper } from '../helper/ImportHelper';
+import { Constants } from './Constants';
+import { UpdateActionFlow } from '../../../item/flows/UpdateActionFlow';
 
 export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shadowrun.DeviceData> {
     public files = ['gear.xml'];
@@ -26,14 +26,13 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
         const parserType = 'device';
 
         for (const commlink of commlinks) {
-
             // Check to ensure the data entry is supported
             if (DataImporter.unsupportedEntry(commlink)) {
                 continue;
             }
 
             // Create the item
-            const item = this.GetDefaultData({type: parserType});
+            const item = this.GetDefaultData({ type: parserType });
             item.name = ImportHelper.StringValue(commlink, 'name');
 
             // Get the item's folder information
@@ -44,10 +43,19 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
             item.system.importFlags = this.genImportFlags(item.name, parserType, item.system.category);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Finish the importing
-            item.system.description.source = `${ImportHelper.StringValue(commlink, 'source')} ${ImportHelper.MapNameToPageSource(this.itemTranslations, ImportHelper.StringValue(commlink, 'name'), ImportHelper.StringValue(commlink, 'page'))}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                commlink,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(
+                this.itemTranslations,
+                ImportHelper.StringValue(commlink, 'name'),
+                ImportHelper.StringValue(commlink, 'page'),
+            )}`;
             item.system.technology.rating = ImportHelper.IntValue(commlink, 'devicerating', 0);
             item.system.technology.availability = ImportHelper.StringValue(commlink, 'avail');
             item.system.technology.cost = ImportHelper.IntValue(commlink, 'cost', 0);
@@ -73,14 +81,13 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
         const parserType = 'device';
 
         for (const rcc of rccs) {
-
             // Check to ensure the data entry is supported
             if (DataImporter.unsupportedEntry(rcc)) {
                 continue;
             }
 
             // Create the item
-            const item = this.GetDefaultData({type: parserType});
+            const item = this.GetDefaultData({ type: parserType });
             item.system.category = 'rcc';
             item.name = ImportHelper.StringValue(rcc, 'name');
 
@@ -92,10 +99,19 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
             item.system.importFlags = this.genImportFlags(item.name, parserType, item.system.category);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Finish the importing
-            item.system.description.source = `${ImportHelper.StringValue(rcc, 'source')} ${ImportHelper.MapNameToPageSource(this.itemTranslations, ImportHelper.StringValue(rcc, 'name'), ImportHelper.StringValue(rcc, 'page'))}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                rcc,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(
+                this.itemTranslations,
+                ImportHelper.StringValue(rcc, 'name'),
+                ImportHelper.StringValue(rcc, 'page'),
+            )}`;
             item.system.technology.rating = ImportHelper.IntValue(rcc, 'devicerating', 0);
             item.system.technology.availability = ImportHelper.StringValue(rcc, 'avail');
             item.system.technology.cost = ImportHelper.IntValue(rcc, 'cost', 0);
@@ -121,14 +137,13 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
         const parserType = 'device';
 
         for (const cyberdeck of cyberdecks) {
-
             // Check to ensure the data entry is supported
             if (DataImporter.unsupportedEntry(cyberdeck)) {
                 continue;
             }
 
             // Create the item
-            const item = this.GetDefaultData({type: parserType});
+            const item = this.GetDefaultData({ type: parserType });
             item.system.category = 'cyberdeck';
             item.name = ImportHelper.StringValue(cyberdeck, 'name');
 
@@ -140,10 +155,19 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
             item.system.importFlags = this.genImportFlags(item.name, parserType, item.system.category);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Finish the importing
-            item.system.description.source = `${ImportHelper.StringValue(cyberdeck, 'source')} ${ImportHelper.MapNameToPageSource(this.itemTranslations, ImportHelper.StringValue(cyberdeck, 'name'), ImportHelper.StringValue(cyberdeck, 'page'))}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                cyberdeck,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(
+                this.itemTranslations,
+                ImportHelper.StringValue(cyberdeck, 'name'),
+                ImportHelper.StringValue(cyberdeck, 'page'),
+            )}`;
             item.system.technology.rating = ImportHelper.IntValue(cyberdeck, 'devicerating', 0);
             item.system.technology.availability = ImportHelper.StringValue(cyberdeck, 'avail');
             item.system.technology.cost = ImportHelper.IntValue(cyberdeck, 'cost', 0);
@@ -161,7 +185,7 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
                 item.system.atts.att3.value = att3;
                 item.system.atts.att4.value = att4;
 
-            // Some cyberdecks have a fixed attribute order
+                // Some cyberdecks have a fixed attribute order
             } else if (cyberdeck.hasOwnProperty('attack')) {
                 item.system.atts.att1.value = ImportHelper.IntValue(cyberdeck, 'attack', 0);
                 item.system.atts.att2.value = ImportHelper.IntValue(cyberdeck, 'sleaze', 0);
@@ -184,20 +208,35 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
 
     async Parse(jsonObject: object, setIcons: boolean): Promise<Item> {
         let entries = [];
-        const commlinks = jsonObject['gears']['gear'].filter(gear => ImportHelper.StringValue(gear, 'category', '') === 'Commlinks');
-        const cyberdecks = jsonObject['gears']['gear'].filter(gear => ImportHelper.StringValue(gear, 'category', '') === 'Cyberdecks');
-        const rccs = jsonObject['gears']['gear'].filter(gear => ImportHelper.StringValue(gear, 'category', '') === 'Rigger Command Consoles');
+        const commlinks = jsonObject['gears']['gear'].filter(
+            (gear) => ImportHelper.StringValue(gear, 'category', '') === 'Commlinks',
+        );
+        const cyberdecks = jsonObject['gears']['gear'].filter(
+            (gear) => ImportHelper.StringValue(gear, 'category', '') === 'Cyberdecks',
+        );
+        const rccs = jsonObject['gears']['gear'].filter(
+            (gear) => ImportHelper.StringValue(gear, 'category', '') === 'Rigger Command Consoles',
+        );
 
-        let commlinksFolder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatCommlink')}`, true);
-        let cyberdecksFolder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatCyberdeck')}`, true);
-        let rccsFolder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatRCC')}`, true);
+        let commlinksFolder = await ImportHelper.GetFolderAtPath(
+            `${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatCommlink')}`,
+            true,
+        );
+        let cyberdecksFolder = await ImportHelper.GetFolderAtPath(
+            `${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatCyberdeck')}`,
+            true,
+        );
+        let rccsFolder = await ImportHelper.GetFolderAtPath(
+            `${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.DeviceCatRCC')}`,
+            true,
+        );
 
         entries = entries.concat(await this.ParseCommlinkDevices(commlinks, commlinksFolder, setIcons));
         entries = entries.concat(await this.ParseCyberdeckDevices(cyberdecks, cyberdecksFolder, setIcons));
         entries = entries.concat(await this.ParseRCCDevices(rccs, rccsFolder, setIcons));
 
         // @ts-expect-error // TODO: TYPE: Remove this.
-        return await Item.create(entries)
+        return await Item.create(entries);
     }
 
     /* List of unsupported Commlinks, due to dynamics value calculations.
@@ -208,7 +247,7 @@ export class DeviceImporter extends DataImporter<Shadowrun.DeviceItemData, Shado
         }
 
         const unsupportedIds = [
-            'd63eb841-7b15-4539-9026-b90a4924aeeb',  // Dynamic rating value.
+            'd63eb841-7b15-4539-9026-b90a4924aeeb', // Dynamic rating value.
         ];
         return unsupportedIds.includes(ImportHelper.StringValue(jsonData, 'id'));
     }

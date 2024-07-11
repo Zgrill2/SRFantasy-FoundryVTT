@@ -1,15 +1,14 @@
-import { DataDefaults } from "../data/DataDefaults";
-import { Helpers } from "../helpers";
-import { DrainRules } from "./DrainRules";
+import { DataDefaults } from '../data/DataDefaults';
+import { Helpers } from '../helpers';
+import { DrainRules } from './DrainRules';
 
 /**
  * Rules implementing the ritual chapter in SR5.295f
  */
 export const RitualRules = {
-
     /**
      * Determine the amount of hits
-     * 
+     *
      * @param hitsCaster Hits of the ritual test.
      * @param hitsRitual Hits of the ritual opposing test.
      */
@@ -19,9 +18,9 @@ export const RitualRules = {
 
     /**
      * Determine the amount of drain value all ritual participants have to drain against.
-     * 
+     *
      * See SR5#296 'Seal the ritual'
-     * 
+     *
      * @param hits The amount of hits of the opposing ritual
      */
     drainValue: (hits: number, reagents: number, force: number): number => {
@@ -31,9 +30,9 @@ export const RitualRules = {
 
     /**
      * Determine the drain damage a ritual participant has to drain against.
-     * 
+     *
      * See SR5#296 and general Drain Rules.
-     * 
+     *
      * @param hits The amount of hits of the opposing ritual
      * @param drain The drain for the ritual
      * @param magic The magic attribute level of the ritual leader
@@ -52,9 +51,9 @@ export const RitualRules = {
 
     /**
      * Determine if the chosen force is valid for the given lodge rating.
-     * 
+     *
      * See SR5#300 'Ritual Spellcasting' Step 4.
-     * 
+     *
      * @param force The force value.
      * @param lodgeRating The lodge rating value.
      */
@@ -76,9 +75,9 @@ export const RitualRules = {
 
     /**
      * Reagents used must either match force exactly or be a multiple of force.
-     * 
+     *
      * See SR5#296 'Give the offering'
-     * @param force 
+     * @param force
      */
     deriveReagents: (force: number, reagents: number): number => {
         if (reagents <= force) return force;
@@ -86,5 +85,5 @@ export const RitualRules = {
         const remainder = reagents % force;
         if (remainder > 0) return reagents - remainder + force;
         else return reagents;
-    }
-}
+    },
+};

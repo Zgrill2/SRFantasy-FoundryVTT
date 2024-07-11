@@ -1,32 +1,29 @@
-import { DataDefaults } from "../data/DataDefaults";
-import { SuccessTest, SuccessTestData } from "./SuccessTest";
+import { DataDefaults } from '../data/DataDefaults';
+import { SuccessTest, SuccessTestData } from './SuccessTest';
 import { PartsList } from '../parts/PartsList';
 import { RitualRules } from '../rules/RitualRules';
 
-
 interface RitualSpellcastingTestData extends SuccessTestData {
-
     // Force value as described on SR5#300
-    force: number
+    force: number;
     // Drain value as described on SR5#300
-    drain: number
-    drainDamage: Shadowrun.DamageData
+    drain: number;
+    drainDamage: Shadowrun.DamageData;
 
     // Reagent value as described on SR5#296 'Give the offering'
-    reagents: number
+    reagents: number;
 
     // Determine that ritual concluded and drain is ready to be cast.
-    drainReady: boolean
+    drainReady: boolean;
 }
 
 /**
- * 
+ *
  * NOTE: While we need spell casting data, we don't need general spell casting flow.
- * 
+ *
  * Ritual Spellcasting uses the default Success Test, Opposed Test and Followup Flow.
  */
 export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestData> {
-
     override _prepareData(data: any, options: any) {
         data = super._prepareData(data, options);
 
@@ -43,7 +40,7 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['spell_ritual']
+        return ['spell_ritual'];
     }
 
     /**
@@ -66,8 +63,8 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
     static override _getDefaultTestAction(): Partial<Shadowrun.MinimalActionData> {
         return {
             skill: 'ritual_spellcasting',
-            attribute: 'magic'
-        }
+            attribute: 'magic',
+        };
     }
 
     override async prepareDocumentData() {
@@ -77,7 +74,7 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
 
     /**
      * Set a default force value based on the force last used for this ritual.
-     * 
+     *
      * If ritual hasn't been cast before, fallback to a useable value.
      */
     prepareInitialForceValue() {
@@ -101,7 +98,7 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
      */
     override validateBaseValues() {
         this.warnAboutInvalidForce();
-        this.warnAboutInvalidReagents()
+        this.warnAboutInvalidReagents();
     }
 
     /**
@@ -109,7 +106,7 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
      */
     override async executeFollowUpTest() {
         if (!this.data.drainReady) {
-            ui.notifications?.warn('SR5.Warnings.RitualNotConcluded', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.RitualNotConcluded', { localize: true });
         }
         await super.executeFollowUpTest();
     }
@@ -122,7 +119,7 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
 
         //currently we don't check for the lodge, so we always allow it
         if (!RitualRules.validForce(force, force)) {
-            ui.notifications?.warn('SR5.Warnings.RitualInvalidForce', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.RitualInvalidForce', { localize: true });
         }
     }
 
@@ -131,20 +128,16 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
         const force = Number(this.data.force);
 
         if (!RitualRules.validReagent(reagents, force)) {
-            ui.notifications?.warn('SR5.Warnings.RitualNotEnoughReagents', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.RitualNotEnoughReagents', { localize: true });
         }
     }
 
     /**
      * Calculate limit based on force selected by user.
-     * 
+     *
      */
     prepareLimitValue() {
-        this.data.limit.mod = PartsList.AddUniquePart(
-            this.data.limit.mod,
-            'SR5.Force',
-            this.data.force
-        )
+        this.data.limit.mod = PartsList.AddUniquePart(this.data.limit.mod, 'SR5.Force', this.data.force);
     }
 
     /**
@@ -159,7 +152,6 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
      * @param data Test data to be extended
      */
     _prepareRitualData(data: RitualSpellcastingTestData) {
-
         // Lower from more to less explicit values being given.
         // Don't let force go below one.
         data.force = Math.max(data.force || 1, 1);
@@ -168,14 +160,18 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
 
     /**
      * Derive the actual drain damage from spellcasting values.
-     * 
+     *
      * NOTE: This will be called by the opposing test via a follow up test action.
      */
     calcDrain(opposingHits: number) {
         if (!this.actor) return DataDefaults.damageData();
 
         this.data.drain = RitualRules.drainValue(opposingHits, this.data.reagents, this.data.force);
-        this.data.drainDamage = RitualRules.calcDrainDamage(opposingHits, this.data.drain, this.actor.getAttribute('magic').value);
+        this.data.drainDamage = RitualRules.calcDrainDamage(
+            opposingHits,
+            this.data.drain,
+            this.actor.getAttribute('magic').value,
+        );
         this.data.drainReady = true;
     }
 
@@ -185,6 +181,6 @@ export class RitualSpellcastingTest extends SuccessTest<RitualSpellcastingTestDa
     override async saveUserSelectionAfterDialog() {
         if (!this.item) return;
 
-        await this.item.setLastSpellForce({value: this.data.force});
+        await this.item.setLastSpellForce({ value: this.data.force });
     }
 }

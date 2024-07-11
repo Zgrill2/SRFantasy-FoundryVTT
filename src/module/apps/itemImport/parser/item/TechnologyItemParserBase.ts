@@ -2,7 +2,9 @@ import { ItemParserBase } from './ItemParserBase';
 import { ImportHelper } from '../../helper/ImportHelper';
 import ShadowrunTechnologyItemData = Shadowrun.ShadowrunTechnologyItemData;
 
-export abstract class TechnologyItemParserBase<TResult extends ShadowrunTechnologyItemData> extends ItemParserBase<TResult> {
+export abstract class TechnologyItemParserBase<
+    TResult extends ShadowrunTechnologyItemData,
+> extends ItemParserBase<TResult> {
     override Parse(jsonData: object, item: TResult, jsonTranslation?: object): TResult {
         item = super.Parse(jsonData, item, jsonTranslation);
 

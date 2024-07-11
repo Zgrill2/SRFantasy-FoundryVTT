@@ -3,16 +3,14 @@
 declare namespace Shadowrun {
     export type SpriteType = keyof typeof SR5CONFIG.spriteTypes;
 
-    export interface SpriteData extends
-        CommonData,
-        MatrixActorData {
-            level: number;
-            services: number;
-            registered: boolean;
-            spriteType: SpriteType;
-            modifiers: Modifiers & CommonModifiers;
+    export interface SpriteData extends CommonData, MatrixActorData {
+        level: number;
+        services: number;
+        registered: boolean;
+        spriteType: SpriteType;
+        modifiers: Modifiers & CommonModifiers;
 
-            // FoundryVTT uuid of the compiling technomancer of this sprite.
-            technomancerUuid: string;
+        // FoundryVTT uuid of the compiling technomancer of this sprite.
+        technomancerUuid: string;
     }
 }

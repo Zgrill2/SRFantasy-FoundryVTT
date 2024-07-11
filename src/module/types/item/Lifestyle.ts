@@ -1,10 +1,5 @@
 declare namespace Shadowrun {
-    export interface LifestyleData extends
-        LifestylePartData,
-        ImportFlags,
-        DescriptionPartData {
-
-    }
+    export interface LifestyleData extends LifestylePartData, ImportFlags, DescriptionPartData {}
 
     export interface LifestylePartData {
         type: string;

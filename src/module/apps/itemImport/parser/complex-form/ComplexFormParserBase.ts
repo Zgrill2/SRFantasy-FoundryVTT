@@ -7,7 +7,10 @@ export class ComplexFormParserBase extends ItemParserBase<ComplexFormItemData> {
     override Parse(jsonData: object, item: ComplexFormItemData, jsonTranslation?: object): ComplexFormItemData {
         item.name = ImportHelper.StringValue(jsonData, 'name');
 
-        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(jsonData, 'page')}`;
+        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(
+            jsonData,
+            'page',
+        )}`;
 
         let fade = ImportHelper.StringValue(jsonData, 'fv');
         if (fade.includes('+') || fade.includes('-')) {
@@ -41,7 +44,10 @@ export class ComplexFormParserBase extends ItemParserBase<ComplexFormItemData> {
         if (jsonTranslation) {
             const origName = ImportHelper.StringValue(jsonData, 'name');
             item.name = ImportHelper.MapNameToTranslation(jsonTranslation, origName);
-            item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                jsonData,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
         }
 
         return item;

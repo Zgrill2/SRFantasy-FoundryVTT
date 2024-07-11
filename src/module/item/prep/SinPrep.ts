@@ -11,5 +11,5 @@ export const SinPrep = {
             //        a object/HashMap when an array/iterable was expected
             system.licenses = Object.values(system.licenses);
         }
-    }
-}
+    },
+};

@@ -1,8 +1,8 @@
-import { QuenchBatchContext } from "@ethaks/fvtt-quench";
-import {MatrixRules} from "../module/rules/MatrixRules";
+import { QuenchBatchContext } from '@ethaks/fvtt-quench';
+import { MatrixRules } from '../module/rules/MatrixRules';
 
 export const shadowrunMatrix = (context: QuenchBatchContext) => {
-    const {describe, it, assert, before, after} = context;
+    const { describe, it, assert, before, after } = context;
 
     describe('Matrix Rules', () => {
         it('calculate IC device rating', () => {
@@ -76,5 +76,5 @@ export const shadowrunMatrix = (context: QuenchBatchContext) => {
             assert.deepEqual(MatrixRules.hostMatrixAttributeRatings(2), [2, 3, 4, 5]);
             assert.deepEqual(MatrixRules.hostMatrixAttributeRatings(10), [10, 11, 12, 13]);
         });
-    })
+    });
 };

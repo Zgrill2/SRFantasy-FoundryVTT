@@ -4,14 +4,12 @@ declare namespace Shadowrun {
      * A valid weapon with all associated fields. Weapons still have all possible fields, but some
      * may be ignored based on the value of @category.
      */
-    export interface WeaponData extends
-        WeaponPartData,
-        ActionPartData,
-        TechnologyPartData,
-        ImportFlags,
-        DescriptionPartData {
-
-    }
+    export interface WeaponData
+        extends WeaponPartData,
+            ActionPartData,
+            TechnologyPartData,
+            ImportFlags,
+            DescriptionPartData {}
 
     export interface WeaponPartData {
         category: WeaponCategory;
@@ -47,7 +45,7 @@ declare namespace Shadowrun {
     /**
      * Weapon ranges data.
      */
-    export interface RangeData  {
+    export interface RangeData {
         short: number;
         medium: number;
         long: number;
@@ -58,7 +56,7 @@ declare namespace Shadowrun {
     /**
      * Selection of what ranged weapon modes are available
      */
-    export interface FiringModeData  {
+    export interface FiringModeData {
         single_shot: boolean;
         semi_auto: boolean;
         burst_fire: boolean;
@@ -73,21 +71,21 @@ declare namespace Shadowrun {
     /**
      * Melee weapon specific data.
      */
-    export interface MeleeWeaponData  {
+    export interface MeleeWeaponData {
         reach: number;
     }
 
     /**
      * Thrown weapon specific data.
      */
-    export interface ThrownWeaponData  {
+    export interface ThrownWeaponData {
         ranges: RangeData;
         blast: BlastData;
     }
     /**
      * Blast data.
      */
-    export interface BlastData  {
+    export interface BlastData {
         radius: number;
         dropoff: number;
     }

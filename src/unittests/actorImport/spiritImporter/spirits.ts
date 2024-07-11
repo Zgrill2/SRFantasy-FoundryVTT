@@ -1,4 +1,3 @@
-
 export const emptySpirit = {
     characters: {
         character: {
@@ -16,11 +15,11 @@ export const emptySpirit = {
                             max: 12,
                             aug: 12,
                             bp: 35,
-                            metatypecategory: 'Special'
-                        }                            
-                    ]
-                }
-            ]
-        }
-    }
-}
+                            metatypecategory: 'Special',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+};

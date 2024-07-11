@@ -1,7 +1,7 @@
 import { DataDefaults } from '.././../../data/DataDefaults';
 import { ImportHelper } from '../helper/ImportHelper';
 import * as IconAssign from '../../../apps/iconAssigner/iconAssign';
-import { SR5 } from "../../../config";
+import { SR5 } from '../../../config';
 
 const xml2js = require('xml2js');
 
@@ -22,7 +22,7 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
     // Used to filter down a files entries based on category.
     // See filterObjects for use.
     // Leave on null to support all categories.
-    public unsupportedCategories: string[]|null = [];
+    public unsupportedCategories: string[] | null = [];
 
     /**
      * Get complete item data.
@@ -30,8 +30,8 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
      * NOTE: We use temporary items to have a full set of item data instead of just
      *       system model data that game.model.Item would give us.
      */
-    public GetDefaultData({type}:{type:any}) {
-        return DataDefaults.baseItemData<ItemDataType, ItemSystemDataType>({type});
+    public GetDefaultData({ type }: { type: any }) {
+        return DataDefaults.baseItemData<ItemDataType, ItemSystemDataType>({ type });
     }
 
     /**
@@ -39,7 +39,11 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
      * @param jsonObject JSON Data with all data translations for one language.
      */
     public static CanParseI18n(jsonObject: any): boolean {
-        return jsonObject.hasOwnProperty('chummer') && jsonObject.chummer.length > 0 && jsonObject.chummer[0].$.hasOwnProperty('file');
+        return (
+            jsonObject.hasOwnProperty('chummer') &&
+            jsonObject.chummer.length > 0 &&
+            jsonObject.chummer[0].$.hasOwnProperty('file')
+        );
     }
 
     /**
@@ -92,7 +96,12 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
      * @param name The item's name or subtype name to reformat
      */
     public formatAsSlug(name: string): string {
-        return name.trim().toLowerCase().replace((/'|,|\[|\]|\(|\)/g), '').split((/-|\s|\//g)).join('-');
+        return name
+            .trim()
+            .toLowerCase()
+            .replace(/'|,|\[|\]|\(|\)/g, '')
+            .split(/-|\s|\//g)
+            .join('-');
     }
 
     /**
@@ -106,8 +115,8 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
             name: this.formatAsSlug(name), // original english name
             type: type,
             subType: '',
-            isFreshImport: true
-        }
+            isFreshImport: true,
+        };
         if (subType && Object.keys(SR5.itemSubTypeIconOverrides[type]).includes(subType)) {
             flags.subType = subType;
         }
@@ -154,6 +163,8 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
     filterObjects(objects: any[]) {
         if (!this.unsupportedCategories) return objects;
         //@ts-expect-error
-        return objects.filter(object => !this.unsupportedCategories.includes(ImportHelper.StringValue(object, 'category', '')));
+        return objects.filter(
+            (object) => !this.unsupportedCategories.includes(ImportHelper.StringValue(object, 'category', '')),
+        );
     }
 }

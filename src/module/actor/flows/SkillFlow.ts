@@ -1,7 +1,7 @@
 import SkillField = Shadowrun.SkillField;
-import {SkillRules} from "../../rules/SkillRules";
-import {PartsList} from "../../parts/PartsList";
-import {FLAGS, SYSTEM_NAME} from "../../constants";
+import { SkillRules } from '../../rules/SkillRules';
+import { PartsList } from '../../parts/PartsList';
+import { FLAGS, SYSTEM_NAME } from '../../constants';
 
 export class SkillFlow {
     /**
@@ -28,8 +28,7 @@ export class SkillFlow {
     static allowDefaultingRoll(skill: SkillField): boolean {
         // Check if settings allow rolls of skills that otherwise would need to be defaulted.
         const allowUnimproviseable = game.settings.get(SYSTEM_NAME, FLAGS.OnlyAllowRollOnDefaultableSkills) === false;
-        if (allowUnimproviseable)
-            return true;
+        if (allowUnimproviseable) return true;
 
         return SkillRules.allowDefaultingRoll(skill);
     }

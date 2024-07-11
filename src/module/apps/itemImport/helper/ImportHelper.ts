@@ -2,7 +2,7 @@ import { Constants } from '../importer/Constants';
 import { XMLStrategy } from './XMLStrategy';
 import { JSONStrategy } from './JSONStrategy';
 import { ImportStrategy } from './ImportStrategy';
-import {SR5Item} from "../../../item/SR5Item";
+import { SR5Item } from '../../../item/SR5Item';
 
 export enum ImportMode {
     XML = 1,
@@ -64,9 +64,9 @@ export class ImportHelper {
             lastFolder = null;
         const pathSegments = path.split('/');
         for (const pathSegment of pathSegments) {
-             // Check if the path structure matches the folder structure.
+            // Check if the path structure matches the folder structure.
             currentFolder = game.folders?.find((folder) => {
-                return folder.folder === lastFolder && folder.name === pathSegment
+                return folder.folder === lastFolder && folder.name === pathSegment;
             });
 
             // Only create when allowed to. Otherwise abort with error.
@@ -97,7 +97,11 @@ export class ImportHelper {
      * @param key The key to check for the value under.
      * @param fallback An optional default value to return if the key is not found.
      */
-    public static StringValue(jsonData: object, key: string | number, fallback: string | undefined = undefined): string {
+    public static StringValue(
+        jsonData: object,
+        key: string | number,
+        fallback: string | undefined = undefined,
+    ): string {
         return ImportHelper.s_Strategy.stringValue(jsonData, key, fallback);
     }
 
@@ -107,7 +111,11 @@ export class ImportHelper {
      * @param key The key to check for the value under.
      * @param fallback An optional default value to return if the key is not found.
      */
-    public static ObjectValue(jsonData: object, key: string | number, fallback: object | null | undefined = undefined): object | null {
+    public static ObjectValue(
+        jsonData: object,
+        key: string | number,
+        fallback: object | null | undefined = undefined,
+    ): object | null {
         return ImportHelper.s_Strategy.objectValue(jsonData, key, fallback);
     }
 
@@ -141,7 +149,10 @@ export class ImportHelper {
             // use untranslated category name for easier mapping during DataImporter.Parse implementations.
             let origCategoryName = categoryName;
             categoryName = ImportHelper.TranslateCategory(categoryName, jsonCategoryTranslations);
-            folders[origCategoryName.toLowerCase()] = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/${path}/${categoryName}`, true);
+            folders[origCategoryName.toLowerCase()] = await ImportHelper.GetFolderAtPath(
+                `${Constants.ROOT_IMPORT_FOLDER_NAME}/${path}/${categoryName}`,
+                true,
+            );
         }
 
         return folders;
@@ -188,7 +199,12 @@ export class ImportHelper {
      */
     public static ExtractItemTranslation(jsonItemsi18n, typeKey, listKey) {
         const itemTranslation = {};
-        if (jsonItemsi18n && jsonItemsi18n[typeKey] && jsonItemsi18n[typeKey][listKey] && jsonItemsi18n[typeKey][listKey].length > 0) {
+        if (
+            jsonItemsi18n &&
+            jsonItemsi18n[typeKey] &&
+            jsonItemsi18n[typeKey][listKey] &&
+            jsonItemsi18n[typeKey][listKey].length > 0
+        ) {
             jsonItemsi18n[typeKey][listKey].forEach((item) => {
                 const name = item.name[ImportHelper.CHAR_KEY];
                 const translate = item.translate[ImportHelper.CHAR_KEY];
@@ -212,7 +228,7 @@ export class ImportHelper {
         return ImportHelper.MapNameToTranslationKey(translationMap, name, 'translate', name);
     }
 
-    public static MapNameToPageSource(translationMap, name, fallback='?'): string {
+    public static MapNameToPageSource(translationMap, name, fallback = '?'): string {
         return ImportHelper.MapNameToTranslationKey(translationMap, name, 'altpage', fallback);
     }
 }

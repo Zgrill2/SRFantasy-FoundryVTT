@@ -1,15 +1,15 @@
 import { SR5Actor } from '../actor/SR5Actor';
 import { createItemChatMessage } from '../chat';
 import { DEFAULT_ROLL_NAME, FLAGS, SYSTEM_NAME } from '../constants';
-import { DataDefaults } from "../data/DataDefaults";
+import { DataDefaults } from '../data/DataDefaults';
 import { SR5ItemDataWrapper } from '../data/SR5ItemDataWrapper';
 import { Helpers } from '../helpers';
 import { PartsList } from '../parts/PartsList';
-import { MatrixRules } from "../rules/MatrixRules";
-import { TestCreator } from "../tests/TestCreator";
+import { MatrixRules } from '../rules/MatrixRules';
+import { TestCreator } from '../tests/TestCreator';
 import { ChatData } from './ChatData';
-import { NetworkDeviceFlow } from "./flows/NetworkDeviceFlow";
-import { HostDataPreparation } from "./prep/HostPrep";
+import { NetworkDeviceFlow } from './flows/NetworkDeviceFlow';
+import { HostDataPreparation } from './prep/HostPrep';
 import ModList = Shadowrun.ModList;
 import AttackData = Shadowrun.AttackData;
 import FireModeData = Shadowrun.FireModeData;
@@ -51,8 +51,8 @@ import ActionTestLabel = Shadowrun.ActionTestLabel;
 import MatrixMarks = Shadowrun.MatrixMarks;
 import RollEvent = Shadowrun.RollEvent;
 import ShadowrunItemDataData = Shadowrun.ShadowrunItemDataData;
-import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
-import { RangedWeaponRules } from "../rules/RangedWeaponRules";
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { RangedWeaponRules } from '../rules/RangedWeaponRules';
 import { LinksHelpers } from '../utils/links';
 import { TechnologyPrep } from './prep/functions/TechnologyPrep';
 import { SinPrep } from './prep/SinPrep';
@@ -62,13 +62,13 @@ import { AdeptPowerPrep } from './prep/AdeptPowerPrep';
 
 /**
  * WARN: I don't know why, but removing the usage of ActionResultFlow from SR5Item
- * causes esbuild (I assume) to re-order import dependencies resulting in vastly different orders of execution within transpiled bundle.js code, 
+ * causes esbuild (I assume) to re-order import dependencies resulting in vastly different orders of execution within transpiled bundle.js code,
  * resulting OpposedTest not finding SuccessTest (undefined) when extending it.
- * 
+ *
  * ... I'd love to remove this, or even just comment it, but tree-shaking will do it's job.
- * 
+ *
  * Should you read this: Try it anyway and open any actor sheet. If it's not broken, the build issue must've been fixed somehow.
- * 
+ *
  * An esbuild update might fix this, but caused other issues at the time... Didn't fix it with esbuild@0.15.14 (20.11.2022)
  * NOTE: still not fixed with esbuild@0.19.5
  */
@@ -143,25 +143,25 @@ export class SR5Item extends Item {
 
     // Flag Functions
     getLastFireMode(): FireModeData {
-        return this.getFlag(SYSTEM_NAME, FLAGS.LastFireMode) as FireModeData || DataDefaults.fireModeData();
+        return (this.getFlag(SYSTEM_NAME, FLAGS.LastFireMode) as FireModeData) || DataDefaults.fireModeData();
     }
     async setLastFireMode(fireMode: FireModeData) {
         return this.setFlag(SYSTEM_NAME, FLAGS.LastFireMode, fireMode);
     }
     getLastSpellForce(): SpellForceData {
-        return this.getFlag(SYSTEM_NAME, FLAGS.LastSpellForce) as SpellForceData || { value: 0 };
+        return (this.getFlag(SYSTEM_NAME, FLAGS.LastSpellForce) as SpellForceData) || { value: 0 };
     }
     async setLastSpellForce(force: SpellForceData) {
         return this.setFlag(SYSTEM_NAME, FLAGS.LastSpellForce, force);
     }
     getLastComplexFormLevel(): ComplexFormLevelData {
-        return this.getFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel) as ComplexFormLevelData || { value: 0 };
+        return (this.getFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel) as ComplexFormLevelData) || { value: 0 };
     }
     async setLastComplexFormLevel(level: ComplexFormLevelData) {
         return this.setFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel, level);
     }
     getLastFireRangeMod(): FireRangeData {
-        return this.getFlag(SYSTEM_NAME, FLAGS.LastFireRange) as FireRangeData || { value: 0 };
+        return (this.getFlag(SYSTEM_NAME, FLAGS.LastFireRange) as FireRangeData) || { value: 0 };
     }
     async setLastFireRangeMod(environmentalMod: FireRangeData) {
         return this.setFlag(SYSTEM_NAME, FLAGS.LastFireRange, environmentalMod);
@@ -181,7 +181,7 @@ export class SR5Item extends Item {
         }
 
         // Manually map wrongly converted array fields...
-        items = items.map(item => {
+        items = items.map((item) => {
             if (item.effects && !Array.isArray(item.effects)) {
                 item.effects = Helpers.convertIndexedObjectToArray(item.effects);
             }
@@ -213,7 +213,11 @@ export class SR5Item extends Item {
 
     get hasRoll(): boolean {
         const action = this.getAction();
-        return !!(action && action.type !== '' && (action.skill || action.attribute || action.attribute2 || action.dice_pool_mod));
+        return !!(
+            action &&
+            action.type !== '' &&
+            (action.skill || action.attribute || action.attribute2 || action.dice_pool_mod)
+        );
     }
 
     /**
@@ -277,7 +281,7 @@ export class SR5Item extends Item {
             description: await this.getChatData(),
             item: this,
             previewTemplate: this.hasBlastTemplate,
-            tests: this.getActionTests()
+            tests: this.getActionTests(),
         };
         return await createItemChatMessage(options);
     }
@@ -303,12 +307,12 @@ export class SR5Item extends Item {
     /**
      * Create display only information for this item. Used on sheets, chat messages and more.
      * Both actor and item sheets.
-     * 
+     *
      * The original naming leans on the dnd5e systems use of it for chat messages.
      * NOTE: This is very legacy, difficult to read and should be improved upon.
-     * 
-     * @param htmlOptions 
-     * @returns 
+     *
+     * @param htmlOptions
+     * @returns
      */
     async getChatData(htmlOptions = {}) {
         const system = foundry.utils.duplicate(this.system);
@@ -320,7 +324,7 @@ export class SR5Item extends Item {
 
         const props = [];
         // Add additional chat data fields depending on item type.
-        //@ts-expect-error // TODO: foundry-vtt-types v10 
+        //@ts-expect-error // TODO: foundry-vtt-types v10
         const chatDataForItemType = ChatData[this.type];
         if (chatDataForItemType) chatDataForItemType(system, labels, props, this);
 
@@ -371,9 +375,8 @@ export class SR5Item extends Item {
 
             return {
                 radius: distance,
-                dropoff
-            }
-
+                dropoff,
+            };
         } else if (this.isGrenade) {
             const system = this.system as WeaponData;
 
@@ -382,9 +385,8 @@ export class SR5Item extends Item {
 
             return {
                 radius: distance,
-                dropoff
-            }
-
+                dropoff,
+            };
         } else if (this.hasExplosiveAmmo) {
             const item = this.getEquippedAmmo();
             const ammo = item.asAmmo;
@@ -396,24 +398,20 @@ export class SR5Item extends Item {
 
             return {
                 radius: distance,
-                dropoff
+                dropoff,
             };
         }
     }
 
     getEquippedAmmo(): SR5Item {
-        const equippedAmmos = (this.items || []).filter((item) =>
-            item.isAmmo &&
-            item.isEquipped());
+        const equippedAmmos = (this.items || []).filter((item) => item.isAmmo && item.isEquipped());
 
         // Cast Typing isn't a mistake, so long as isAmmo is filtered.
         return equippedAmmos[0];
     }
 
     getEquippedMods(): SR5Item[] {
-        return (this.items || []).filter((item) =>
-            item.isWeaponModification &&
-            item.isEquipped());
+        return (this.items || []).filter((item) => item.isWeaponModification && item.isEquipped());
     }
 
     get hasExplosiveAmmo(): boolean {
@@ -458,14 +456,14 @@ export class SR5Item extends Item {
     async useAmmo(fired) {
         if (this.type !== 'weapon') return;
 
-        //@ts-expect-error // TODO: foundry-vtt-types v10 
+        //@ts-expect-error // TODO: foundry-vtt-types v10
         const value = Math.max(0, this.system.ammo.current.value - fired);
         return await this.update({ 'system.ammo.current.value': value });
     }
 
     /**
      * Can this item (weapon, melee, ranged, whatever) use ammunition?
-     * 
+     *
      * @returns true, for weapons with ammunition.
      */
     get usesAmmo(): boolean {
@@ -477,9 +475,9 @@ export class SR5Item extends Item {
      * - its current clips
      * - its available spare clips (when given)
      * - its equipped ammo
-     * 
+     *
      * This method will only reload the weapon to the max amount of ammo available.
-     * 
+     *
      * TODO: Currently only the minimal amount of bullets is reloaded. For weapons using ejectable clips, this should be full clip capacity.
      */
     async reloadAmmo() {
@@ -491,18 +489,19 @@ export class SR5Item extends Item {
 
         // Prepare reloading by getting ammunition information.
         const ammo = this.getEquippedAmmo();
-        const ammoItems = this.items.filter(item => item.isAmmo).length;
+        const ammoItems = this.items.filter((item) => item.isAmmo).length;
 
         const remainingBullets = Number(weapon.system.ammo.current.value);
         // Don't adhere to clip sizes, only reload from the point of capacity left.
         const missingBullets = Math.max(0, weapon.system.ammo.current.max - remainingBullets);
         // If there aren't ANY ammo items, just use weapon max as to not enforce ammo onto users without.
-        const availableBullets = ammoItems > 0 ? Number(ammo.system.technology?.quantity) : weapon.system.ammo.current.max;
+        const availableBullets =
+            ammoItems > 0 ? Number(ammo.system.technology?.quantity) : weapon.system.ammo.current.max;
 
         // Validate ammunition and clip availability.
         if (weapon.system.ammo.spare_clips.value === 0 && weapon.system.ammo.spare_clips.max > 0) {
             // Should this ever be enforced, change info to warn.
-            ui.notifications?.info("SR5.Warnings.CantReloadWithoutSpareClip", { localize: true });
+            ui.notifications?.info('SR5.Warnings.CantReloadWithoutSpareClip', { localize: true });
         }
         if (ammo && Number(ammo.system.technology?.quantity) === 0) {
             return ui.notifications?.warn('SR5.Warnings.CantReloadAtAllDueToAmmo', { localize: true });
@@ -514,7 +513,6 @@ export class SR5Item extends Item {
         // Prepare what can be reloaded.
         const reloadedBullets = Math.min(missingBullets, availableBullets);
 
-
         if (weapon.system.ammo.spare_clips.max > 0) {
             updateData['system.ammo.spare_clips.value'] = Math.max(0, weapon.system.ammo.spare_clips.value - 1);
         }
@@ -522,23 +520,25 @@ export class SR5Item extends Item {
         await this.update(updateData);
 
         if (!ammo) return;
-        await ammo.update({ 'system.technology.quantity': Math.max(0, Number(ammo.system.technology?.quantity) - reloadedBullets) });
+        await ammo.update({
+            'system.technology.quantity': Math.max(0, Number(ammo.system.technology?.quantity) - reloadedBullets),
+        });
     }
 
-    async equipNestedItem(id: string, type: string, options: { unequipOthers?: boolean, toggle?: boolean } = {}) {
+    async equipNestedItem(id: string, type: string, options: { unequipOthers?: boolean; toggle?: boolean } = {}) {
         const unequipOthers = options.unequipOthers || false;
         const toggle = options.toggle || false;
 
         // Collect all item data and update at once.
         const updateData: Record<any, any>[] = [];
-        const ammoItems = this.items.filter(item => item.type === type);
+        const ammoItems = this.items.filter((item) => item.type === type);
 
         for (const item of ammoItems) {
             if (!unequipOthers && item.id !== id) continue;
             //@ts-expect-error TODO: foundry-vtt-types v10
             const equip = toggle ? !item.system.technology.equipped : id === item.id;
 
-            updateData.push({ _id: item.id, 'system.technology.equipped': equip });
+            updateData.push({ '_id': item.id, 'system.technology.equipped': equip });
         }
 
         if (updateData) await this.updateNestedItems(updateData);
@@ -546,7 +546,7 @@ export class SR5Item extends Item {
 
     /**
      * Equip one ammo item exclusively.
-     * 
+     *
      * @param id Item id of the to be exclusively equipped ammo item.
      */
     async equipAmmo(id) {
@@ -557,10 +557,11 @@ export class SR5Item extends Item {
         if (this.type !== 'sin') return;
 
         // NOTE: This might be related to Foundry data serialization sometimes returning arrays as ordered HashMaps...
-        const licenses = foundry.utils.getType(this.system.licenses) === 'Object' ?
-            //@ts-expect-error TODO: foundry-vtt-types v10
-            Object.values(this.system.licenses) :
-            this.system.licenses;
+        const licenses =
+            foundry.utils.getType(this.system.licenses) === 'Object'
+                ? //@ts-expect-error TODO: foundry-vtt-types v10
+                  Object.values(this.system.licenses)
+                : this.system.licenses;
 
         if (!licenses) return;
 
@@ -662,7 +663,6 @@ export class SR5Item extends Item {
             return this as AdeptPowerItemData;
     }
 
-
     get isHost(): boolean {
         return this.type === 'host';
     }
@@ -676,7 +676,7 @@ export class SR5Item extends Item {
 
     /**
      * SIN Item - remove a single license within this SIN
-     * 
+     *
      * @param index The license list index
      */
     async removeLicense(index) {
@@ -746,12 +746,14 @@ export class SR5Item extends Item {
     }
 
     getActionTests(): ActionTestLabel[] {
-        if (!this.hasRoll) return []
+        if (!this.hasRoll) return [];
 
-        return [{
-            label: this.getActionTestName(),
-            uuid: this.uuid
-        }];
+        return [
+            {
+                label: this.getActionTestName(),
+                uuid: this.uuid,
+            },
+        ];
     }
 
     getActionResult(): ActionResultData | undefined {
@@ -764,7 +766,7 @@ export class SR5Item extends Item {
      * Create an item in this item
      * @param itemData
      * @param options
-     * 
+     *
      * //@ts-expect-error TODO: foundry-vtt-types v10 Rework method...
      */
     async createNestedItem(itemData, options = {}) {
@@ -812,8 +814,7 @@ export class SR5Item extends Item {
         const tempItems = items.map((item) => {
             // Set user permissions to owner, to allow none-GM users to edit their own nested items.
             //@ts-expect-error v10
-            const data = game.user ? { ownership: { [game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER } } :
-                {};
+            const data = game.user ? { ownership: { [game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER } } : {};
             item = foundry.utils.mergeObject(item, data);
 
             // Case: MODIFY => Update existing item.
@@ -957,8 +958,7 @@ export class SR5Item extends Item {
     }
 
     getWeaponRange(): RangeWeaponData | undefined {
-        if (this.isRangedWeapon)
-            return this.getRange() as RangeWeaponData;
+        if (this.isRangedWeapon) return this.getRange() as RangeWeaponData;
     }
 
     getRollName(): string {
@@ -983,10 +983,10 @@ export class SR5Item extends Item {
 
     /**
      * An attack with this weapon will create an area of effect / blast.
-     * 
-     * There is a multitude of possibilities as to HOW an item can create an AoE, 
+     *
+     * There is a multitude of possibilities as to HOW an item can create an AoE,
      * both directly connected to the item and / or some of it's nested items.
-     * 
+     *
      */
     get isAreaOfEffect(): boolean {
         return this.wrapper.isAreaOfEffect() || this.hasExplosiveAmmo;
@@ -1277,7 +1277,7 @@ export class SR5Item extends Item {
 
     /**
      * Amount of recoil compensation totally available when using weapon
-     * 
+     *
      * This includes both actor and item recoil compensation.
      */
     get totalRecoilCompensation(): number {
@@ -1287,9 +1287,9 @@ export class SR5Item extends Item {
 
     /**
      * Current TOTAL recoil compensation with current recoil included.
-     * 
+     *
      * This includes both the items and it's parent actors recoil compensation and total progressive recoil.
-     * 
+     *
      * @returns A positive number or zero.
      */
     get currentRecoilCompensation(): number {
@@ -1307,8 +1307,7 @@ export class SR5Item extends Item {
 
     getCondition(): ConditionData | undefined {
         const technology = this.getTechnologyData();
-        if (technology && "condition_monitor" in technology)
-            return technology.condition_monitor;
+        if (technology && 'condition_monitor' in technology) return technology.condition_monitor;
     }
 
     hasOpposedTest(): boolean {
@@ -1418,7 +1417,7 @@ export class SR5Item extends Item {
      * TODO: It might be useful to create a 'MatrixDocument' class sharing matrix methods to avoid duplication between
      *       SR5Item and SR5Actor.
      */
-    async setMarks(target: Token, marks: number, options?: { scene?: Scene, item?: Item, overwrite?: boolean }) {
+    async setMarks(target: Token, marks: number, options?: { scene?: Scene; item?: Item; overwrite?: boolean }) {
         if (!canvas.ready) return;
 
         if (!this.isHost) {
@@ -1427,7 +1426,7 @@ export class SR5Item extends Item {
         }
 
         // Both scene and item are optional.
-        const scene = options?.scene || canvas.scene as Scene;
+        const scene = options?.scene || (canvas.scene as Scene);
         const item = options?.item;
 
         // Build the markId string. If no item has been given, there still will be a third split element.
@@ -1470,13 +1469,13 @@ export class SR5Item extends Item {
         if (!this.isHost) return 0;
 
         // Scene is optional.
-        const scene = options?.scene || canvas.scene as Scene;
+        const scene = options?.scene || (canvas.scene as Scene);
         item = item || target.getMatrixDevice();
 
         const markId = Helpers.buildMarkId(scene.id as string, target.id as string, item?.id as string);
         const host = this.asHost;
 
-        if (!host) return 0
+        if (!host) return 0;
 
         return host.system.marks[markId] || 0;
     }
@@ -1494,7 +1493,7 @@ export class SR5Item extends Item {
         if (!host) return;
 
         // Delete all markId properties from ActorData
-        const updateData = {}
+        const updateData = {};
         for (const markId of Object.keys(host.system.marks)) {
             updateData[`-=${markId}`] = null;
         }
@@ -1508,7 +1507,7 @@ export class SR5Item extends Item {
     async clearMark(markId: string) {
         if (!this.isHost) return;
 
-        const updateData = {}
+        const updateData = {};
         updateData[`-=${markId}`] = null;
 
         await this.update({ 'system.marks': updateData });
@@ -1564,8 +1563,8 @@ export class SR5Item extends Item {
             .map(([markId, marks]) => ({
                 ...Helpers.getMarkIdDocuments(markId),
                 marks,
-                markId
-            }))
+                markId,
+            }));
     }
 
     /**
@@ -1576,7 +1575,7 @@ export class SR5Item extends Item {
         if (!technologyData) return;
         if (!technologyData.networkController) return;
 
-        return await NetworkDeviceFlow.resolveLink(technologyData.networkController) as SR5Item;
+        return (await NetworkDeviceFlow.resolveLink(technologyData.networkController)) as SR5Item;
     }
 
     /**

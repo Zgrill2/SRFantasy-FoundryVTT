@@ -1,4 +1,4 @@
-import { ConditionMonitorsPrep } from "./ConditionMonitorsPrep";
+import { ConditionMonitorsPrep } from './ConditionMonitorsPrep';
 
 /**
  * Prepare actor types with grunt support with rules around grunt actors.
@@ -15,5 +15,5 @@ export const GruntPrep = {
             ConditionMonitorsPrep.preparePhysical(system);
             ConditionMonitorsPrep.prepareStun(system);
         }
-    }
-}
+    },
+};

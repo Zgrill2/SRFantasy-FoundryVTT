@@ -2,10 +2,10 @@ import MatrixActorData = Shadowrun.MatrixActorData;
 import { Helpers } from '../../../helpers';
 import { SR5ItemDataWrapper } from '../../../data/SR5ItemDataWrapper';
 import { PartsList } from '../../../parts/PartsList';
-import {SR5} from "../../../config";
+import { SR5 } from '../../../config';
 import ActorTypesData = Shadowrun.ShadowrunActorDataData;
 import CommonData = Shadowrun.CommonData;
-import {AttributesPrep} from "./AttributesPrep";
+import { AttributesPrep } from './AttributesPrep';
 
 export class MatrixPrep {
     /**

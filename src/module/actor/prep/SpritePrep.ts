@@ -8,8 +8,7 @@ import SpriteType = Shadowrun.SpriteType;
 import { Helpers } from '../../helpers';
 import { PartsList } from '../../parts/PartsList';
 import SpriteData = Shadowrun.SpriteData;
-import {SR5ItemDataWrapper} from "../../data/SR5ItemDataWrapper";
-
+import { SR5ItemDataWrapper } from '../../data/SR5ItemDataWrapper';
 
 /**
  * Prepare a Sprite Type of Actor
@@ -47,7 +46,7 @@ export class SpritePrep {
     }
 
     static prepareSpriteAttributes(data: SpriteData) {
-        const {attributes, level, spriteType} = data;
+        const { attributes, level, spriteType } = data;
 
         const overrides = this.getSpriteStatModifiers(spriteType);
 
@@ -57,7 +56,7 @@ export class SpritePrep {
     }
 
     static prepareSpriteMatrixAttributes(data: SpriteData) {
-        const {level, matrix, spriteType} = data;
+        const { level, matrix, spriteType } = data;
 
         const matrixAtts = ['attack', 'sleaze', 'data_processing', 'firewall'];
 
@@ -75,7 +74,7 @@ export class SpritePrep {
     }
 
     static prepareSpriteSkills(data: SpriteData) {
-        const {skills, level, spriteType} = data;
+        const { skills, level, spriteType } = data;
 
         const overrides = this.getSpriteStatModifiers(spriteType);
 
@@ -87,13 +86,13 @@ export class SpritePrep {
     }
 
     static prepareSpriteConditionMonitor(data: SpriteData) {
-        const {matrix, level, modifiers} = data;
+        const { matrix, level, modifiers } = data;
 
         matrix.condition_monitor.max = 8 + Math.ceil(level / 2) + Number(modifiers.matrix_track);
     }
 
     static prepareSpriteInitiative(data: SpriteData) {
-        const {initiative, level, spriteType, modifiers} = data;
+        const { initiative, level, spriteType, modifiers } = data;
 
         // always in matrix perception
         initiative.perception = 'matrix';
@@ -103,11 +102,11 @@ export class SpritePrep {
         // setup initiative from overrides
         initiative.matrix.base.base = level * 2 + overrides.init;
         PartsList.AddUniquePart(initiative.matrix.base.mod, 'SR5.Bonus', modifiers['matrix_initiative']);
-        Helpers.calcTotal(initiative.matrix.base, {min: 0});
+        Helpers.calcTotal(initiative.matrix.base, { min: 0 });
 
         initiative.matrix.dice.base = 4;
         PartsList.AddUniquePart(initiative.matrix.dice.mod, 'SR5.Bonus', modifiers['matrix_initiative_dice']);
-        Helpers.calcTotal(initiative.matrix.dice, {min: 0});
+        Helpers.calcTotal(initiative.matrix.dice, { min: 0 });
     }
 
     /**
@@ -173,7 +172,7 @@ export class SpritePrep {
                 overrides.data_processing = 1;
                 overrides.firewall = 1;
                 overrides.init = 1;
-                overrides.skills.push('hacking','electronic_warfare');
+                overrides.skills.push('hacking', 'electronic_warfare');
                 break;
         }
         return overrides;

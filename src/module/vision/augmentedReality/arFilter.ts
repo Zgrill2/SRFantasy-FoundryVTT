@@ -1,18 +1,18 @@
-//todo: v10 foundry-vtt-types 
+//todo: v10 foundry-vtt-types
 //@ts-expect-error
 export default class AugmentedRealityVisionFilter extends AbstractBaseFilter {
-  //@ts-expect-error
-  static override defaultUniforms = {
-    luminanceThreshold: 0.5,
-    alphaThreshold: 0.1,
-  };
+    //@ts-expect-error
+    static override defaultUniforms = {
+        luminanceThreshold: 0.5,
+        alphaThreshold: 0.1,
+    };
 
-  /**
-   * fragment shader based on the following snippets:
-   * @link https://gitlab.com/peginc/swade/-/blob/develop/src/module/vision/InfravisionFilter.ts?ref_type=heads
-   */
-  //@ts-expect-error
-  static override fragmentShader = `
+    /**
+     * fragment shader based on the following snippets:
+     * @link https://gitlab.com/peginc/swade/-/blob/develop/src/module/vision/InfravisionFilter.ts?ref_type=heads
+     */
+    //@ts-expect-error
+    static override fragmentShader = `
   varying vec2 vTextureCoord;
   uniform sampler2D uSampler;
   uniform float luminanceThreshold;

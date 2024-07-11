@@ -30,7 +30,7 @@ export class Constants {
         'Unarmed': 'unarmed_combat',
     };
     public static readonly MAP_IMPORT_RANGE_CATEGORY_TO_SYSTEM_RANGE_CATEGORY: {
-        [key: string]: Exclude<keyof typeof SR5.weaponRangeCategories, "manual">;
+        [key: string]: Exclude<keyof typeof SR5.weaponRangeCategories, 'manual'>;
     } = {
         'Tasers': 'taser',
         'Holdouts': 'holdOutPistol',
@@ -67,6 +67,6 @@ export class Constants {
 
     public static readonly MAP_CHUMMER_PROGRAMM_CATEGORY = {
         'Hacking Programs': 'hacking_program',
-        'Common Programs': 'common_program'
-    }
+        'Common Programs': 'common_program',
+    };
 }

@@ -1,40 +1,38 @@
 import { SR5 } from './../config';
-import { DataDefaults } from "../data/DataDefaults";
-import { SuccessTest, SuccessTestData } from "./SuccessTest";
+import { DataDefaults } from '../data/DataDefaults';
+import { SuccessTest, SuccessTestData } from './SuccessTest';
 import { PartsList } from '../parts/PartsList';
 import { SpellcastingRules } from '../rules/SpellcastingRules';
 import { ConjuringRules } from '../rules/ConjuringRules';
 
-
 interface SummonSpiritTestData extends SuccessTestData {
-    spiritTypes: typeof SR5.spiritTypes
-    spiritTypeSelected: string
+    spiritTypes: typeof SR5.spiritTypes;
+    spiritTypeSelected: string;
 
     // Force value as described on SR5#300
-    force: number
+    force: number;
     // Drain value as described on SR5#300
-    drain: number
-    drainDamage: Shadowrun.DamageData
+    drain: number;
+    drainDamage: Shadowrun.DamageData;
 
     // Reagent value as described on SR5#317 'Summoning'
-    reagent: number
+    reagent: number;
 
     // Determine that summoning concluded and drain is ready to be cast.
-    drainReady: boolean
+    drainReady: boolean;
 
-    preparedSpiritUuid: string
+    preparedSpiritUuid: string;
 }
 
 /**
  * Summoning a spirit is described in SR5#300.
- * 
+ *
  * NOTE: While we need spell casting data, we don't need general spell casting flow.
  *       This is due to spell casting operating on spell items, while summoning is a call_in_action item.
- * 
+ *
  * Summoning uses the default Success Test, Opposed Test and Followup Flow.
  */
 export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
-
     override _prepareData(data: any, options: any) {
         data = super._prepareData(data, options);
 
@@ -51,7 +49,7 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['summoning']
+        return ['summoning'];
     }
 
     /**
@@ -70,14 +68,14 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
 
     /**
      * Skill + Attribute [Limit] as defined in SR5#300 'Attempt summoning'
-     * 
+     *
      * Limit 'force' is a dynamic test value, so it's missing here as it can't be taken from actor values.
      */
     static override _getDefaultTestAction(): Partial<Shadowrun.MinimalActionData> {
         return {
             skill: 'summoning',
-            attribute: 'magic'
-        }
+            attribute: 'magic',
+        };
     }
 
     /**
@@ -108,7 +106,7 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
      * Notify summoners about incomplete summoning. To avoid pre mature drain tests.
      */
     override async executeFollowUpTest() {
-        if (!this.data.drainReady) ui.notifications?.warn('SR5.Warnings.SummoningNotConcluded', {localize: true});
+        if (!this.data.drainReady) ui.notifications?.warn('SR5.Warnings.SummoningNotConcluded', { localize: true });
         await super.executeFollowUpTest();
     }
 
@@ -119,20 +117,19 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
         const force = Number(this.data.force);
         const magic = Number(this.actor?.getAttribute('magic')?.value ?? 0);
         if (!ConjuringRules.validForce(force, magic)) {
-            ui.notifications?.warn('SR5.Warnings.InvalidSummoningForce', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.InvalidSummoningForce', { localize: true });
         }
     }
 
     /**
      * Calculate limit based on force selected by user.
-     * 
+     *
      * According to SR5#300 'Summoning' and SR5#316 'Reagents'.
      */
     prepareLimitValue() {
         const force = Number(this.data.force);
         const reagent = Number(this.data.reagent);
-        const label = SpellcastingRules.limitIsReagentInsteadOfForce(reagent) ? 
-            'SR5.Reagent' : 'SR5.Force';
+        const label = SpellcastingRules.limitIsReagentInsteadOfForce(reagent) ? 'SR5.Reagent' : 'SR5.Force';
         const limit = SpellcastingRules.calculateLimit(force, reagent);
 
         // Cleanup previous calculation and add new limit part.
@@ -174,7 +171,7 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
 
     /**
      * Derive the actual drain damage from spellcasting values.
-     * 
+     *
      * NOTE: This will be called by the opposing test via a follow up test action.
      */
     calcDrain(opposingHits: number) {
@@ -188,7 +185,7 @@ export class SummonSpiritTest extends SuccessTest<SummonSpiritTestData> {
 
         const magic = this.actor.getAttribute('magic').value;
         const force = this.data.force;
-        
+
         return ConjuringRules.calcDrainDamage(opposingHits, force, magic);
     }
 

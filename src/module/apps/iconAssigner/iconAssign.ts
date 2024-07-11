@@ -1,29 +1,35 @@
-import { SR5 } from "../../config";
+import { SR5 } from '../../config';
 import { FLAGS, SYSTEM_NAME } from './../../constants';
 
 export async function getIconFiles(): Promise<string[]> {
-
-    if (!game.user?.can("FILES_BROWSE")) {
-        return []
+    if (!game.user?.can('FILES_BROWSE')) {
+        return [];
     }
 
     // Icon locations
-    const imgFolder = game.settings.get(SYSTEM_NAME, FLAGS.ImportIconFolder) as string || "systems/shadowrun5e/dist/icons/importer/";
-    const folderList = await FilePicker.browse("data", imgFolder).then(picker => picker.dirs);
-    let fileList = await FilePicker.browse("data", imgFolder).then(picker => picker.files);
+    const imgFolder =
+        (game.settings.get(SYSTEM_NAME, FLAGS.ImportIconFolder) as string) ||
+        'systems/shadowrun5e/dist/icons/importer/';
+    const folderList = await FilePicker.browse('data', imgFolder).then((picker) => picker.dirs);
+    let fileList = await FilePicker.browse('data', imgFolder).then((picker) => picker.files);
 
     for (const folder of folderList) {
-        const newFiles = await FilePicker.browse("data", folder).then(picker => picker.files);
+        const newFiles = await FilePicker.browse('data', folder).then((picker) => picker.files);
         fileList = fileList.concat(newFiles);
     }
 
-    return fileList
+    return fileList;
 }
 
-export async function iconAssign(importFlags: Shadowrun.ImportFlagData, system: Shadowrun.ShadowrunItemDataData, iconList: string[]): Promise<string> {
-
-    const defaultImg = "icons/svg/item-bag.svg";
-    const imgFolder = game.settings.get(SYSTEM_NAME, FLAGS.ImportIconFolder) as string || "systems/shadowrun5e/dist/icons/importer/";
+export async function iconAssign(
+    importFlags: Shadowrun.ImportFlagData,
+    system: Shadowrun.ShadowrunItemDataData,
+    iconList: string[],
+): Promise<string> {
+    const defaultImg = 'icons/svg/item-bag.svg';
+    const imgFolder =
+        (game.settings.get(SYSTEM_NAME, FLAGS.ImportIconFolder) as string) ||
+        'systems/shadowrun5e/dist/icons/importer/';
     const imgExtensionOptions = ['.svg', '.webp', '.png', '.jpg', '.jpeg', '.avif'];
     const imgName = importFlags.name;
     const imgType = importFlags.type;
@@ -31,7 +37,7 @@ export async function iconAssign(importFlags: Shadowrun.ImportFlagData, system: 
     const useOverrides = game.settings.get(SYSTEM_NAME, FLAGS.UseImportIconOverrides) as boolean;
 
     // Get the override, if any
-    let override = ''
+    let override = '';
     if (imgSubType && useOverrides) override = SR5.itemSubTypeIconOverrides[imgType][imgSubType];
 
     // Priority of file names to check
@@ -40,8 +46,8 @@ export async function iconAssign(importFlags: Shadowrun.ImportFlagData, system: 
         imgFolder + imgType + (imgSubType ? '/' : '') + imgSubType,
         imgFolder + imgType + '/' + imgType,
         imgFolder + imgSubType,
-        imgFolder + imgType
-    ]
+        imgFolder + imgType,
+    ];
     switch (imgType) {
         case 'armor':
             // TODO: Add separation by if it's an accessory
@@ -55,8 +61,8 @@ export async function iconAssign(importFlags: Shadowrun.ImportFlagData, system: 
                 imgFolder + imgType + '/' + system.category,
                 imgFolder + imgType + '/' + imgType,
                 imgFolder + imgSubType,
-                imgFolder + imgType
-            ]
+                imgFolder + imgType,
+            ];
             break;
 
         default:
@@ -68,10 +74,10 @@ export async function iconAssign(importFlags: Shadowrun.ImportFlagData, system: 
         for (const imgExtension of imgExtensionOptions) {
             const withExtension = iconFileName + imgExtension;
             if (iconList.includes(withExtension)) {
-                return withExtension
+                return withExtension;
             }
         }
     }
 
-    return defaultImg
+    return defaultImg;
 }

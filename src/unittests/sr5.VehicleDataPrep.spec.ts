@@ -12,16 +12,16 @@ export const shadowrunSR5VehicleDataPrep = (context: QuenchBatchContext) => {
     before(async () => {
         testActor = new SR5TestingDocuments(SR5Actor);
         testItem = new SR5TestingDocuments(SR5Item);
-    })
+    });
 
     after(async () => {
         await testActor.teardown();
         await testItem.teardown();
-    })
-    
+    });
+
     describe('VehicleDataPrep', () => {
         it('Matrix condition monitor track calculation with modifiers', async () => {
-            const actor = await testActor.create({ type: 'vehicle' }) as SR5Actor;
+            const actor = (await testActor.create({ type: 'vehicle' })) as SR5Actor;
 
             let vehicle = actor.asVehicle() as Shadowrun.VehicleActorData;
             assert.equal(vehicle.system.matrix.condition_monitor.max, 8);
@@ -31,11 +31,14 @@ export const shadowrunSR5VehicleDataPrep = (context: QuenchBatchContext) => {
             assert.equal(vehicle.system.matrix.condition_monitor.max, 9);
 
             console.log('visibility checks');
-
         });
 
         it('visibility checks', () => {
-            let actor = new SR5Actor({ name: 'Testing', type: 'vehicle', system: { attributes: { body: { base: 5 } } } });
+            let actor = new SR5Actor({
+                name: 'Testing',
+                type: 'vehicle',
+                system: { attributes: { body: { base: 5 } } },
+            });
             assert.strictEqual(actor.system.visibilityChecks.astral.hasAura, false);
             assert.strictEqual(actor.system.visibilityChecks.astral.astralActive, false);
             assert.strictEqual(actor.system.visibilityChecks.astral.affectedBySpell, false);
@@ -45,7 +48,11 @@ export const shadowrunSR5VehicleDataPrep = (context: QuenchBatchContext) => {
         });
 
         it('Recoil compensation', () => {
-            let actor = new SR5Actor({ name: 'Testing', type: 'vehicle', system: { attributes: { body: { base: 5 } } } });
+            let actor = new SR5Actor({
+                name: 'Testing',
+                type: 'vehicle',
+                system: { attributes: { body: { base: 5 } } },
+            });
             let vehicle = actor.asVehicle();
             if (!vehicle) return assert.fail();
 
@@ -55,10 +62,11 @@ export const shadowrunSR5VehicleDataPrep = (context: QuenchBatchContext) => {
         it('Attributes based on pilot', async () => {
             // Create temporary actor
             const actor = await testActor.create({
-                type: 'vehicle', system: {
+                type: 'vehicle',
+                system: {
                     vehicle_stats: { pilot: { base: 3 } },
-                    attributes: { body: { base: 5 } }
-                }
+                    attributes: { body: { base: 5 } },
+                },
             });
             const vehicle = actor.asVehicle();
 
@@ -76,7 +84,6 @@ export const shadowrunSR5VehicleDataPrep = (context: QuenchBatchContext) => {
 
             // Strength should be body (when using a drone arm, Rigger50#125), we default to that...
             assert.strictEqual(vehicle?.system.attributes.strength.value, 5);
-
         });
     });
 };

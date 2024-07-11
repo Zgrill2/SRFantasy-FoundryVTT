@@ -1,5 +1,5 @@
 import { VersionMigration } from './VersionMigration';
-import {Version0_8_0} from "./versions/Version0_8_0";
+import { Version0_8_0 } from './versions/Version0_8_0';
 import { Version0_18_0 } from './versions/Version0_18_0';
 import { Version0_16_0 } from './versions/Version0_16_0';
 
@@ -12,23 +12,29 @@ export class Migrator {
     private static readonly s_Versions: VersionDefinition[] = [
         { versionNumber: Version0_8_0.TargetVersion, migration: new Version0_8_0() },
         { versionNumber: Version0_18_0.TargetVersion, migration: new Version0_18_0() },
-        { versionNumber: Version0_16_0.TargetVersion, migration: new Version0_16_0() }
+        { versionNumber: Version0_16_0.TargetVersion, migration: new Version0_16_0() },
     ];
 
     /**
      * Check if the current world is empty of any migrate documents.
-     * 
+     *
      */
     public static get isEmptyWorld(): boolean {
-        return game.actors?.contents.length === 0 &&
+        return (
+            game.actors?.contents.length === 0 &&
             game.items?.contents.length === 0 &&
             game.scenes?.contents.length === 0 &&
             Migrator.onlySystemPacks
+        );
     }
 
     public static get onlySystemPacks(): boolean {
         //@ts-expect-error // TODO: foundry-vtt-types v10
-        return game.packs.contents.filter(pack => pack.metadata.packageType !== 'system' && pack.metadata.packageName !== 'shadowrun5e').length === 0;
+        return (
+            game.packs.contents.filter(
+                (pack) => pack.metadata.packageType !== 'system' && pack.metadata.packageName !== 'shadowrun5e',
+            ).length === 0
+        );
     }
 
     public static async InitWorldForMigration() {
@@ -38,7 +44,10 @@ export class Migrator {
     }
 
     public static async BeginMigration() {
-        let currentVersion = game.settings.get(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION) as string;
+        let currentVersion = game.settings.get(
+            VersionMigration.MODULE_NAME,
+            VersionMigration.KEY_DATA_VERSION,
+        ) as string;
         if (currentVersion === undefined || currentVersion === null) {
             currentVersion = VersionMigration.NO_VERSION;
         }
@@ -83,9 +92,9 @@ export class Migrator {
         migrations.sort((a, b) => {
             return this.compareVersion(a.versionNumber, b.versionNumber);
         });
-        
+
         // Before starting, configure each migration
-        for (const {migration} of migrations) {
+        for (const { migration } of migrations) {
             // Show a configuration or information dialog and abort if necessary.
             const consent = await migration.AskForUserConsentAndConfiguration();
             if (!consent) return;
@@ -137,7 +146,9 @@ export class Migrator {
     private static async migrateCompendium(game: Game, migrations: VersionDefinition[]) {
         // Migrate World Compendium Packs
         // @ts-expect-error // v11 onwards uses packageType
-        const packs = game.packs?.filter((pack) => pack.metadata.packageType === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.type));
+        const packs = game.packs?.filter(
+            (pack) => pack.metadata.packageType === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.type),
+        );
 
         if (!packs) return;
 

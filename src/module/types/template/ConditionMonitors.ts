@@ -6,8 +6,8 @@ declare namespace Shadowrun {
     };
 
     export type MatrixTracks = {
-        matrix: MatrickTrack
-    }
+        matrix: MatrickTrack;
+    };
 
     /**
      * Individual tracks with additional fields depending on track use case and rules
@@ -19,11 +19,7 @@ declare namespace Shadowrun {
     /**
      * These kinds of tracks are the basis for all other tracks.
      */
-    export type TrackType = 
-        ValueMaxPair<number> &
-        LabelField &
-        DisableField &
-        ModifiableValue
+    export type TrackType = ValueMaxPair<number> & LabelField & DisableField & ModifiableValue;
     /**
      * A basic track including overflow handling.
      */
@@ -41,8 +37,8 @@ declare namespace Shadowrun {
      */
     export type Living = {
         // Amount of wounds for this track, will be used to calculate wound modifier.
-        wounds: number
+        wounds: number;
         // Pain tolerance for this track, will be used to calculate ignored damage for wound modifier.
-        pain_tolerance: number
-    }
+        pain_tolerance: number;
+    };
 }

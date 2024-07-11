@@ -1,11 +1,10 @@
 import DamageData = Shadowrun.DamageData;
-import {DataDefaults} from "../data/DataDefaults";
+import { DataDefaults } from '../data/DataDefaults';
 import DamageType = Shadowrun.DamageType;
-import {Helpers} from "../helpers";
-import {PartsList} from "../parts/PartsList";
+import { Helpers } from '../helpers';
+import { PartsList } from '../parts/PartsList';
 
 export const FadeRules = {
-
     /**
      * Calculate fade damage according to SR5#251 section Fading
      *
@@ -19,7 +18,7 @@ export const FadeRules = {
 
         const damage = DataDefaults.damageData();
         damage.base = fade;
-        Helpers.calcTotal(damage, {min: 0});
+        Helpers.calcTotal(damage, { min: 0 });
 
         damage.type.base = damage.type.value = FadeRules.calcFadeDamageType(hits, resonance);
 
@@ -31,7 +30,7 @@ export const FadeRules = {
      * @param hits Threading test hits
      * @param resonance attribute rating
      */
-    calcFadeDamageType: function(hits: number, resonance: number): DamageType {
+    calcFadeDamageType: function (hits: number, resonance: number): DamageType {
         if (hits < 0) hits = 0;
         if (resonance < 0) resonance = 1;
         return hits > resonance ? 'physical' : 'stun';
@@ -40,14 +39,14 @@ export const FadeRules = {
     /**
      * Modify fade damage after a fade resist test according to SR5#251 section Fading
      */
-    modifyFadeDamage: function(fadeDamage: DamageData, hits: number) {
+    modifyFadeDamage: function (fadeDamage: DamageData, hits: number) {
         if (hits < 0) hits = 0;
 
         fadeDamage = foundry.utils.duplicate(fadeDamage);
 
         PartsList.AddUniquePart(fadeDamage.mod, 'SR5.Hits', -hits);
-        Helpers.calcTotal(fadeDamage, {min: 0});
+        Helpers.calcTotal(fadeDamage, { min: 0 });
 
         return fadeDamage;
-    }
-}
+    },
+};

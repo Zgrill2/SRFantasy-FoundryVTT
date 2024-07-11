@@ -1,23 +1,22 @@
-import { SR5Actor } from "../actor/SR5Actor";
-import { SR5 } from "../config";
-import { PartsList } from "../parts/PartsList";
-import { CompileSpriteTest } from "./CompileSpriteTest";
-import { OpposedTest, OpposedTestData } from "./OpposedTest";
-import { TestDocuments, TestOptions } from "./SuccessTest";
+import { SR5Actor } from '../actor/SR5Actor';
+import { SR5 } from '../config';
+import { PartsList } from '../parts/PartsList';
+import { CompileSpriteTest } from './CompileSpriteTest';
+import { OpposedTest, OpposedTestData } from './OpposedTest';
+import { TestDocuments, TestOptions } from './SuccessTest';
 import { Translation } from '../utils/strings';
 
-
 interface OpposedCompileSpriteTestData extends OpposedTestData {
-    compiledSpriteUuid: string
+    compiledSpriteUuid: string;
 }
 
 /**
  * Handle the flow of opposing a compilation test by the compiled sprite.
- * 
+ *
  * The technomancer is the active actor and the sprite the opposed actor.
  */
 export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTestData> {
-    public override against: CompileSpriteTest
+    public override against: CompileSpriteTest;
 
     constructor(data, documents?: TestDocuments, options?: TestOptions) {
         // Due to compilation, the active actor for this test will be created during execution.
@@ -31,7 +30,10 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
     }
 
     _assertCorrectAgainst() {
-        if (this.against.type !== 'CompileSpriteTest') throw new Error(`${this.constructor.name} can only oppose CompileSpriteTest but is opposing a ${this.against.type}`);
+        if (this.against.type !== 'CompileSpriteTest')
+            throw new Error(
+                `${this.constructor.name} can only oppose CompileSpriteTest but is opposing a ${this.against.type}`,
+            );
     }
 
     override _prepareData(data: any, options?: any) {
@@ -43,7 +45,7 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
     }
 
     override get _chatMessageTemplate(): string {
-        return 'systems/shadowrun5e/dist/templates/rolls/opposed-actor-creator-message.html'
+        return 'systems/shadowrun5e/dist/templates/rolls/opposed-actor-creator-message.html';
     }
 
     /**
@@ -99,7 +101,7 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
 
     /**
      * Cleanup created actors that aren't needed anymore.
-     * 
+     *
      * When user cancels the dialog, the sprite has been created. Remove it.
      */
     override async cleanupAfterExecutionCancel() {
@@ -108,7 +110,6 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
         await actor?.delete();
         delete this.actor;
     }
-
 
     /**
      * Update the triggering test to be ready for the followup fade test.
@@ -121,7 +122,7 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
 
     /**
      * Finalize the existing sprite actor with context around it's summoning.
-     * 
+     *
      * This should be called as the last step in summoning.
      */
     async finalizeSummonedSprite() {
@@ -131,8 +132,8 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
 
         const updateData = {
             // 'system.services': this.deriveSpriteServices(),
-            'system.technomancerUuid': technomancer.uuid
-        }
+            'system.technomancerUuid': technomancer.uuid,
+        };
 
         this._addOwnershipToUpdateData(updateData);
 
@@ -141,26 +142,26 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
 
     /**
      * Give all users with the summoning actor permissions of the created sprite actor.
-     * 
+     *
      * TODO: Doesn't adhere to naive DRY with OpposedSummonSpiritTest.
-     * 
-     * @param updateData The update data to add the permission to, that's applied to the sprite actor. 
+     *
+     * @param updateData The update data to add the permission to, that's applied to the sprite actor.
      */
     _addOwnershipToUpdateData(updateData: object) {
         const summoner = this.against.actor as Actor;
 
         // Set permissions for all users using the summoner as main character.
-        const users = game.users?.filter(user => user.character?.uuid === summoner.uuid);
+        const users = game.users?.filter((user) => user.character?.uuid === summoner.uuid);
         if (!users) return;
 
         const ownership = {};
-        users.forEach(user => {
+        users.forEach((user) => {
             if (user.isGM) return;
             // #TODO: Add a setting to define that this should be done and what permission it should be done with.
             //@ts-expect-error v10
             ownership[user.id] = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
-        })
-        updateData['ownership'] = ownership
+        });
+        updateData['ownership'] = ownership;
     }
 
     /**
@@ -178,7 +179,6 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
             if (!preparedActor) return console.error('Shadowrun 5e | Could not find prepared actor');
             await preparedActor.addTechnomancer(technomancer);
             console.error('Add compiler/mancer? reference to sprite');
-
         } else {
             // Create a new sprite actor from scratch...
             const spriteType = this.against.data.spriteTypeSelected;
@@ -197,10 +197,10 @@ export class OpposedCompileSpriteTest extends OpposedTest<OpposedCompileSpriteTe
 
     /**
      * Try getting a prepared sprite actor to reuse.
-     * 
-     * @returns 
+     *
+     * @returns
      */
     async getPreparedSpriteActor(): Promise<SR5Actor | null> {
-        return await fromUuid(this.data.compiledSpriteUuid as string) as SR5Actor;
+        return (await fromUuid(this.data.compiledSpriteUuid as string)) as SR5Actor;
     }
 }

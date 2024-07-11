@@ -1,6 +1,6 @@
 import { Helpers } from '../../../helpers';
 import { PartsList } from '../../../parts/PartsList';
-import {SR5} from "../../../config";
+import { SR5 } from '../../../config';
 import ActorTypesData = Shadowrun.ShadowrunActorDataData;
 
 export class SkillsPrep {
@@ -47,7 +47,9 @@ export class SkillsPrep {
 
         const entries = Object.entries(system.skills.language.value);
         // remove entries which are deleted TODO figure out how to delete these from the data
-        entries.forEach(([key, val]: [string, { _delete?: boolean }]) => val._delete && delete system.skills.language.value[key]);
+        entries.forEach(
+            ([key, val]: [string, { _delete?: boolean }]) => val._delete && delete system.skills.language.value[key],
+        );
 
         for (let skill of Object.values(language.value)) {
             prepareSkill(skill);
@@ -56,12 +58,11 @@ export class SkillsPrep {
 
         // setup knowledge skills
         for (let [, group] of Object.entries(knowledge)) {
-
-            if(!group?.value) {
+            if (!group?.value) {
                 continue;
             }
-            
-            const entries = Object.entries(group.value);    
+
+            const entries = Object.entries(group.value);
             // remove entries which are deleted TODO figure out how to delete these from the data
             group.value = entries
                 .filter(([, val]) => !val._delete)
@@ -91,18 +92,18 @@ export class SkillsPrep {
 export const _mergeWithMissingSkillFields = (givenSkill) => {
     // Only the absolute most necessary fields, not datatype complete to SkillField
     const template = {
-        name: "",
-        base: "",
+        name: '',
+        base: '',
         value: 0,
-        attribute: "",
+        attribute: '',
         mod: [],
         specs: [],
-        hidden: false
+        hidden: false,
     };
 
     // Use mergeObject to reserve original object instance in case replacing it
     // causes problems down the line with active skills taken from a preexisting
     // data structure.
     // overwrite false to prohibit existing values to be overwritten with empty values.
-    foundry.utils.mergeObject(givenSkill, template, {overwrite: false});
-}
+    foundry.utils.mergeObject(givenSkill, template, { overwrite: false });
+};

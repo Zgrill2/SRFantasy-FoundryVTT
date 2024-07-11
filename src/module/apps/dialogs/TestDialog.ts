@@ -1,36 +1,36 @@
-import {FormDialog, FormDialogData, FormDialogOptions} from "./FormDialog";
-import {SuccessTest} from "../../tests/SuccessTest";
+import { FormDialog, FormDialogData, FormDialogOptions } from './FormDialog';
+import { SuccessTest } from '../../tests/SuccessTest';
 import { SuccessTestData } from '../../tests/SuccessTest';
-import {SR5} from "../../config";
-import {Helpers} from "../../helpers";
+import { SR5 } from '../../config';
+import { Helpers } from '../../helpers';
 import { Translation } from '../../utils/strings';
 
 export interface TestDialogData extends FormDialogData {
-    test: SuccessTest
-    rollMode: string
-    rollModes: CONFIG.Dice.RollModes
-    config: typeof SR5
+    test: SuccessTest;
+    rollMode: string;
+    rollModes: CONFIG.Dice.RollModes;
+    config: typeof SR5;
 }
 
 /**
  * A way of allowing tests to inject handlers without having to sub-class the whole dialog
  */
 export interface TestDialogListener {
-    query: string
-    on: string
-    callback: (event: JQuery<HTMLElement>, dialog: TestDialog) => void
+    query: string;
+    on: string;
+    callback: (event: JQuery<HTMLElement>, dialog: TestDialog) => void;
 }
 
 /**
  * TODO: Add TestDialog JSDoc
  */
 export class TestDialog extends FormDialog {
-    override data: TestDialogData
+    override data: TestDialogData;
     // Listeners as given by the dialogs creator.
-    listeners: TestDialogListener[]
+    listeners: TestDialogListener[];
 
     // @ts-expect-error // TODO: default option value with all the values...
-    constructor(data, options: FormDialogOptions = {}, listeners: TestDialogListener[]=[]) {
+    constructor(data, options: FormDialogOptions = {}, listeners: TestDialogListener[] = []) {
         // Allow for Sheet style form submit value handling.
         options.applyFormChangesOnSubmit = true;
         super(data, options);
@@ -54,7 +54,7 @@ export class TestDialog extends FormDialog {
         super.activateListeners(html);
 
         // Handle in-dialog entity links to render the respective sheets.
-        html.find('.entity-link').on('click', Helpers.renderEntityLinkSheet)
+        html.find('.entity-link').on('click', Helpers.renderEntityLinkSheet);
 
         this._injectExternalActiveListeners(html);
     }
@@ -65,7 +65,9 @@ export class TestDialog extends FormDialog {
     _injectExternalActiveListeners(html: JQuery) {
         for (const listener of this.listeners) {
             //@ts-expect-error
-            html.find(listener.query).on(listener.on, (event: JQuery<HTMLElement>) => listener.callback.bind(this.data.test)(event, this));
+            html.find(listener.query).on(listener.on, (event: JQuery<HTMLElement>) =>
+                listener.callback.bind(this.data.test)(event, this),
+            );
         }
     }
 
@@ -108,11 +110,11 @@ export class TestDialog extends FormDialog {
         return {
             roll: {
                 label: game.i18n.localize('SR5.Roll'),
-                icon: '<i class="fas fa-dice-six"></i>'
+                icon: '<i class="fas fa-dice-six"></i>',
             },
             cancel: {
-                label: game.i18n.localize('SR5.Dialogs.Common.Cancel')
-            }
+                label: game.i18n.localize('SR5.Dialogs.Common.Cancel'),
+            },
         };
     }
 
@@ -141,15 +143,13 @@ export class TestDialog extends FormDialog {
             if (foundry.utils.getType(valueField) !== 'Object' || !valueField.hasOwnProperty('mod')) return;
 
             // Remove from further automatic data merging.
-            delete data[key]
+            delete data[key];
 
             // Don't apply an unneeded override.
             if (valueField.value === value) return;
 
-            if (value === null || value === '')
-                delete valueField.override
-            else
-                valueField.override = {name: 'SR5.ManualOverride', value: Number(value)};
+            if (value === null || value === '') delete valueField.override;
+            else valueField.override = { name: 'SR5.ManualOverride', value: Number(value) };
         });
 
         // Second, apply generic values.

@@ -1,4 +1,4 @@
-import {SR} from "../constants";
+import { SR } from '../constants';
 
 export class MatrixRules {
     /**
@@ -12,7 +12,7 @@ export class MatrixRules {
      */
     static getConditionMonitor(deviceRating: number): number {
         deviceRating = Math.max(deviceRating, SR.attributes.ranges.host_rating.min);
-        return Math.ceil(8 + (deviceRating / 2));
+        return Math.ceil(8 + deviceRating / 2);
     }
 
     /**
@@ -75,6 +75,6 @@ export class MatrixRules {
      * @param hostRating
      */
     static hostMatrixAttributeRatings(hostRating): number[] {
-        return [0, 1, 2, 3].map(rating => rating + hostRating);
+        return [0, 1, 2, 3].map((rating) => rating + hostRating);
     }
 }

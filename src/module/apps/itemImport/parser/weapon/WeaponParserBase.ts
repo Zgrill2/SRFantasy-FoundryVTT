@@ -87,11 +87,11 @@ export class WeaponParserBase extends TechnologyItemParserBase<WeaponItemData> {
         let damageBase: number = 0;
         let damageElement: DamageElement = '';
 
-        if(simpleDamage !== null) {
+        if (simpleDamage !== null) {
             damageAttribute = '';
             damageBase = parseInt(simpleDamage[1], 10);
             damageType = this.parseDamageType(simpleDamage[2]);
-            damageElement = this.parseDamageElement(simpleDamage[3])
+            damageElement = this.parseDamageElement(simpleDamage[3]);
         } else if (strengthDamage !== null) {
             damageAttribute = 'strength';
             damageBase = parseInt(strengthDamage[1], 10) || 0;
@@ -117,13 +117,13 @@ export class WeaponParserBase extends TechnologyItemParserBase<WeaponItemData> {
             element: {
                 base: damageElement,
                 value: damageElement,
-            }
-        }
+            },
+        };
         return DataDefaults.damageData(partialDamageData);
     }
 
     protected parseDamageType(parsedType: string | undefined): DamageType {
-        switch(parsedType) {
+        switch (parsedType) {
             case 'S':
                 return 'stun';
             case 'M':
@@ -136,7 +136,7 @@ export class WeaponParserBase extends TechnologyItemParserBase<WeaponItemData> {
     }
 
     protected parseDamageElement(parsedElement: string | undefined): DamageElement {
-        switch(parsedElement?.toLowerCase()) {
+        switch (parsedElement?.toLowerCase()) {
             case '(e)':
                 return 'electricity';
             case '(fire)':
@@ -146,9 +146,10 @@ export class WeaponParserBase extends TechnologyItemParserBase<WeaponItemData> {
         }
     }
 
-    protected GetRangeDataFromImportedCategory(category: string): RangeData|undefined {
-        const systemRangeCategory: Exclude<keyof typeof SR5.weaponRangeCategories, "manual"> | undefined = Constants.MAP_IMPORT_RANGE_CATEGORY_TO_SYSTEM_RANGE_CATEGORY[category];
-        if(systemRangeCategory === undefined) {
+    protected GetRangeDataFromImportedCategory(category: string): RangeData | undefined {
+        const systemRangeCategory: Exclude<keyof typeof SR5.weaponRangeCategories, 'manual'> | undefined =
+            Constants.MAP_IMPORT_RANGE_CATEGORY_TO_SYSTEM_RANGE_CATEGORY[category];
+        if (systemRangeCategory === undefined) {
             return undefined;
         }
         return {

@@ -1,34 +1,36 @@
-import {PartsList} from "../parts/PartsList";
-import {CombatRules} from "../rules/CombatRules";
-import {MeleeRules} from "../rules/MeleeRules";
-import {MeleeAttackData} from "./MeleeAttackTest";
-import {TestCreator} from "./TestCreator";
-import {DefenseTest, DefenseTestData} from "./DefenseTest";
-import { SR5Combat } from "../combat/SR5Combat";
+import { PartsList } from '../parts/PartsList';
+import { CombatRules } from '../rules/CombatRules';
+import { MeleeRules } from '../rules/MeleeRules';
+import { MeleeAttackData } from './MeleeAttackTest';
+import { TestCreator } from './TestCreator';
+import { DefenseTest, DefenseTestData } from './DefenseTest';
+import { SR5Combat } from '../combat/SR5Combat';
 import MinimalActionData = Shadowrun.MinimalActionData;
 import ModifierTypes = Shadowrun.ModifierTypes;
-import { FLAGS, SYSTEM_NAME } from "../constants";
+import { FLAGS, SYSTEM_NAME } from '../constants';
 import { Translation } from '../utils/strings';
-import { ActiveDefenseRules } from "../rules/ActiveDefenseRules";
+import { ActiveDefenseRules } from '../rules/ActiveDefenseRules';
 
 export interface PhysicalDefenseTestData extends DefenseTestData {
     // Dialog input for cover modifier
-    cover: number
+    cover: number;
     // Dialog input for active defense modifier
-    activeDefense: string
-    activeDefenses: Record<string, { label: Translation, value: number|undefined, initMod: number, weapon?: string, disabled?: boolean }>
+    activeDefense: string;
+    activeDefenses: Record<
+        string,
+        { label: Translation; value: number | undefined; initMod: number; weapon?: string; disabled?: boolean }
+    >;
     // Melee weapon reach modification.
-    isMeleeAttack: boolean
-    defenseReach: number
+    isMeleeAttack: boolean;
+    defenseReach: number;
 }
 
 export type PhysicalDefenseNoDamageCondition = {
-    test: () => boolean,
-    label: Translation,
-}
+    test: () => boolean;
+    label: Translation;
+};
 
 export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDefenseTestData> extends DefenseTest<T> {
-
     override _prepareData(data, options?): any {
         data = super._prepareData(data, options);
 
@@ -47,13 +49,13 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
-            'attribute': 'reaction',
-            'attribute2': 'intuition'
+            attribute: 'reaction',
+            attribute2: 'intuition',
         };
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['defense']
+        return ['defense'];
     }
 
     override get testModifiers(): ModifierTypes[] {
@@ -75,7 +77,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
         const weapon = this.against.item;
         if (weapon === undefined) return;
-        
+
         this.data.activeDefenses = ActiveDefenseRules.availableActiveDefenses(weapon, actor);
 
         // Filter available active defenses by available ini score.
@@ -94,7 +96,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         // TODO: This is a legacy selection approach as there wasn't a way to access to used item in the original attack test.
         //       Instead this might be replaced with a direct reference with this.against.item.system.defenseReach?
         const equippedMeleeWeapons = this.actor.getEquippedWeapons().filter((weapon) => weapon.isMeleeWeapon);
-        equippedMeleeWeapons.forEach(weapon => {
+        equippedMeleeWeapons.forEach((weapon) => {
             this.data.defenseReach = Math.max(this.data.defenseReach, weapon.getReach());
         });
 
@@ -119,16 +121,19 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
     applyPoolCoverModifier() {
         // Cast dialog selection to number, when necessary.
-        this.data.cover = foundry.utils.getType(this.data.cover) === 'string' ?
-            Number(this.data.cover) :
-            this.data.cover;
+        this.data.cover =
+            foundry.utils.getType(this.data.cover) === 'string' ? Number(this.data.cover) : this.data.cover;
 
         // Apply zero modifier also, to sync pool.mod and modifiers.mod
         PartsList.AddUniquePart(this.data.modifiers.mod, 'SR5.Cover', this.data.cover);
     }
 
     applyPoolActiveDefenseModifier() {
-        const defense = this.data.activeDefenses[this.data.activeDefense] || {label: 'SR5.ActiveDefense', value: 0, init: 0};
+        const defense = this.data.activeDefenses[this.data.activeDefense] || {
+            label: 'SR5.ActiveDefense',
+            value: 0,
+            init: 0,
+        };
 
         // Apply zero modifier also, to sync pool.mod and modifiers.mod
         PartsList.AddUniquePart(this.data.modifiers.mod, 'SR5.ActiveDefense', defense.value);
@@ -162,24 +167,39 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         return CombatRules.attackHits(this.against.hits.value, this.hits.value);
     }
 
-
     // Order is important in this array to determine which label is shown, determined by the first test whose function returns a truthy value
     private noDamageConditions: PhysicalDefenseNoDamageCondition[] = [
         {
-            test: () => this.actor !== undefined && CombatRules.doesNoPhysicalDamageToVehicle(this.data.incomingDamage, this.actor),
-            label: "SR5.TestResults.AttackDoesNoPhysicalDamageToVehicle",
+            test: () =>
+                this.actor !== undefined &&
+                CombatRules.doesNoPhysicalDamageToVehicle(this.data.incomingDamage, this.actor),
+            label: 'SR5.TestResults.AttackDoesNoPhysicalDamageToVehicle',
         },
         {
-            test: () => this.actor !== undefined && CombatRules.isBlockedByVehicleArmor(this.data.incomingDamage, this.against.hits.value, this.hits.value, this.actor),
-            label: "SR5.TestResults.AttackBlockedByVehicleArmor",
+            test: () =>
+                this.actor !== undefined &&
+                CombatRules.isBlockedByVehicleArmor(
+                    this.data.incomingDamage,
+                    this.against.hits.value,
+                    this.hits.value,
+                    this.actor,
+                ),
+            label: 'SR5.TestResults.AttackBlockedByVehicleArmor',
         },
         {
-            test: () => this.actor !== undefined && CombatRules.isBlockedByHardenedArmor(this.data.incomingDamage, this.against.hits.value, this.hits.value, this.actor),
-            label: "SR5.TestResults.AttackBlockedByHardenedArmor",
-        }
+            test: () =>
+                this.actor !== undefined &&
+                CombatRules.isBlockedByHardenedArmor(
+                    this.data.incomingDamage,
+                    this.against.hits.value,
+                    this.hits.value,
+                    this.actor,
+                ),
+            label: 'SR5.TestResults.AttackBlockedByHardenedArmor',
+        },
     ];
 
-    private getNoDamageCondition(): PhysicalDefenseNoDamageCondition|undefined {
+    private getNoDamageCondition(): PhysicalDefenseNoDamageCondition | undefined {
         return this.noDamageConditions.find(({ test }) => test());
     }
 
@@ -202,10 +222,15 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
     override async processFailure() {
         if (!this.actor) return;
 
-        if(this.getNoDamageCondition()) {
+        if (this.getNoDamageCondition()) {
             this.data.modifiedDamage = CombatRules.modifyDamageAfterMiss(this.data.incomingDamage, true);
         } else {
-            this.data.modifiedDamage = CombatRules.modifyDamageAfterHit(this.actor, this.against.hits.value, this.hits.value, this.data.incomingDamage);
+            this.data.modifiedDamage = CombatRules.modifyDamageAfterHit(
+                this.actor,
+                this.against.hits.value,
+                this.hits.value,
+                this.data.incomingDamage,
+            );
         }
 
         await super.processFailure();
@@ -215,7 +240,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         await super.afterFailure();
 
         // If attack hits but does no damage, don't perform the follow-up physical resist test
-        if(this.getNoDamageCondition()) {
+        if (this.getNoDamageCondition()) {
             return;
         }
 
@@ -230,9 +255,9 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
             const combat: SR5Combat = game.combat as unknown as SR5Combat;
             const combatant = combat.getActorCombatant(this.actor);
             if (!combatant || !combatant.initiative) return true;
-            
+
             if (combatant && combatant.initiative + this.data.iniMod < 0) {
-                ui.notifications?.warn('SR5.MissingRessource.Initiative', {localize: true});
+                ui.notifications?.warn('SR5.MissingRessource.Initiative', { localize: true });
                 return false;
             }
         }
@@ -266,7 +291,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         actions.push({
             action: 'modifyCombatantInit',
             label: 'SR5.Initiative',
-            value: String(activeDefense.initMod)
+            value: String(activeDefense.initMod),
         });
 
         return actions;
@@ -283,20 +308,20 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
     /**
      * Based in combatants ini score, pre-filter available active defense modes.
-     * 
+     *
      * This behaviour can be disabled using the must have ressources setting.
      */
     _filterActiveDefenses() {
         if (!this.actor) return;
-        
+
         // Don't validate ini costs when costs are to be ignored.
         const mustHaveRessouces = game.settings.get(SYSTEM_NAME, FLAGS.MustHaveRessourcesOnTest);
         if (!mustHaveRessouces) return;
 
         // TODO: Check ressource setting.
         const iniScore = this.actor.combatInitiativeScore;
-        Object.values(this.data.activeDefenses).forEach(mode => 
-            mode.disabled = CombatRules.canUseActiveDefense(iniScore, mode.initMod)
-        )
+        Object.values(this.data.activeDefenses).forEach(
+            (mode) => (mode.disabled = CombatRules.canUseActiveDefense(iniScore, mode.initMod)),
+        );
     }
 }

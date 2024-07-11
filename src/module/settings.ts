@@ -5,7 +5,6 @@ import { FLAGS, SYSTEM_NAME } from './constants';
 import { boolean } from 'fast-check';
 
 export const registerSystemSettings = () => {
-
     /**
      * Register diagonal movement rule setting
      */
@@ -25,7 +24,7 @@ export const registerSystemSettings = () => {
         onChange: (rule) => {
             // @ts-expect-error canvas grid should not be undefined here...
             // Copy DnD5e's approach to movement measurement and add a custom field to the grid to be used in canvas.ts#measureDistances
-            canvas.grid.diagonalRule = rule
+            canvas.grid.diagonalRule = rule;
         },
     });
 
@@ -71,7 +70,7 @@ export const registerSystemSettings = () => {
     });
 
     game.settings.register(SYSTEM_NAME, FLAGS.OnlyAllowRollOnDefaultableSkills, {
-         name: 'SETTINGS.OnlyAllowRollOnDefaultableSkills',
+        name: 'SETTINGS.OnlyAllowRollOnDefaultableSkills',
         hint: 'SETTINGS.OnlyAllowRollOnDefaultableSkillsDescription',
         scope: 'world',
         config: true,
@@ -89,7 +88,7 @@ export const registerSystemSettings = () => {
     });
 
     game.settings.register(SYSTEM_NAME, FLAGS.OnlyAutoRollNPCInCombat, {
-         name: 'SETTINGS.OnlyAutoRollNPCInCombat',
+        name: 'SETTINGS.OnlyAutoRollNPCInCombat',
         hint: 'SETTINGS.OnlyAutoRollNPCInCombatDescription',
         scope: 'world',
         config: true,
@@ -118,7 +117,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: false
+        default: false,
     });
 
     /**
@@ -135,7 +134,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: false
+        default: false,
     });
 
     game.settings.register(SYSTEM_NAME, FLAGS.UseDamageCondition, {
@@ -159,7 +158,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: true
+        default: true,
     });
 
     /**
@@ -173,7 +172,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: true
+        default: true,
     });
 
     /**
@@ -185,7 +184,7 @@ export const registerSystemSettings = () => {
         scope: 'client',
         config: true,
         type: Boolean,
-        default: false
+        default: false,
     });
 
     /**
@@ -197,7 +196,7 @@ export const registerSystemSettings = () => {
         scope: 'client',
         config: true,
         type: Boolean,
-        default: false
+        default: false,
     });
 
     /**
@@ -212,11 +211,11 @@ export const registerSystemSettings = () => {
         default: 'BOTH',
         // @ts-expect-error TODO: foundry-vtt-types v10
         choices: {
-            'BOTH': 'SETTINGS.FreshColorAndIcon',
-            'COLOR': 'SETTINGS.FreshColor',
-            'ICON': 'SETTINGS.FreshIcon',
-            'NONE': 'SETTINGS.NoMarking'
-        }
+            BOTH: 'SETTINGS.FreshColorAndIcon',
+            COLOR: 'SETTINGS.FreshColor',
+            ICON: 'SETTINGS.FreshIcon',
+            NONE: 'SETTINGS.NoMarking',
+        },
     });
 
     /**
@@ -228,7 +227,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: String,
-        default: 'systems/shadowrun5e/dist/icons/importer/'
+        default: 'systems/shadowrun5e/dist/icons/importer/',
     });
 
     /**
@@ -240,6 +239,6 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: true
+        default: true,
     });
 };

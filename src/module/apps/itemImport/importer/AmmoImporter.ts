@@ -38,17 +38,26 @@ export class AmmoImporter extends DataImporter<Shadowrun.AmmoItemData, Shadowrun
             }
 
             // Create the item
-            let item = this.GetDefaultData({type: parserType});
+            let item = this.GetDefaultData({ type: parserType });
             item.name = ImportHelper.StringValue(jsonData, 'name');
 
             // Import Flags
-            item.system.importFlags = this.genImportFlags(item.name, item.type, this.formatAsSlug(item.name.split(':')[0]));
+            item.system.importFlags = this.genImportFlags(
+                item.name,
+                item.type,
+                this.formatAsSlug(item.name.split(':')[0]),
+            );
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Parse the item information from the xml
-            item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(jsonData, 'page')}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                jsonData,
+                'source',
+            )} ${ImportHelper.StringValue(jsonData, 'page')}`;
             item.system.technology.rating = 2;
             item.system.technology.availability = ImportHelper.StringValue(jsonData, 'avail');
             item.system.technology.cost = ImportHelper.IntValue(jsonData, 'cost', 0);
@@ -84,10 +93,10 @@ export class AmmoImporter extends DataImporter<Shadowrun.AmmoItemData, Shadowrun
                     return item.type === 'weapon' && item.name.toLowerCase() === nameLower;
                 });
 
-                if (foundWeapon != null && "action" in foundWeapon.system) {
+                if (foundWeapon != null && 'action' in foundWeapon.system) {
                     const weaponData = foundWeapon.system as Shadowrun.WeaponData;
                     item.system.damage = weaponData.action.damage.value;
-                    item.system.ap =weaponData.action.damage.ap.value;
+                    item.system.ap = weaponData.action.damage.ap.value;
                 }
             }
 
@@ -113,12 +122,15 @@ export class AmmoImporter extends DataImporter<Shadowrun.AmmoItemData, Shadowrun
                 folderName = splitName[0].trim();
             }
 
-            let folder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/Ammo/${folderName}`, true);
+            let folder = await ImportHelper.GetFolderAtPath(
+                `${Constants.ROOT_IMPORT_FOLDER_NAME}/Ammo/${folderName}`,
+                true,
+            );
             // @ts-expect-error TODO: Foundry Where is my foundry base data?
             ammo.folder = folder.id;
         }
 
         // @ts-expect-error
-        return await Item.create(ammoDatas) as Item;
+        return (await Item.create(ammoDatas)) as Item;
     }
 }

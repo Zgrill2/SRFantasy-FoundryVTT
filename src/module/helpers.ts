@@ -10,21 +10,21 @@ import DamageType = Shadowrun.DamageType;
 import DamageElement = Shadowrun.DamageElement;
 import Skills = Shadowrun.Skills;
 import TargetedDocument = Shadowrun.TargetedDocument;
-import { SR5Actor } from "./actor/SR5Actor";
-import { DeleteConfirmationDialog } from "./apps/dialogs/DeleteConfirmationDialog";
-import { DEFAULT_ID_LENGTH, FLAGS, LENGTH_UNIT, LENGTH_UNIT_TO_METERS_MULTIPLIERS, SYSTEM_NAME } from "./constants";
-import { DataDefaults } from "./data/DataDefaults";
+import { SR5Actor } from './actor/SR5Actor';
+import { DeleteConfirmationDialog } from './apps/dialogs/DeleteConfirmationDialog';
+import { DEFAULT_ID_LENGTH, FLAGS, LENGTH_UNIT, LENGTH_UNIT_TO_METERS_MULTIPLIERS, SYSTEM_NAME } from './constants';
+import { DataDefaults } from './data/DataDefaults';
 import { SR5Item } from './item/SR5Item';
 import { PartsList } from './parts/PartsList';
-import { SuccessTestData } from "./tests/SuccessTest";
+import { SuccessTestData } from './tests/SuccessTest';
 import { Translation } from './utils/strings';
 
 interface CalcTotalOptions {
     // Min/Max value range
-    min?: number,
-    max?: number,
+    min?: number;
+    max?: number;
     // Round total to a given decimal, 0 rounds to the next integer.
-    roundDecimals?: number
+    roundDecimals?: number;
 }
 
 export class Helpers {
@@ -90,7 +90,7 @@ export class Helpers {
      * @param value Number to round with.
      * @param decimals Amount of decimals after the decimal point.
      */
-    static roundTo(value: number, decimals: number=3): number {
+    static roundTo(value: number, decimals: number = 3): number {
         const multiplier = Math.pow(10, decimals);
         return Math.round(value * multiplier) / multiplier;
     }
@@ -341,7 +341,7 @@ export class Helpers {
     static getUserTargets(user?: User | null): Token[] {
         user = user ? user : game.user;
 
-        if (!user) return []
+        if (!user) return [];
 
         return Array.from(user.targets);
     }
@@ -355,15 +355,15 @@ export class Helpers {
     }
 
     /**
-     * Measure the distance between two tokens on the canvas in length units, 
+     * Measure the distance between two tokens on the canvas in length units,
      * factoring in both 2D distance and 3D elevation difference.
-     * 
+     *
      * Depending on the scene distance unit the result will be converted.
-     * 
+     *
      * If wall-height is installed and using tokenHeight, it will be used for elevation.
-     * 
-     * @param tokenOrigin 
-     * @param tokenDest 
+     *
+     * @param tokenOrigin
+     * @param tokenDest
      * @returns Distance in scene distance unit
      */
     static measureTokenDistance(tokenOrigin: TokenDocument, tokenDest: TokenDocument): number {
@@ -384,10 +384,10 @@ export class Helpers {
         const originLOSHeight = Helpers.getTokenLOSHeight(tokenOrigin);
         const destLOSHeight = Helpers.getTokenLOSHeight(tokenDest);
         // @ts-expect-error TODO: foundry-vtt-types v10
-        const elevationDifference = (tokenOrigin.elevation + originLOSHeight) - (tokenDest.elevation + destLOSHeight);
+        const elevationDifference = tokenOrigin.elevation + originLOSHeight - (tokenDest.elevation + destLOSHeight);
         const origin3D = new PIXI.Point(0, 0);
         const dest3D = new PIXI.Point(distanceInGridUnits2D, elevationDifference);
-        
+
         const distanceInGridUnits3D = Math.round(Helpers.measurePointDistance(origin3D, dest3D));
 
         //@ts-expect-error TODO: foundry-vtt-types v10
@@ -397,26 +397,26 @@ export class Helpers {
 
     /**
      * Measure distance between two points on a grid in length units.
-     * 
-     * @param origin 
-     * @param destination 
+     *
+     * @param origin
+     * @param destination
      * @returns Distance without a unit.
      */
     static measurePointDistance(origin: Point, destination: Point): number {
         const sideA = origin.x + destination.x;
         const sideB = origin.y + destination.y;
-        return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2))
+        return Math.sqrt(Math.pow(sideA, 2) + Math.pow(sideB, 2));
     }
 
     /**
      * Determine a tokens line of sight height.
-     * 
+     *
      * Default Foundry will use 0, while wall-height might have defined another value on the token.
-     * 
+     *
      * The auto height generation of wall-height isn't supported.
-     * 
-     * @param token 
-     * @returns 
+     *
+     * @param token
+     * @returns
      */
     static getTokenLOSHeight(token: TokenDocument): number {
         //@ts-expect-error TODO: foundry-vtt-types v10
@@ -455,10 +455,10 @@ export class Helpers {
      * @returns An array token actors.
      */
     static getControlledTokenActors(): SR5Actor[] {
-        if (!canvas || !canvas.ready) return []
+        if (!canvas || !canvas.ready) return [];
 
         const tokens = Helpers.getControlledTokens();
-        return tokens.map(token => token.actor) as SR5Actor[];
+        return tokens.map((token) => token.actor) as SR5Actor[];
     }
 
     /**
@@ -493,7 +493,7 @@ export class Helpers {
      *
      * BEWARE: A target will always be token based BUT linked actors provide an actor uuid instead of
      * pointing to their token actors.
-     * 
+     *
      * @param testData The test data containing target uuids.
      */
     static async getTestTargetActors(testData: SuccessTestData): Promise<SR5Actor[]> {
@@ -511,7 +511,10 @@ export class Helpers {
 
             // Avoid fromUuid pulling an unwanted Document type.
             if (!(actor instanceof SR5Actor)) {
-                console.error(`Shadowrun5e | testData with targets containt UUID ${uuid} which doesn't provide an actor or syntheic actor`, tokenOrActor);
+                console.error(
+                    `Shadowrun5e | testData with targets containt UUID ${uuid} which doesn't provide an actor or syntheic actor`,
+                    tokenOrActor,
+                );
                 continue;
             }
 
@@ -526,7 +529,10 @@ export class Helpers {
      * @returns A list of actors that should be used for an opposed test.
      */
     static async getOpposedTestActors(testData: SuccessTestData): Promise<SR5Actor[]> {
-        const overwriteSelectionWithTarget = game.settings.get(SYSTEM_NAME, FLAGS.DefaultOpposedTestActorSelection) as boolean;
+        const overwriteSelectionWithTarget = game.settings.get(
+            SYSTEM_NAME,
+            FLAGS.DefaultOpposedTestActorSelection,
+        ) as boolean;
 
         // Honor user preference of using test targets, if any are set.
         if (overwriteSelectionWithTarget && testData.targetActorsUuid.length > 0) {
@@ -539,7 +545,7 @@ export class Helpers {
 
     static createRangeDescription(label: Translation, distance: number, modifier: number): RangeTemplateData {
         const localizedLabel = game.i18n.localize(label);
-        return {label: localizedLabel, distance, modifier}
+        return { label: localizedLabel, distance, modifier };
     }
 
     static convertIndexedObjectToArray(indexedObject: object): object[] {
@@ -590,8 +596,14 @@ export class Helpers {
         return actor.img || '';
     }
 
-    static createDamageData(value: number, type: DamageType, ap: number = 0, element: DamageElement = '', sourceItem?: SR5Item): DamageData {
-        const damage = DataDefaults.damageData({type: {base: '', value: ''}});
+    static createDamageData(
+        value: number,
+        type: DamageType,
+        ap: number = 0,
+        element: DamageElement = '',
+        sourceItem?: SR5Item,
+    ): DamageData {
+        const damage = DataDefaults.damageData({ type: { base: '', value: '' } });
         damage.base = value;
         damage.value = value;
         damage.type.base = type;
@@ -606,7 +618,7 @@ export class Helpers {
                 actorId: sourceItem.actor.id as string,
                 itemType: sourceItem.type,
                 itemId: sourceItem.id as string,
-                itemName: sourceItem.name as string
+                itemName: sourceItem.name as string,
             };
         }
 
@@ -625,7 +637,7 @@ export class Helpers {
         }
 
         const actorId = damageData.source.actorId;
-        const actorSource = game.actors.get(actorId)
+        const actorSource = game.actors.get(actorId);
 
         if (!actorSource) {
             return;
@@ -643,7 +655,7 @@ export class Helpers {
         // item on a token without linking it.
         const tokens = actorSource.getActiveTokens();
         let tokenItem: SR5Item | undefined;
-        tokens.forEach(token => {
+        tokens.forEach((token) => {
             if (!token.actor) return;
 
             const foundItem = token.actor.items.get(itemId);
@@ -670,9 +682,9 @@ export class Helpers {
     static modifyDamageByHits(incoming: DamageData, hits: number, modificationLabel: string): ModifiedDamageData {
         const modified = foundry.utils.duplicate(incoming) as DamageData;
         modified.mod = PartsList.AddUniquePart(modified.mod, modificationLabel, hits);
-        modified.value = Helpers.calcTotal(modified, {min: 0});
+        modified.value = Helpers.calcTotal(modified, { min: 0 });
 
-        return {incoming, modified};
+        return { incoming, modified };
     }
 
     /** Reduces given damage value and returns both original and modified damage.
@@ -701,18 +713,22 @@ export class Helpers {
      * @param skillField A SkillField with whatever values. You could use DataDefaults.skillData to create one.
      * @param idLength How long should the id (GUID) be?
      */
-    static getRandomIdSkillFieldDataEntry(skillDataPath: string, skillField: SkillField, idLength: number = DEFAULT_ID_LENGTH): { id: string, updateSkillData: { [skillDataPath: string]: { [id: string]: SkillField } } } | undefined {
+    static getRandomIdSkillFieldDataEntry(
+        skillDataPath: string,
+        skillField: SkillField,
+        idLength: number = DEFAULT_ID_LENGTH,
+    ): { id: string; updateSkillData: { [skillDataPath: string]: { [id: string]: SkillField } } } | undefined {
         if (!skillDataPath || skillDataPath.length === 0) return;
 
         const id = randomID(idLength);
         const updateSkillData = {
-            [skillDataPath]: {[id]: skillField}
+            [skillDataPath]: { [id]: skillField },
         };
 
         return {
             id,
-            updateSkillData
-        }
+            updateSkillData,
+        };
     }
 
     /**
@@ -723,7 +739,7 @@ export class Helpers {
      *
      */
     static getUpdateDataEntry(path: string, value: any): { [path: string]: any } {
-        return {[path]: value};
+        return { [path]: value };
     }
 
     /**
@@ -738,7 +754,7 @@ export class Helpers {
     static getDeleteKeyUpdateData(path: string, key: string): { [path: string]: { [key: string]: null } } {
         // Entity.update utilizes the mergeObject function within Foundry.
         // That functions documentation allows property deletion using the -= prefix before property key.
-        return {[path]: {[`-=${key}`]: null}};
+        return { [path]: { [`-=${key}`]: null } };
     }
 
     static localizeSkill(skill: SkillField): string {
@@ -761,10 +777,8 @@ export class Helpers {
             const comparatorA = Helpers.localizeSkill(a) || aId;
             const comparatorB = Helpers.localizeSkill(b) || bId;
             // Use String.localeCompare instead of the > Operator to support other alphabets.
-            if (asc)
-                return comparatorA.localeCompare(comparatorB) === 1 ? 1 : -1;
-            else
-                return comparatorA.localeCompare(comparatorB) === 1 ? -1 : 1;
+            if (asc) return comparatorA.localeCompare(comparatorB) === 1 ? 1 : -1;
+            else return comparatorA.localeCompare(comparatorB) === 1 ? -1 : 1;
         });
 
         // Rebuild the Skills type using the earlier entries.
@@ -785,16 +799,17 @@ export class Helpers {
      * @param asc Set to true for ascending sorting order and to false for descending order.
      * @return Sorted config values given by the configValues parameter
      */
-    static sortConfigValuesByTranslation(configValues: Record<string, Translation>, asc: boolean = true): Record<string, string> {
+    static sortConfigValuesByTranslation(
+        configValues: Record<string, Translation>,
+        asc: boolean = true,
+    ): Record<string, string> {
         // Filter entries instead of values to have a store of ids for easy rebuild.
         const sortedEntries = Object.entries(configValues).sort(([aId, a], [bId, b]) => {
             const comparatorA = game.i18n.localize(a);
             const comparatorB = game.i18n.localize(b);
             // Use String.localeCompare instead of the > Operator to support other alphabets.
-            if (asc)
-                return comparatorA.localeCompare(comparatorB) === 1 ? 1 : -1;
-            else
-                return comparatorA.localeCompare(comparatorB) === 1 ? -1 : 1;
+            if (asc) return comparatorA.localeCompare(comparatorB) === 1 ? 1 : -1;
+            else return comparatorA.localeCompare(comparatorB) === 1 ? -1 : 1;
         });
 
         // Rebuild the skills type using the earlier entries.
@@ -812,10 +827,14 @@ export class Helpers {
      * @param permission A foundry access permission
      * @param active If true, will only return users that are also currently active.
      */
-    static getPlayersWithPermission(document: foundry.abstract.Document<any>, permission: string, active: boolean = true): User[] {
+    static getPlayersWithPermission(
+        document: foundry.abstract.Document<any>,
+        permission: string,
+        active: boolean = true,
+    ): User[] {
         if (!game.users) return [];
 
-        return game.users.filter(user => {
+        return game.users.filter((user) => {
             if (user.isGM) return false;
             // @ts-expect-error // Check for permissions. String is allowed
             if (!document.testUserPermission(user, permission)) return false;
@@ -841,20 +860,22 @@ export class Helpers {
      * Fetch entities from global or pack collections using data acquired by Foundry Drag&Drop process
      * @param data Foundry Drop Data
      */
-    static async getEntityFromDropData(data: { type: 'Actor' | 'Item', pack: string, id: string }): Promise<SR5Actor | SR5Item | undefined> {
+    static async getEntityFromDropData(data: {
+        type: 'Actor' | 'Item';
+        pack: string;
+        id: string;
+    }): Promise<SR5Actor | SR5Item | undefined> {
         if (!game.actors || !game.items) return;
 
         if (data.pack && data.type === 'Actor')
-            return await Helpers.getEntityFromCollection(data.pack, data.id) as unknown as SR5Actor;
+            return (await Helpers.getEntityFromCollection(data.pack, data.id)) as unknown as SR5Actor;
 
         if (data.pack && data.type === 'Item')
-            return await Helpers.getEntityFromCollection(data.pack, data.id) as unknown as SR5Item;
+            return (await Helpers.getEntityFromCollection(data.pack, data.id)) as unknown as SR5Item;
 
-        if (data.type === 'Actor')
-            return game.actors.get(data.id);
+        if (data.type === 'Actor') return game.actors.get(data.id);
 
-        if (data.type === 'Item')
-            return game.items.get(data.id);
+        if (data.type === 'Item') return game.items.get(data.id);
     }
 
     /**
@@ -927,12 +948,14 @@ export class Helpers {
 
         const scene = game.scenes.get(sceneId);
         if (!scene) return;
-        const target = scene.tokens.get(targetId) || game.items.get(targetId) as SR5Item;
+        const target = scene.tokens.get(targetId) || (game.items.get(targetId) as SR5Item);
         const item = target?.actor?.items?.get(itemId) as SR5Item; // DocumentCollection will return undefined if needed
 
         return {
-            scene, target, item
-        }
+            scene,
+            target,
+            item,
+        };
     }
 
     /**
@@ -961,16 +984,16 @@ export class Helpers {
      */
     static async getPackAction(packName, actionName): Promise<SR5Item | undefined> {
         console.debug(`Shadowrun 5e | Trying to fetch action ${actionName} from pack ${packName}`);
-        const pack = game.packs.find(pack =>
-            pack.metadata.system === SYSTEM_NAME &&
-            pack.metadata.name === packName);
+        const pack = game.packs.find((pack) => pack.metadata.system === SYSTEM_NAME && pack.metadata.name === packName);
         if (!pack) return;
 
         // TODO: Use predefined ids instead of names...
-        const packEntry = pack.index.find(data => data.name?.toLowerCase().replace(new RegExp(' ', 'g'), '_') === actionName.toLowerCase());
+        const packEntry = pack.index.find(
+            (data) => data.name?.toLowerCase().replace(new RegExp(' ', 'g'), '_') === actionName.toLowerCase(),
+        );
         if (!packEntry) return;
 
-        const item = await pack.getDocument(packEntry._id) as unknown as SR5Item;
+        const item = (await pack.getDocument(packEntry._id)) as unknown as SR5Item;
         if (!item || item.type !== 'action') return;
 
         console.debug(`Shadowrun5e | Fetched action ${actionName} from pack ${packName}`, item);
@@ -1001,22 +1024,21 @@ export class Helpers {
         if (!uuid) return;
         let document = await fromUuid(uuid);
         if (!document) return;
-        if (document instanceof TokenDocument && resolveTokenToActor && document.actor)
-            document = document.actor;
+        if (document instanceof TokenDocument && resolveTokenToActor && document.actor) document = document.actor;
         // @ts-expect-error
         await document.sheet.render(true);
     }
 
     /**
      * Sanitize keys to not use characters used within FoundryVTT Document#update and expandObject methods.
-     * 
+     *
      * @param key The key, maybe containing prohibited characters
      * @param replace The characters to replaces prohibited characters with
-     * @returns key without 
+     * @returns key without
      */
-    static sanitizeDataKey(key: string, replace: string=''): string {
+    static sanitizeDataKey(key: string, replace: string = ''): string {
         const spicyCharacters = ['.', '-='];
-        spicyCharacters.forEach(character => key = key.replace(character, replace));
+        spicyCharacters.forEach((character) => (key = key.replace(character, replace)));
         return key;
     }
 
@@ -1028,32 +1050,33 @@ export class Helpers {
      * @returns an actor
      */
     static async chooseFromAvailableActors() {
-        let availableActors =  game.actors?.filter( e => e.isOwner && e.hasPlayerOwner) ?? [];
+        let availableActors = game.actors?.filter((e) => e.isOwner && e.hasPlayerOwner) ?? [];
 
-        if(availableActors.length == 0) {
-            return
+        if (availableActors.length == 0) {
+            return;
         }
 
-        if(availableActors.length == 1) {
-            return availableActors[0]
-        }
-        else {
-            let allActors = ''
-            game.actors?.filter( e => e.isOwner && e.hasPlayerOwner).forEach(t => {
+        if (availableActors.length == 1) {
+            return availableActors[0];
+        } else {
+            let allActors = '';
+            game.actors
+                ?.filter((e) => e.isOwner && e.hasPlayerOwner)
+                .forEach((t) => {
                     allActors = allActors.concat(`
                             <option value="${t.id}">${t.name}</option>`);
                 });
-            const  dialog_content = `  
+            const dialog_content = `  
                 <select name ="actor">
                 ${allActors}
                 </select>`;
-    
-            let choosenActor = await Dialog.prompt({
+
+            let choosenActor = (await Dialog.prompt({
                 title: game.i18n.localize('SR5.Skill.Teamwork.ParticipantActor'),
                 content: dialog_content,
-                callback: (html) => html.find('select').val()
-            }) as string;
-    
+                callback: (html) => html.find('select').val(),
+            })) as string;
+
             return game.actors?.get(choosenActor) as SR5Actor;
         }
     }
@@ -1062,28 +1085,28 @@ export class Helpers {
      * A method to capitalize the first letter of a given string.
      * This allows to transform skill and attribute ids to the corresponding translation sub-keys
      * See @see getSkillTranslation @see getAttributeTranslaton
-     * @param string 
+     * @param string
      * @returns the string with a capitalized first letter
      */
     static capitalizeFirstLetter(string: string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }  
+    }
 
     /**
      * Translates a skillId
-     * @param skill 
+     * @param skill
      * @returns translation
      */
-    static getSkillTranslation(skill: string) : string {
-        return game.i18n.localize(`SR5.Skill.${this.capitalizeFirstLetter(skill)}` as Translation)
+    static getSkillTranslation(skill: string): string {
+        return game.i18n.localize(`SR5.Skill.${this.capitalizeFirstLetter(skill)}` as Translation);
     }
 
     /**
      * Translate an attribute
-     * @param attribute 
+     * @param attribute
      * @returns translation
      */
-    static getAttributeTranslation(attribute: string) : string {
-        return game.i18n.localize(`SR5.Attr${this.capitalizeFirstLetter(attribute)}` as Translation)
+    static getAttributeTranslation(attribute: string): string {
+        return game.i18n.localize(`SR5.Attr${this.capitalizeFirstLetter(attribute)}` as Translation);
     }
 }

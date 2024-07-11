@@ -1,24 +1,24 @@
-import { SuccessTest, SuccessTestData } from "./SuccessTest";
-import { ComplexFormTest, ComplexFormTestData } from "./ComplexFormTest";
-import { Helpers } from "../helpers";
-import { FadeRules } from "../rules/FadeRules";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { ComplexFormTest, ComplexFormTestData } from './ComplexFormTest';
+import { Helpers } from '../helpers';
+import { FadeRules } from '../rules/FadeRules';
 import DamageData = Shadowrun.DamageData;
 import MinimalActionData = Shadowrun.MinimalActionData;
 import ModifierTypes = Shadowrun.ModifierTypes;
 import { Translation } from '../utils/strings';
-import { SR5Actor } from "../actor/SR5Actor";
-import { SR5Item } from "../item/SR5Item";
-import { DataDefaults } from "../data/DataDefaults";
+import { SR5Actor } from '../actor/SR5Actor';
+import { SR5Item } from '../item/SR5Item';
+import { DataDefaults } from '../data/DataDefaults';
 
 export interface FadeTestData extends SuccessTestData {
-    incomingFade: DamageData
-    modifiedFade: DamageData
+    incomingFade: DamageData;
+    modifiedFade: DamageData;
 
-    against: ComplexFormTestData
+    against: ComplexFormTestData;
 }
 
 export class FadeTest extends SuccessTest<FadeTestData> {
-    against: ComplexFormTest
+    against: ComplexFormTest;
 
     override _prepareData(data, options): any {
         data = super._prepareData(data, options);
@@ -27,7 +27,7 @@ export class FadeTest extends SuccessTest<FadeTestData> {
         if (data.against) {
             data.incomingFade = foundry.utils.duplicate(data.against.fadeDamage);
             data.modifiedFade = foundry.utils.duplicate(data.incomingFade);
-        // This test is part of either a standalone test or created with its own data (i.e. edge reroll).
+            // This test is part of either a standalone test or created with its own data (i.e. edge reroll).
         } else {
             data.incomingFade = data.incomingFade ?? DataDefaults.damageData();
             data.modifiedFade = foundry.utils.duplicate(data.incomingFade);
@@ -46,10 +46,10 @@ export class FadeTest extends SuccessTest<FadeTestData> {
 
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
-            'attribute2': 'resonance'
+            attribute2: 'resonance',
         };
     }
-    
+
     static override async _getDocumentTestAction(item: SR5Item, actor: SR5Actor) {
         const documentAction = await super._getDocumentTestAction(item, actor);
 
@@ -62,8 +62,8 @@ export class FadeTest extends SuccessTest<FadeTestData> {
 
         // Get technomancer fade attribute
         const attribute = character.system.technomancer.attribute;
-        foundry.utils.mergeObject(documentAction, {attribute});
-        
+        foundry.utils.mergeObject(documentAction, { attribute });
+
         return documentAction;
     }
 
@@ -72,7 +72,7 @@ export class FadeTest extends SuccessTest<FadeTestData> {
     }
 
     override get testModifiers(): ModifierTypes[] {
-        return ['global', 'fade']
+        return ['global', 'fade'];
     }
 
     override get canBeExtended() {
@@ -91,7 +91,7 @@ export class FadeTest extends SuccessTest<FadeTestData> {
     }
 
     override get failureLabel(): Translation {
-        return 'SR5.TestResults.ResistedSomeDamage'
+        return 'SR5.TestResults.ResistedSomeDamage';
     }
 
     /**

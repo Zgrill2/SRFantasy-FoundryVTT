@@ -1,13 +1,13 @@
 import { SR5Actor } from '../actor/SR5Actor';
-import {SR5Item} from "../item/SR5Item";
+import { SR5Item } from '../item/SR5Item';
 
-export type SystemMigrationDocuments = SR5Actor|SR5Item|Scene;
+export type SystemMigrationDocuments = SR5Actor | SR5Item | Scene;
 
 // This interface is used as data container between migration methods and the actual document update.
 export interface UpdateData {
-    data?: any
-    items?: any
-    effects?: any
+    data?: any;
+    items?: any;
+    effects?: any;
 }
 
 /**
@@ -62,7 +62,11 @@ export abstract class VersionMigration {
      * @param game The world that should be migrated.
      */
     public async Migrate(game: Game) {
-        ui.notifications?.info(`${game.i18n.localize('SR5.MIGRATION.BeginNotification')} ${this.SourceVersionFriendlyName} -> ${this.TargetVersionFriendlyName}.`);
+        ui.notifications?.info(
+            `${game.i18n.localize('SR5.MIGRATION.BeginNotification')} ${this.SourceVersionFriendlyName} -> ${
+                this.TargetVersionFriendlyName
+            }.`,
+        );
         ui.notifications?.warn(game.i18n.localize('SR5.MIGRATION.DoNotCloseNotification'), {
             permanent: true,
         });
@@ -108,7 +112,9 @@ export abstract class VersionMigration {
         await this.Apply(entityUpdates);
 
         await game.settings.set(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION, this.TargetVersion);
-        ui.notifications?.info(`${game.i18n.localize('SR5.MIGRATION.SuccessNotification')} ${this.TargetVersion}.`, { permanent: true });
+        ui.notifications?.info(`${game.i18n.localize('SR5.MIGRATION.SuccessNotification')} ${this.TargetVersion}.`, {
+            permanent: true,
+        });
     }
 
     /**
@@ -117,16 +123,15 @@ export abstract class VersionMigration {
      */
     protected async Apply(documentUpdates: Map<SystemMigrationDocuments, DocumentUpdate>) {
         for (const [entity, { updateData, embeddedItems }] of documentUpdates) {
-            
             // v9 -> v10 workaround, should be removed when safe.
-            const updateSystem = updateData?.data ? {system: updateData.data} : updateData;
+            const updateSystem = updateData?.data ? { system: updateData.data } : updateData;
 
             if (embeddedItems !== null) {
                 const actor = entity as SR5Actor;
                 await actor.updateEmbeddedDocuments('Item', embeddedItems);
             }
 
-            if (updateData !== null ) {
+            if (updateData !== null) {
                 await entity.update(updateSystem, { enforceTypes: false });
             }
         }
@@ -160,7 +165,7 @@ export abstract class VersionMigration {
                 for (const token of scene.data.tokens) {
                     // Don't migrate tokens without or a linked actor.
                     if (!token.actor || token.data.actorLink) continue;
-                    
+
                     //@ts-expect-error // TODO: foundry-vtt-types v10
                     if (foundry.utils.isEmpty(token.actor)) continue;
 
@@ -170,7 +175,7 @@ export abstract class VersionMigration {
                     entityUpdates.set(token.actor, {
                         updateData: updateData.data || null,
                         embeddedItems: updateData.items || null,
-                        embeddedEffects: updateData.effects || null
+                        embeddedEffects: updateData.effects || null,
                     });
                 }
 
@@ -183,7 +188,7 @@ export abstract class VersionMigration {
                 entityUpdates.set(scene, {
                     updateData,
                     embeddedItems: null,
-                    embeddedEffects: null
+                    embeddedEffects: null,
                 });
             } catch (error) {
                 console.error(error);
@@ -216,7 +221,7 @@ export abstract class VersionMigration {
                 entityUpdates.set(item, {
                     updateData,
                     embeddedItems: null,
-                    embeddedEffects: updateData.effects || null
+                    embeddedEffects: updateData.effects || null,
                 });
             } catch (error) {
                 console.error(error);
@@ -252,7 +257,7 @@ export abstract class VersionMigration {
                 entityUpdates.set(actor, {
                     updateData,
                     embeddedItems: items,
-                    embeddedEffects: updateData.effects || null
+                    embeddedEffects: updateData.effects || null,
                 });
             } catch (error) {
                 console.error(error);
@@ -271,8 +276,11 @@ export abstract class VersionMigration {
         if (actor.items !== undefined) {
             const items = await Promise.all(
                 actor.items.map(async (item) => {
-                    if (item instanceof SR5Item) console.error('Shadowrun 5e | Migration encountered an Item when it should have encountered ItemData / Object');
-                    if (!await this.ShouldMigrateItemData(item)) return item;
+                    if (item instanceof SR5Item)
+                        console.error(
+                            'Shadowrun 5e | Migration encountered an Item when it should have encountered ItemData / Object',
+                        );
+                    if (!(await this.ShouldMigrateItemData(item))) return item;
                     const itemUpdate = await this.MigrateItemData(item);
 
                     hasItemUpdates = true;
@@ -313,13 +321,19 @@ export abstract class VersionMigration {
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PreMigrateSceneData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PreMigrateSceneData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
     /**
      * Do something right before scene data is migrated.
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PostMigrateSceneData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PostMigrateSceneData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
 
     /**
      * Check if an item requires updates.
@@ -342,13 +356,19 @@ export abstract class VersionMigration {
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PreMigrateItemData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PreMigrateItemData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
     /**
      * Do something right before item data is migrated.
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PostMigrateItemData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PostMigrateItemData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
 
     /**
      * Check if an actor requires updates.
@@ -371,13 +391,19 @@ export abstract class VersionMigration {
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PreMigrateActorData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PreMigrateActorData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
     /**
      * Do something right after actor data is migrated.
      * @param game The game to be updated.
      * @param entityUpdates The current map of document updates.
      */
-    protected async PostMigrateActorData(game: Game, entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>): Promise<void> {}
+    protected async PostMigrateActorData(
+        game: Game,
+        entityUpdates: Map<SystemMigrationDocuments, DocumentUpdate>,
+    ): Promise<void> {}
 
     /**
      * Migrate a compendium pack
@@ -405,9 +431,8 @@ export abstract class VersionMigration {
 
                     if (updateData.data) {
                         expandObject(updateData.data);
-                        document.update({system: updateData.data});
+                        document.update({ system: updateData.data });
                     }
-
                 } else if (pack.metadata.type === 'Actor') {
                     //@ts-expect-error
                     updateData = await this.MigrateActorData(document);
@@ -427,9 +452,8 @@ export abstract class VersionMigration {
 
                     if (updateData.data) {
                         expandObject(updateData.data);
-                        await document.update({system: updateData.data});
+                        await document.update({ system: updateData.data });
                     }
-
                 } else if (pack.metadata.type === 'Scene') {
                     updateData = await this.MigrateSceneData(document as unknown as Scene);
 

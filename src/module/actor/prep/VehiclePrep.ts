@@ -7,11 +7,10 @@ import { LimitsPrep } from './functions/LimitsPrep';
 import { MatrixPrep } from './functions/MatrixPrep';
 import { Helpers } from '../../helpers';
 import { PartsList } from '../../parts/PartsList';
-import {SR5} from "../../config";
-import {SR5ItemDataWrapper} from "../../data/SR5ItemDataWrapper";
+import { SR5 } from '../../config';
+import { SR5ItemDataWrapper } from '../../data/SR5ItemDataWrapper';
 import { RangedWeaponRules } from '../../rules/RangedWeaponRules';
 import { SR } from '../../constants';
-
 
 export class VehiclePrep {
     static prepareBaseData(system: Shadowrun.VehicleData) {
@@ -25,12 +24,12 @@ export class VehiclePrep {
         VehiclePrep.prepareVehicleStats(system);
         VehiclePrep.prepareDeviceAttributes(system);
         VehiclePrep.prepareLimits(system);
-        
+
         AttributesPrep.prepareAttributes(system);
         VehiclePrep.prepareAttributesWithPilot(system);
         VehiclePrep.prepareAttributesWithBody(system);
         VehiclePrep.prepareAttributeRanges(system);
-        
+
         SkillsPrep.prepareSkills(system);
 
         LimitsPrep.prepareLimits(system);
@@ -87,22 +86,25 @@ export class VehiclePrep {
 
     /**
      * Apply SR5#199 'Pilot' and SR5#269 'Pilot Program' rules.
-     * 
+     *
      * Rulings here are a bit vague and current system implementation makes it more vague.
-     * 
+     *
      */
     static prepareAttributesWithPilot(system: Shadowrun.VehicleData) {
         const { attributes, vehicle_stats } = system;
 
-
         const attributeIds = [
             // SR5#199 - 'Pilot' => All  mental attributes and reaction.
-            'reaction', 'willpower', 'logic', 'intuition', 'charisma',
+            'reaction',
+            'willpower',
+            'logic',
+            'intuition',
+            'charisma',
             // No actual rule, a typical skill check would be 'Autosoft Rating + Pilot'
             // Setting agility to pilot, helps the current unpolished way vehicles use character skills.
             'agility',
             // The actual pilot attribute will also equal the vehicle stat pilot
-            'pilot'
+            'pilot',
         ];
 
         attributeIds.forEach((attId) => {
@@ -120,7 +122,7 @@ export class VehiclePrep {
         const { attributes } = system;
 
         // R5.0#125 'Drone Arm' - while not ALL vehicles have arms, leave it up to the user to NOT cast if they shouldn't.
-        const attributeIds = ['strength']
+        const attributeIds = ['strength'];
 
         attributeIds.forEach((attId) => {
             const attribute = attributes[attId];
@@ -148,7 +150,7 @@ export class VehiclePrep {
      * Apply SR5#269 'Drones in the matrix' rules.
      */
     static prepareDeviceAttributes(system: Shadowrun.VehicleData) {
-        const {matrix, vehicle_stats} = system;
+        const { matrix, vehicle_stats } = system;
 
         matrix.rating = vehicle_stats.pilot.value;
     }
@@ -163,7 +165,7 @@ export class VehiclePrep {
             track.physical.max = track.physical.base + (Number(modifiers['physical_track']) || 0);
         } else {
             track.physical.base = 12 + halfBody;
-            track.physical.max =  track.physical.base + (Number(modifiers['physical_track']) || 0);
+            track.physical.max = track.physical.base + (Number(modifiers['physical_track']) || 0);
         }
         track.physical.label = SR5.damageTypes.physical;
 
@@ -179,10 +181,10 @@ export class VehiclePrep {
         // algorithm to determine speed, CRB pg 202 table.
         // Allow ActiveEffects to apply to movement directly.
         movement.walk.base = 5 * Math.pow(2, speedTotal - 1);
-        movement.walk.value = Helpers.calcTotal(movement.walk, {min: 0});
+        movement.walk.value = Helpers.calcTotal(movement.walk, { min: 0 });
 
         movement.run.base = 10 * Math.pow(2, speedTotal - 1);
-        movement.run.value = Helpers.calcTotal(movement.run, {min: 0});
+        movement.run.value = Helpers.calcTotal(movement.run, { min: 0 });
     }
 
     static prepareMeatspaceInit(system: Shadowrun.VehicleData) {
@@ -191,9 +193,17 @@ export class VehiclePrep {
         const pilot = Helpers.calcTotal(vehicle_stats.pilot);
 
         initiative.meatspace.base.base = pilot * 2;
-        initiative.meatspace.base.mod = PartsList.AddUniquePart(initiative.meatspace.base.mod, "SR5.Bonus", Number(modifiers['meat_initiative']));
+        initiative.meatspace.base.mod = PartsList.AddUniquePart(
+            initiative.meatspace.base.mod,
+            'SR5.Bonus',
+            Number(modifiers['meat_initiative']),
+        );
         initiative.meatspace.dice.base = 4;
-        initiative.meatspace.dice.mod = PartsList.AddUniquePart(initiative.meatspace.dice.mod, "SR5.Bonus", Number(modifiers['meat_initiative_dice']));
+        initiative.meatspace.dice.mod = PartsList.AddUniquePart(
+            initiative.meatspace.dice.mod,
+            'SR5.Bonus',
+            Number(modifiers['meat_initiative_dice']),
+        );
 
         Helpers.calcTotal(initiative.meatspace.base);
         Helpers.calcTotal(initiative.meatspace.dice);
@@ -211,19 +221,19 @@ export class VehiclePrep {
      * Prepare the base actor recoil compensation without item influence.
      */
     static prepareRecoilCompensation(system: Shadowrun.VehicleData) {
-        const {attributes} = system;
+        const { attributes } = system;
 
         const recoilCompensation = RangedWeaponRules.vehicleRecoilCompensationValue(attributes.body.value);
         PartsList.AddUniquePart(system.values.recoil_compensation.mod, 'SR5.RecoilCompensation', recoilCompensation);
 
-        Helpers.calcTotal(system.values.recoil_compensation, {min: 0});
+        Helpers.calcTotal(system.values.recoil_compensation, { min: 0 });
     }
 
     /**
      * Some attributes don't exist on vehicle actors.
-     * 
+     *
      * Instead of default character range, use vehicle specific ranges.
-     * 
+     *
      * NOTE: This is a hack around the actor type character centric preparation design still present in the system.
      *       Times is short, perfect solutions are costly.
      */

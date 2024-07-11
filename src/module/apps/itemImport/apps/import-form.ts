@@ -10,10 +10,9 @@ import { ComplexFormImporter } from '../importer/ComplexFormImporter';
 import { WareImporter } from '../importer/WareImporter';
 import { CritterPowerImporter } from '../importer/CritterPowerImporter';
 import { ImportHelper, ImportMode } from '../helper/ImportHelper';
-import { DeviceImporter } from "../importer/DeviceImporter";
-import { EquipmentImporter } from "../importer/EquipmentImporter";
+import { DeviceImporter } from '../importer/DeviceImporter';
+import { EquipmentImporter } from '../importer/EquipmentImporter';
 import { SpritePowerImporter } from '../importer/SpritePowerImporter';
-
 
 export class Import extends Application {
     private supportedDataFiles: string[] = [];
@@ -54,7 +53,7 @@ export class Import extends Application {
                 name: supportedFileName,
                 missing,
                 parsed,
-                parsing
+                parsing,
             };
         });
         data.langDataFile = this.langDataFile ? this.langDataFile.name : '';
@@ -66,8 +65,8 @@ export class Import extends Application {
 
     private collectDataImporterFileSupport() {
         this.supportedDataFiles = [];
-        Import.Importers.forEach(importer => {
-            if (this.supportedDataFiles.some(supported => importer.files.includes(supported))) {
+        Import.Importers.forEach((importer) => {
+            if (this.supportedDataFiles.some((supported) => importer.files.includes(supported))) {
                 return;
             }
             this.supportedDataFiles = this.supportedDataFiles.concat(importer.files);
@@ -92,7 +91,7 @@ export class Import extends Application {
         new SpritePowerImporter(),
         new DeviceImporter(),
         new EquipmentImporter(),
-        new ProgramImporter()
+        new ProgramImporter(),
     ];
 
     async parseXML(xmlSource, fileName, setIcons) {
@@ -152,10 +151,9 @@ export class Import extends Application {
                 if (dataFile) {
                     const text = await dataFile.text();
 
-                     // Show status for current parsing progression.
+                    // Show status for current parsing progression.
                     this.currentParsedFile = dataFile.name;
                     await this.render();
-
 
                     await this.parseXML(text, dataFile.name, setIcons);
 
@@ -172,7 +170,7 @@ export class Import extends Application {
 
             await this.render();
 
-            ui.notifications?.warn('SR5.Warnings.BulkImportPerformanceWarning', {localize: true});
+            ui.notifications?.warn('SR5.Warnings.BulkImportPerformanceWarning', { localize: true });
         });
 
         html.find("input[type='file'].langDataFileDrop").on('change', async (event) => {

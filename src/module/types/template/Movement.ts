@@ -13,6 +13,4 @@ declare namespace Shadowrun {
         sprint: number;
         swimming: number;
     };
-
-
 }

@@ -18,9 +18,11 @@ export class SpellImporter extends DataImporter<Shadowrun.SpellItemData, Shadowr
         return jsonObject.hasOwnProperty('spells') && jsonObject['spells'].hasOwnProperty('spell');
     }
 
-    public override GetDefaultData({ type }: { type: any; }): Shadowrun.SpellItemData {
-        const systemData = {action: {type: 'varies', attribute: 'magic', skill: 'spellcasting'}} as Shadowrun.SpellData;
-        return DataDefaults.baseItemData<Shadowrun.SpellItemData, Shadowrun.SpellData>({type}, systemData);
+    public override GetDefaultData({ type }: { type: any }): Shadowrun.SpellItemData {
+        const systemData = {
+            action: { type: 'varies', attribute: 'magic', skill: 'spellcasting' },
+        } as Shadowrun.SpellData;
+        return DataDefaults.baseItemData<Shadowrun.SpellItemData, Shadowrun.SpellData>({ type }, systemData);
     }
 
     ExtractTranslation() {
@@ -60,7 +62,7 @@ export class SpellImporter extends DataImporter<Shadowrun.SpellItemData, Shadowr
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}), this.itemTranslations);
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }), this.itemTranslations);
             //@ts-expect-error TODO: Foundry Where is my foundry base data?
             item.folder = folders[item.system.category].id;
 
@@ -68,7 +70,9 @@ export class SpellImporter extends DataImporter<Shadowrun.SpellItemData, Shadowr
             item.system.importFlags = this.genImportFlags(item.name, item.type, item.system.category);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Translate name if needed
             item.name = ImportHelper.MapNameToTranslation(this.itemTranslations, item.name);

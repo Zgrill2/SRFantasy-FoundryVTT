@@ -102,7 +102,7 @@ export class PartsList<TType> {
 
     /**
      * Remove all occurences of the given part modifier.
-     * 
+     *
      * @param name Search parts for this name (exactly)
      * @returns true for when all parts have been removed, otherwise falls.
      */
@@ -114,18 +114,18 @@ export class PartsList<TType> {
             this._list.splice(index, 1);
             index = this._list.findIndex((part) => part.name === name);
         }
-        
+
         return removed;
     }
 
     /**
      * Check if this part list contains at least one part with a matching name.
-     * 
+     *
      * @param name Needle in the part list stack
      * @returns true, when a matching part is found.
      */
     hasPart(name: string): boolean {
-        return this._list.some(part => part.name === name);
+        return this._list.some((part) => part.name === name);
     }
 
     getMessageOutput() {

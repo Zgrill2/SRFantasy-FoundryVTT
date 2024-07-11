@@ -1,4 +1,4 @@
-import {SYSTEM_SOCKET} from "./constants";
+import { SYSTEM_SOCKET } from './constants';
 import SocketMessageBody = Shadowrun.SocketMessageData;
 
 /**
@@ -8,12 +8,12 @@ import SocketMessageBody = Shadowrun.SocketMessageData;
  *
  * Use emitForGM for messages meant only for ONE gm
  * > SocketMessage.emitGM(FLAGS.<yourFlag>, {yourDataField: 'yourData'})
- * 
+ *
  * To listen to these socket messages see Hooks#registerSocketListeners
  */
 export class SocketMessage {
     static _createMessage(type, data, userId?): SocketMessageBody {
-        return {type, data, userId}
+        return { type, data, userId };
     }
 
     static async emit(type, data) {
@@ -28,7 +28,7 @@ export class SocketMessage {
         if (!game.socket || !game.user || !game.users) return;
         if (game.user.isGM) return console.error('Active user is GM! Aborting socket message...');
 
-        const gmUser = game.users.find(user => user.isGM);
+        const gmUser = game.users.find((user) => user.isGM);
         if (!gmUser) return console.error('No active GM user! One GM must be active for this action to work.');
 
         const message = SocketMessage._createMessage(type, data, gmUser.id);

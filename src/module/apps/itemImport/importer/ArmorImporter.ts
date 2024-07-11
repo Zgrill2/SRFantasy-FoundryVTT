@@ -39,7 +39,7 @@ export class ArmorImporter extends DataImporter<Shadowrun.ArmorItemData, Shadowr
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}));
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }));
             const category = ImportHelper.StringValue(jsonData, 'category').toLowerCase();
             // @ts-expect-error TODO: Foundry Where is my foundry base data?
             item.folder = folders[category].id;
@@ -48,7 +48,9 @@ export class ArmorImporter extends DataImporter<Shadowrun.ArmorItemData, Shadowr
             item.system.importFlags = this.genImportFlags(item.name, item.type, this.formatAsSlug(category));
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Translate the name
             item.name = ImportHelper.MapNameToTranslation(this.armorTranslations, item.name);
@@ -60,6 +62,6 @@ export class ArmorImporter extends DataImporter<Shadowrun.ArmorItemData, Shadowr
         }
 
         // @ts-expect-error
-        return await Item.create(datas) as Item;
+        return (await Item.create(datas)) as Item;
     }
 }

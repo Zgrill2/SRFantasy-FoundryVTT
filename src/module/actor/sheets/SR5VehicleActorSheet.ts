@@ -1,18 +1,17 @@
-import {SR5BaseActorSheet} from "./SR5BaseActorSheet";
+import { SR5BaseActorSheet } from './SR5BaseActorSheet';
 import SR5ActorSheetData = Shadowrun.SR5ActorSheetData;
-import {SR5Actor} from "../SR5Actor";
+import { SR5Actor } from '../SR5Actor';
 import { SR5Item } from '../../item/SR5Item';
 import { NetworkDeviceFlow } from '../../item/flows/NetworkDeviceFlow';
 
 interface VehicleSheetDataFields {
-    driver: SR5Actor|undefined
-    networkController: SR5Item | undefined
+    driver: SR5Actor | undefined;
+    networkController: SR5Item | undefined;
 }
 
 interface VehicleActorSheetData extends SR5ActorSheetData {
-    vehicle: VehicleSheetDataFields
+    vehicle: VehicleSheetDataFields;
 }
-
 
 export class SR5VehicleActorSheet extends SR5BaseActorSheet {
     /**
@@ -25,10 +24,7 @@ export class SR5VehicleActorSheet extends SR5BaseActorSheet {
     override getHandledItemTypes(): string[] {
         let itemTypes = super.getHandledItemTypes();
 
-        return [
-            ...itemTypes,
-            'program',
-        ];
+        return [...itemTypes, 'program'];
     }
 
     /**
@@ -41,17 +37,7 @@ export class SR5VehicleActorSheet extends SR5BaseActorSheet {
     override getInventoryItemTypes(): string[] {
         const itemTypes = super.getInventoryItemTypes();
 
-        return [
-            ...itemTypes,
-            'weapon',
-            'ammo',
-            'armor',
-            'bioware',
-            'cyberware',
-            'device',
-            'equipment',
-            'modification'
-        ];
+        return [...itemTypes, 'weapon', 'ammo', 'armor', 'bioware', 'cyberware', 'device', 'equipment', 'modification'];
     }
 
     override async getData(options) {
@@ -88,8 +74,8 @@ export class SR5VehicleActorSheet extends SR5BaseActorSheet {
 
         // Handle specific system drop events.
         switch (dropData.type) {
-            case "Actor":
-                return await this.actor.addVehicleDriver(dropData.uuid)
+            case 'Actor':
+                return await this.actor.addVehicleDriver(dropData.uuid);
         }
 
         // Handle none specific drop events.
@@ -100,7 +86,9 @@ export class SR5VehicleActorSheet extends SR5BaseActorSheet {
         const driver = this.actor.getVehicleDriver();
 
         const networkControllerLink = this.actor.getNetworkController();
-        const networkController = networkControllerLink ? await NetworkDeviceFlow.resolveItemLink(networkControllerLink) : undefined;
+        const networkController = networkControllerLink
+            ? await NetworkDeviceFlow.resolveItemLink(networkControllerLink)
+            : undefined;
 
         return {
             driver,

@@ -4,14 +4,14 @@
  *
  * What class is to be used is defined within each action (active, followed, opposed, resist). Migration needs to map
  * these classes to their item types.
- * 
- * 
+ *
+ *
  */
-import {VersionMigration} from "../VersionMigration";
-import {Helpers} from "../../helpers";
-import { SR5Item } from "../../item/SR5Item";
-import { SR5Actor } from "../../actor/SR5Actor";
-import { UpdateActionFlow } from "../../item/flows/UpdateActionFlow";
+import { VersionMigration } from '../VersionMigration';
+import { Helpers } from '../../helpers';
+import { SR5Item } from '../../item/SR5Item';
+import { SR5Actor } from '../../actor/SR5Actor';
+import { UpdateActionFlow } from '../../item/flows/UpdateActionFlow';
 
 export class Version0_8_0 extends VersionMigration {
     get SourceVersion(): string {
@@ -23,7 +23,7 @@ export class Version0_8_0 extends VersionMigration {
     }
 
     static get TargetVersion(): string {
-        return "0.8.0";
+        return '0.8.0';
     }
 
     protected override async ShouldMigrateItemData(item: SR5Item) {
@@ -39,12 +39,12 @@ export class Version0_8_0 extends VersionMigration {
     }
 
     protected override async ShouldMigrateActorData(actor: SR5Actor) {
-        return actor.items.contents.filter(item => this._ShouldMigrateItemData(item)).length > 0;
+        return actor.items.contents.filter((item) => this._ShouldMigrateItemData(item)).length > 0;
     }
 
     protected override async MigrateItemData(item: SR5Item) {
         const updateData: {
-            data?: object
+            data?: object;
         } = {};
 
         UpdateActionFlow.injectActionTestsIntoChangeData(item.type, item.toObject(), item.toObject());
@@ -54,10 +54,10 @@ export class Version0_8_0 extends VersionMigration {
 
     protected override async MigrateActorData(actor: SR5Actor) {
         let updateData: {
-            data?: object,
-            items?: object[]
+            data?: object;
+            items?: object[];
         } = {
-            items: []
+            items: [],
         };
 
         updateData = await this.IterateActorItems(actor, updateData);

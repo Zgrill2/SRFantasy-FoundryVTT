@@ -1,14 +1,12 @@
-import { CombatRules } from "../rules/CombatRules";
-import { PhysicalDefenseTest, PhysicalDefenseTestData } from "./PhysicalDefenseTest";
+import { CombatRules } from '../rules/CombatRules';
+import { PhysicalDefenseTest, PhysicalDefenseTestData } from './PhysicalDefenseTest';
 import MinimalActionData = Shadowrun.MinimalActionData;
 
-
 export class SuppressionDefenseTest extends PhysicalDefenseTest<PhysicalDefenseTestData> {
-
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
-            'attribute': 'reaction',
-            'attribute2': 'edge'
+            attribute: 'reaction',
+            attribute2: 'edge',
         };
     }
 

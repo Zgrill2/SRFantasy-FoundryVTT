@@ -1,30 +1,28 @@
-import {SuccessTest, SuccessTestData} from "./SuccessTest";
-import {SpellCastingTestData} from "./SpellCastingTest";
-import {DrainRules} from "../rules/DrainRules";
-import {Helpers} from "../helpers";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { SpellCastingTestData } from './SpellCastingTest';
+import { DrainRules } from '../rules/DrainRules';
+import { Helpers } from '../helpers';
 import DamageData = Shadowrun.DamageData;
 import MinimalActionData = Shadowrun.MinimalActionData;
 import ModifierTypes = Shadowrun.ModifierTypes;
 import GenericValueField = Shadowrun.GenericValueField;
 import { Translation } from '../utils/strings';
-import { DataDefaults } from "../data/DataDefaults";
+import { DataDefaults } from '../data/DataDefaults';
 
 export interface DrainTestData extends SuccessTestData {
-    incomingDrain: DamageData
-    modifiedDrain: DamageData
+    incomingDrain: DamageData;
+    modifiedDrain: DamageData;
 
-    against: SpellCastingTestData
+    against: SpellCastingTestData;
 }
-
 
 /**
  * Implement a Drain Test as is defined in SR5#282 'Step 6 - Resist Drain'
- * 
+ *
  * Drain defines it's incoming drain and modifies it to it's modified drain,
  * both of which the user can apply.
  */
 export class DrainTest extends SuccessTest<DrainTestData> {
-
     override _prepareData(data, options): any {
         data = super._prepareData(data, options);
 
@@ -32,7 +30,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
         if (data.against) {
             data.incomingDrain = foundry.utils.duplicate(data.against.drainDamage);
             data.modifiedDrain = foundry.utils.duplicate(data.incomingDrain);
-        // This test is part of either a standalone test or created with its own data (i.e. edge reroll).
+            // This test is part of either a standalone test or created with its own data (i.e. edge reroll).
         } else {
             data.incomingDrain = data.incomingDrain ?? DataDefaults.damageData();
             data.modifiedDrain = foundry.utils.duplicate(data.incomingDrain);
@@ -51,7 +49,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
 
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
-            'attribute2': 'willpower'
+            attribute2: 'willpower',
         };
     }
 
@@ -67,7 +65,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
     }
 
     override get testModifiers(): ModifierTypes[] {
-        return ['global', 'drain']
+        return ['global', 'drain'];
     }
 
     static override async _getDocumentTestAction(item, actor) {
@@ -80,7 +78,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
 
         // Get magic school attribute.
         const attribute = actor.system.magic.attribute;
-        foundry.utils.mergeObject(documentAction, {attribute});
+        foundry.utils.mergeObject(documentAction, { attribute });
 
         // Return the school attribute based on actor configuration.
         return documentAction;
@@ -96,7 +94,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
 
         // Copy to get all values changed by user (override) but also remove all.
         this.data.modifiedDrain = foundry.utils.duplicate(this.data.incomingDrain);
-        this.data.modifiedDrain.base = Helpers.calcTotal(this.data.incomingDrain, {min: 0});
+        this.data.modifiedDrain.base = Helpers.calcTotal(this.data.incomingDrain, { min: 0 });
         delete this.data.modifiedDrain.override;
     }
 
@@ -112,7 +110,7 @@ export class DrainTest extends SuccessTest<DrainTestData> {
     }
 
     override get failureLabel(): Translation {
-        return 'SR5.TestResults.ResistedSomeDamage'
+        return 'SR5.TestResults.ResistedSomeDamage';
     }
 
     override async processResults() {

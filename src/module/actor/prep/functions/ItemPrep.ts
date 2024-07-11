@@ -2,7 +2,7 @@ import { SR5ItemDataWrapper } from '../../../data/SR5ItemDataWrapper';
 import { Helpers } from '../../../helpers';
 import { PartsList } from '../../../parts/PartsList';
 import ArmorActorData = Shadowrun.ArmorActorData;
-import {SR5} from "../../../config";
+import { SR5 } from '../../../config';
 import ActorTypesData = Shadowrun.ShadowrunActorDataData;
 
 export class ItemPrep {
@@ -28,8 +28,7 @@ export class ItemPrep {
                 // We allow only one base armor but multiple armor accessories
                 if (item.hasArmorAccessory()) {
                     armorModParts.addUniquePart(item.getName(), item.getArmorValue());
-                }
-                else {
+                } else {
                     const armorValue = item.getArmorValue();
                     if (armorValue > armor.base) {
                         armor.base = item.getArmorValue();
@@ -45,18 +44,19 @@ export class ItemPrep {
             }
         });
 
-        if (system.modifiers['armor']) armorModParts.addUniquePart(game.i18n.localize('SR5.Bonus'), system.modifiers['armor']);
+        if (system.modifiers['armor'])
+            armorModParts.addUniquePart(game.i18n.localize('SR5.Bonus'), system.modifiers['armor']);
         // SET ARMOR
         armor.value = Helpers.calcTotal(armor);
     }
     /**
      * Apply all changes to an actor by their 'ware items.
-     * 
+     *
      * Modify essence by items essence loss
      */
     static prepareWareEssenceLoss(system: ActorTypesData, items: SR5ItemDataWrapper[]) {
         const parts = new PartsList<number>(system.attributes.essence.mod);
-        
+
         items
             .filter((item) => item.isBodyware() && item.isEquipped())
             .forEach((item) => {

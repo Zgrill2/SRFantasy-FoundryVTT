@@ -4,6 +4,6 @@ declare namespace Shadowrun {
      * all that's needed to create a follow up test.
      */
     interface FollowupAction {
-        label: string
+        label: string;
     }
 }

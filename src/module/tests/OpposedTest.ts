@@ -1,26 +1,24 @@
-import {SuccessTest, SuccessTestData, SuccessTestValues, TestData, TestDocuments, TestOptions} from "./SuccessTest";
-import {DataDefaults} from "../data/DataDefaults";
-import {TestCreator} from "./TestCreator";
-import {SR5Item} from "../item/SR5Item";
-import {PartsList} from "../parts/PartsList";
-import { Helpers } from "../helpers";
-
+import { SuccessTest, SuccessTestData, SuccessTestValues, TestData, TestDocuments, TestOptions } from './SuccessTest';
+import { DataDefaults } from '../data/DataDefaults';
+import { TestCreator } from './TestCreator';
+import { SR5Item } from '../item/SR5Item';
+import { PartsList } from '../parts/PartsList';
+import { Helpers } from '../helpers';
 
 export interface OpposedTestValues extends SuccessTestValues {
     // The calculated overall netHits of the active vs opposed test pair.
-    againstNetHits: Shadowrun.ValueField
+    againstNetHits: Shadowrun.ValueField;
 }
 
-export interface OpposedTestData extends
-    TestData,
-    // Remove unnecessary data points.
-    Omit<SuccessTestData, 'opposed'>,
-    Omit<SuccessTestData, 'targetTokensUuid'> {
-
+export interface OpposedTestData
+    extends TestData,
+        // Remove unnecessary data points.
+        Omit<SuccessTestData, 'opposed'>,
+        Omit<SuccessTestData, 'targetTokensUuid'> {
     // The message id of the opposed test.
-    previousMessageId: string
-    values: OpposedTestValues
-    against: SuccessTestData
+    previousMessageId: string;
+    values: OpposedTestValues;
+    against: SuccessTestData;
 }
 /**
  * An opposed test results from a normal success test as an opposed action.
@@ -46,7 +44,7 @@ export class OpposedTest<T extends OpposedTestData = OpposedTestData> extends Su
         delete data.targetActorsUuid;
 
         data.values = data.values || {};
-        data.values.againstNetHits = DataDefaults.valueData({label: 'SR5.NetHits'});
+        data.values.againstNetHits = DataDefaults.valueData({ label: 'SR5.NetHits' });
 
         return data;
     }
@@ -68,24 +66,31 @@ export class OpposedTest<T extends OpposedTestData = OpposedTestData> extends Su
     /**
      * To have proper net hits values for the original test, we calculate it's netHits values after the opposed test
      * is finished.
-     * 
-     * We don't change the original netHits to not interfere with the original test and allow it to still 
+     *
+     * We don't change the original netHits to not interfere with the original test and allow it to still
      * report correct netHits against it's own (possible) threshold.
      */
     calculateAgainstNetHits() {
         const base = Math.max(this.against.hits.value - this.hits.value, 0);
-        const againstNetHits = DataDefaults.valueData({label: 'SR5.NetHits', base});
-        againstNetHits.value = Helpers.calcTotal(againstNetHits, {min: 0});
+        const againstNetHits = DataDefaults.valueData({ label: 'SR5.NetHits', base });
+        againstNetHits.value = Helpers.calcTotal(againstNetHits, { min: 0 });
         return againstNetHits;
     }
 
-    static override async _getOpposedActionTestData(againstData: SuccessTestData, actor, previousMessageId: string): Promise<OpposedTestData | undefined> {
+    static override async _getOpposedActionTestData(
+        againstData: SuccessTestData,
+        actor,
+        previousMessageId: string,
+    ): Promise<OpposedTestData | undefined> {
         if (!againstData.opposed) {
             console.error(`Shadowrun 5e | Supplied test data doesn't contain an opposed action`, againstData, this);
             return;
         }
         if (againstData.opposed.type !== '') {
-            console.warn(`Shadowrun 5e | Supplied test defines a opposed test type ${againstData.opposed.type} but only type '' is supported`, this);
+            console.warn(
+                `Shadowrun 5e | Supplied test defines a opposed test type ${againstData.opposed.type} but only type '' is supported`,
+                this,
+            );
         }
         if (!actor) {
             console.error(`Shadowrun 5e | Can't resolve opposed test values due to missing actor`, this);
@@ -99,15 +104,15 @@ export class OpposedTest<T extends OpposedTestData = OpposedTestData> extends Su
 
             previousMessageId,
 
-            pool: DataDefaults.valueData({label: 'SR5.DicePool'}),
-            limit: DataDefaults.valueData({label: 'SR5.Limit'}),
-            threshold: DataDefaults.valueData({label: 'SR5.Threshold'}),
+            pool: DataDefaults.valueData({ label: 'SR5.DicePool' }),
+            limit: DataDefaults.valueData({ label: 'SR5.Limit' }),
+            threshold: DataDefaults.valueData({ label: 'SR5.Threshold' }),
             //@ts-expect-error
             values: {},
 
             sourceItemUuid: againstData.sourceItemUuid,
-            against: againstData
-        }
+            against: againstData,
+        };
 
         // An opposing test will oppose net hits of the original / success test.
         // Register these as a threshold, which will trigger success/failure status
@@ -119,16 +124,17 @@ export class OpposedTest<T extends OpposedTestData = OpposedTestData> extends Su
         let action = DataDefaults.actionRollData();
 
         // Allow the OpposedTest to overwrite action data using its class default action.
-        action = TestCreator._mergeMinimalActionDataInOrder(action,
+        action = TestCreator._mergeMinimalActionDataInOrder(
+            action,
             // Use action data from the original action at first.
             againstData.opposed,
             // Overwrite with the OpposedTest class default action, if any.
-            this._getDefaultTestAction()
+            this._getDefaultTestAction(),
         );
 
         // Allow the OpposedTest to overwrite action data dynamically based on item data.
         if (againstData.sourceItemUuid) {
-            const item = await fromUuid(againstData.sourceItemUuid) as SR5Item;
+            const item = (await fromUuid(againstData.sourceItemUuid)) as SR5Item;
             if (item) {
                 const itemAction = await this._getDocumentTestAction(item, actor);
                 action = TestCreator._mergeMinimalActionDataInOrder(action, itemAction);
@@ -212,7 +218,7 @@ export class OpposedTest<T extends OpposedTestData = OpposedTestData> extends Su
         const opposedActionTest = button.data('action');
 
         const showDialog = !TestCreator.shouldHideDialog(event);
-        await TestCreator.fromMessageAction(messageId, opposedActionTest, {showDialog});
+        await TestCreator.fromMessageAction(messageId, opposedActionTest, { showDialog });
     }
 
     static override async chatMessageListeners(message: ChatMessage, html, data) {

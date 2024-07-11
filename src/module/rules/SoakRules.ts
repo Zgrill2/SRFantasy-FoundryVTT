@@ -20,7 +20,6 @@ export class SoakRules {
      * @returns The updated damage data
      */
     static reduceDamage(actor: SR5Actor, damageData: DamageData, hits: number): ModifiedDamageData {
-
         // Vehicles are immune to stun damage (electricity stun damage is handled in a different place)
         // Note: This also takes care of the vehicle immunity, since physical damage that does not exceed armor
         // will be converted to stun damage and then reduced to 0. This does not work with drones wearing armor
@@ -38,7 +37,7 @@ export class SoakRules {
      * @param actor The actor affected by the damage
      * @returns The updated damage data
      */
-    static modifyPhysicalDamageForArmor(damage: DamageData, actor : SR5Actor): DamageData {
+    static modifyPhysicalDamageForArmor(damage: DamageData, actor: SR5Actor): DamageData {
         const updatedDamage = foundry.utils.duplicate(damage) as DamageData;
 
         if (damage.type.value === 'physical') {
@@ -66,7 +65,7 @@ export class SoakRules {
      * @param actor The actor affected by the damage
      * @returns The updated damage data
      */
-    static modifyMatrixDamageForBiofeedback(damage: DamageData, actor : SR5Actor): DamageData {
+    static modifyMatrixDamageForBiofeedback(damage: DamageData, actor: SR5Actor): DamageData {
         const updatedDamage = foundry.utils.duplicate(damage) as DamageData;
 
         if (damage.type.value === 'matrix') {
@@ -81,8 +80,7 @@ export class SoakRules {
             if (actorData.initiative.perception === 'matrix') {
                 if (actorData.matrix.hot_sim) {
                     updatedDamage.type.value = 'physical';
-                }
-                else {
+                } else {
                     updatedDamage.type.value = 'stun';
                 }
             }

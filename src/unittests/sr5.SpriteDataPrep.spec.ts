@@ -12,12 +12,12 @@ export const shadowrunSR5SpriteDataPrep = (context: QuenchBatchContext) => {
     before(async () => {
         testActor = new SR5TestingDocuments(SR5Actor);
         testItem = new SR5TestingDocuments(SR5Item);
-    })
+    });
 
     after(async () => {
         await testActor.teardown();
         await testItem.teardown();
-    })
+    });
 
     describe('SpriteDataPrep', () => {
         it('Sprites are always resonat', async () => {
@@ -36,7 +36,7 @@ export const shadowrunSR5SpriteDataPrep = (context: QuenchBatchContext) => {
         });
 
         it('Sprites default/override values by example type', async () => {
-            const actor = await testActor.create({ type: 'sprite', 'system.spriteType': 'courier' }) as SR5Actor;
+            const actor = (await testActor.create({ 'type': 'sprite', 'system.spriteType': 'courier' })) as SR5Actor;
             let sprite = actor.asSprite() as Shadowrun.SpriteActorData;
 
             assert.strictEqual(sprite.system.matrix.sleaze.base, 3);
@@ -49,7 +49,7 @@ export const shadowrunSR5SpriteDataPrep = (context: QuenchBatchContext) => {
             assert.strictEqual(sprite.system.skills.active.hacking.base, 0);
 
             await actor.update({
-                'system.level': 6
+                'system.level': 6,
             });
 
             sprite = actor.asSprite() as Shadowrun.SpriteActorData;
@@ -67,10 +67,10 @@ export const shadowrunSR5SpriteDataPrep = (context: QuenchBatchContext) => {
             assert.strictEqual(sprite.system.skills.active.hacking.base, 6);
             assert.strictEqual(sprite.system.skills.active.computer.base, 6); // all sprites
             assert.strictEqual(sprite.system.skills.active.electronic_warfare.base, 0); // not set by sprite type.
-        })
+        });
 
         it('Matrix condition monitor track calculation with modifiers', async () => {
-            const actor = await testActor.create({ type: 'sprite' }) as SR5Actor;
+            const actor = (await testActor.create({ type: 'sprite' })) as SR5Actor;
 
             let sprite = actor.asSprite() as Shadowrun.SpriteActorData;
             assert.equal(sprite.system.matrix.condition_monitor.max, 8);

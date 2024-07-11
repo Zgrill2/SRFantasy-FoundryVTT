@@ -1,5 +1,5 @@
-import { FormDialog, FormDialogData } from "./FormDialog";
-import { SR5Actor } from "../../actor/SR5Actor";
+import { FormDialog, FormDialogData } from './FormDialog';
+import { SR5Actor } from '../../actor/SR5Actor';
 import { SR5Item } from '../../item/SR5Item';
 
 /**
@@ -35,24 +35,24 @@ export class MoveInventoryDialog extends FormDialog {
             title: game.i18n.localize('SR5.MoveInventoryDialog.Title'),
             buttons: {
                 move: {
-                    label: game.i18n.localize('SR5.MoveInventoryDialog.Move')
+                    label: game.i18n.localize('SR5.MoveInventoryDialog.Move'),
                 },
                 cancel: {
-                    label: game.i18n.localize('SR5.MoveInventoryDialog.Cancel')
-                }
+                    label: game.i18n.localize('SR5.MoveInventoryDialog.Cancel'),
+                },
             },
             default: 'cancel',
             templateData: { inventories },
             templatePath: 'systems/shadowrun5e/dist/templates/apps/dialogs/move-inventory-dialog.html',
-            onAfterClose: async html => {
+            onAfterClose: async (html) => {
                 return html.find('input[name="inventories"]:checked').val();
-            }
-        }
+            },
+        };
     }
 
     /**
      * Depending on actor and item different intenvories are selectable.
-     * 
+     *
      * @param actor Actor to check for inventories
      * @param item Item that is to be moved to a new inventory
      * @param sourceInventory Inventory that is to be moved from
@@ -60,19 +60,21 @@ export class MoveInventoryDialog extends FormDialog {
      */
     static selectableInventories(actor: SR5Actor, item: SR5Item, sourceInventory: string) {
         // The current item may be shown in all inventories, so show the currently active inventory as well.
-        if (sourceInventory !== actor.allInventories.name && actor.inventory.isItemInInventory(actor.allInventories.name, item)) {
+        if (
+            sourceInventory !== actor.allInventories.name &&
+            actor.inventory.isItemInInventory(actor.allInventories.name, item)
+        ) {
             const inventories = Object.values(actor.inventory.getAll())
-                .filter(inventory => inventory.name !== actor.allInventories.name)
+                .filter((inventory) => inventory.name !== actor.allInventories.name)
                 .sort();
 
             inventories.unshift(actor.defaultInventory);
             return inventories;
         }
 
-
         // The current item is shown in one inventory, so hide the currently active inventory.
         const inventories = Object.values(actor.inventory.getAll())
-            .filter(inventory => inventory.name !== sourceInventory)
+            .filter((inventory) => inventory.name !== sourceInventory)
             .sort();
 
         // Add the default inventories for selection when necessary.

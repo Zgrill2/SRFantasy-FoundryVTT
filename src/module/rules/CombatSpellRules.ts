@@ -1,12 +1,12 @@
 import DamageData = Shadowrun.DamageData;
-import {PartsList} from "../parts/PartsList";
-import {Helpers} from "../helpers";
-import {CombatRules} from "./CombatRules";
+import { PartsList } from '../parts/PartsList';
+import { Helpers } from '../helpers';
+import { CombatRules } from './CombatRules';
 import CombatSpellType = Shadowrun.CombatSpellType;
 import SpellType = Shadowrun.SpellType;
 import MinimalActionData = Shadowrun.MinimalActionData;
-import {DataDefaults} from "../data/DataDefaults";
-import { SR5Actor } from "../actor/SR5Actor";
+import { DataDefaults } from '../data/DataDefaults';
+import { SR5Actor } from '../actor/SR5Actor';
 
 export class CombatSpellRules {
     /**
@@ -37,7 +37,7 @@ export class CombatSpellRules {
 
         // Armor piercing can both be a negative and positive value.
         Helpers.calcTotal(damage.ap);
-        Helpers.calcTotal(damage, {min: 0});
+        Helpers.calcTotal(damage, { min: 0 });
 
         return damage;
     }
@@ -50,11 +50,21 @@ export class CombatSpellRules {
      * @param attackerHits The attackers hits achieved
      * @param defenderHits The defenders hits achieved
      */
-    static modifyDirectDamageAfterHit(defender: SR5Actor, damage: DamageData, attackerHits: number, defenderHits: number): DamageData {
+    static modifyDirectDamageAfterHit(
+        defender: SR5Actor,
+        damage: DamageData,
+        attackerHits: number,
+        defenderHits: number,
+    ): DamageData {
         return CombatRules.modifyDamageAfterHit(defender, attackerHits, defenderHits, damage);
     }
 
-    static modifyIndirectDamageAfterHit(defender: SR5Actor, damage: DamageData, attackerHits: number, defenderHits): DamageData {
+    static modifyIndirectDamageAfterHit(
+        defender: SR5Actor,
+        damage: DamageData,
+        attackerHits: number,
+        defenderHits,
+    ): DamageData {
         return CombatRules.modifyDamageAfterHit(defender, attackerHits, defenderHits, damage);
     }
 
@@ -102,28 +112,22 @@ export class CombatSpellRules {
      * @param attackerHits Hits achieved by the spell attack aster.
      * @param defenderHits Hits achieved by the defender against the spell attack.
      */
-    static modifyDamageAfterHit(defender: SR5Actor, spellType: SpellType, combatType: CombatSpellType, damage: DamageData, attackerHits: number, defenderHits: number): DamageData {
-
+    static modifyDamageAfterHit(
+        defender: SR5Actor,
+        spellType: SpellType,
+        combatType: CombatSpellType,
+        damage: DamageData,
+        attackerHits: number,
+        defenderHits: number,
+    ): DamageData {
         if (spellType === 'mana' && combatType === 'direct') {
-            return CombatSpellRules.modifyDirectDamageAfterHit(
-                defender,
-                damage,
-                attackerHits,
-                defenderHits);
+            return CombatSpellRules.modifyDirectDamageAfterHit(defender, damage, attackerHits, defenderHits);
         }
         if (spellType === 'physical' && combatType === 'direct') {
-            return CombatSpellRules.modifyDirectDamageAfterHit(
-                defender,
-                damage,
-                attackerHits,
-                defenderHits);
+            return CombatSpellRules.modifyDirectDamageAfterHit(defender, damage, attackerHits, defenderHits);
         }
         if (combatType === 'indirect') {
-            return CombatSpellRules.modifyIndirectDamageAfterHit(
-                defender,
-                damage,
-                attackerHits,
-                defenderHits);
+            return CombatSpellRules.modifyIndirectDamageAfterHit(defender, damage, attackerHits, defenderHits);
         }
 
         return foundry.utils.duplicate(damage);
@@ -137,7 +141,9 @@ export class CombatSpellRules {
      */
     static defenseTestAction(spellType: SpellType, combatType: CombatSpellType): MinimalActionData {
         if (spellType === '' || combatType === '')
-            console.warn(`Shadowrun5e | The given spell or combat spell types are empty and won't form a complete defense test action`);
+            console.warn(
+                `Shadowrun5e | The given spell or combat spell types are empty and won't form a complete defense test action`,
+            );
 
         const itemAction = DataDefaults.minimalActionData();
 

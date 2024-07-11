@@ -1,35 +1,34 @@
-import {SuccessTest, SuccessTestData} from "./SuccessTest";
-import {DataDefaults} from "../data/DataDefaults";
-import {ComplexFormRules} from "../rules/ComplexFormRules";
-import {PartsList} from "../parts/PartsList";
-import {FadeRules} from "../rules/FadeRules";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { DataDefaults } from '../data/DataDefaults';
+import { ComplexFormRules } from '../rules/ComplexFormRules';
+import { PartsList } from '../parts/PartsList';
+import { FadeRules } from '../rules/FadeRules';
 import DamageData = Shadowrun.DamageData;
 import MinimalActionData = Shadowrun.MinimalActionData;
 import ModifierTypes = Shadowrun.ModifierTypes;
 export interface ComplexFormTestData extends SuccessTestData {
-    level: number
-    fade: number
+    level: number;
+    fade: number;
 
-    fadeDamage: DamageData
+    fadeDamage: DamageData;
 }
 
 /**
  * Handles threading complex forms as described on SR5#251.
  */
 export class ComplexFormTest extends SuccessTest<ComplexFormTestData> {
-
     override _prepareData(data, options): any {
         data = super._prepareData(data, options);
 
         // Restore previous values or set defaults.
-        data.level =  data.level || 0;
+        data.level = data.level || 0;
         data.fade = data.face || 0;
         data.fadeDamage = data.fadeDamage || DataDefaults.damageData();
 
         return data;
     }
 
-    override get _dialogTemplate()  {
+    override get _dialogTemplate() {
         return 'systems/shadowrun5e/dist/templates/apps/dialogs/complexform-test-dialog.html';
     }
 
@@ -47,7 +46,7 @@ export class ComplexFormTest extends SuccessTest<ComplexFormTestData> {
     static override _getDefaultTestAction(): Partial<MinimalActionData> {
         return {
             skill: 'software',
-            attribute: 'resonance'
+            attribute: 'resonance',
         };
     }
 
@@ -97,8 +96,8 @@ export class ComplexFormTest extends SuccessTest<ComplexFormTestData> {
         this.data.limit.mod = PartsList.AddUniquePart(
             this.data.limit.mod,
             'SR5.Level',
-            ComplexFormRules.calculateLimit(level)
-        )
+            ComplexFormRules.calculateLimit(level),
+        );
     }
 
     override calculateBaseValues() {
@@ -139,6 +138,6 @@ export class ComplexFormTest extends SuccessTest<ComplexFormTestData> {
     async saveLastUsedLevel() {
         if (!this.item) return;
 
-        await this.item.setLastComplexFormLevel({value: this.data.level});
+        await this.item.setLastComplexFormLevel({ value: this.data.level });
     }
 }

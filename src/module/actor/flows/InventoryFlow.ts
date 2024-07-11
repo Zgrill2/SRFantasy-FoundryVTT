@@ -1,8 +1,8 @@
-import { SR5Actor } from "../SR5Actor";
-import { Helpers } from "../../helpers";
+import { SR5Actor } from '../SR5Actor';
+import { Helpers } from '../../helpers';
 import InventoryData = Shadowrun.InventoryData;
 import InventoriesData = Shadowrun.InventoriesData;
-import { SR5Item } from "../../item/SR5Item";
+import { SR5Item } from '../../item/SR5Item';
 
 /**
  * Handle all inventory related actions on an SR5Actor'.
@@ -14,7 +14,7 @@ import { SR5Item } from "../../item/SR5Item";
  * is where all items without an inventory will be placed. This default inventory won't be
  * stored on the actor. This allows for the inventory system to be drop in, without any
  * migration needed.
- * 
+ *
  * Furthermore a default Inventory (actor.allInventories) exists on all inventory actors
  * that has showAll set to true. An item can either be on no inventory, one custom inventory
  * or this allInventories, which will let it appear on all inventories.
@@ -44,7 +44,10 @@ export class InventoryFlow {
 
         name = InventoryFlow._sanitzeName(name);
 
-        if (name.length === 0) return console.error('Shadowrun 5e | The given name has been reduced to a zero length, please try another name');
+        if (name.length === 0)
+            return console.error(
+                'Shadowrun 5e | The given name has been reduced to a zero length, please try another name',
+            );
         if (this.exists(name)) return ui.notifications?.warn(game.i18n.localize('SR5.Errors.InventoryAlreadyExists'));
         if (this.actor.defaultInventory.name === name) return;
 
@@ -53,12 +56,12 @@ export class InventoryFlow {
                 [name]: {
                     name,
                     label: name,
-                    itemIds: []
-                }
-            }
+                    itemIds: [],
+                },
+            },
         };
 
-        console.debug(`Shadowrun 5e | Executing update to create inventory`, updateData)
+        console.debug(`Shadowrun 5e | Executing update to create inventory`, updateData);
         // Don't render to allow sheets to manage switching inventories.
         await this.actor.update(updateData, { render: false });
 
@@ -78,11 +81,12 @@ export class InventoryFlow {
             return ui.notifications?.error(game.i18n.localize('SR5.Errors.DefaultInventoryCantBeRemoved'));
 
         if (!this.exists(name))
-            return console.error(`Shadowrun 5e | Can't remove inventory ${name} or move its items over to inventory ${moveTo}`);
+            return console.error(
+                `Shadowrun 5e | Can't remove inventory ${name} or move its items over to inventory ${moveTo}`,
+            );
 
         // Move items over to default in case of missing target inventory.
-        if (!this.exists(moveTo))
-            moveTo = this.actor.defaultInventory.name;
+        if (!this.exists(moveTo)) moveTo = this.actor.defaultInventory.name;
 
         // Prepare deletion of inventory.
         const updateData = Helpers.getDeleteKeyUpdateData('system.inventories', name);
@@ -92,7 +96,7 @@ export class InventoryFlow {
             // @ts-expect-error
             updateData[`system.inventories.${moveTo}.itemIds`] = [
                 ...this.actor.system.inventories[name].itemIds,
-                ...this.actor.system.inventories[moveTo].itemIds
+                ...this.actor.system.inventories[moveTo].itemIds,
             ];
         }
 
@@ -102,15 +106,19 @@ export class InventoryFlow {
     }
 
     /**
- * Does this actor have the given inventory already?
- *
- * Note: Comparisons will only be against lower case.
- *
- * @param name The inventory name.
- */
+     * Does this actor have the given inventory already?
+     *
+     * Note: Comparisons will only be against lower case.
+     *
+     * @param name The inventory name.
+     */
     exists(name): boolean {
-        return name === Object.keys(this.actor.system.inventories)
-            .find(inventory => inventory.toLowerCase() === name.toLowerCase());
+        return (
+            name ===
+            Object.keys(this.actor.system.inventories).find(
+                (inventory) => inventory.toLowerCase() === name.toLowerCase(),
+            )
+        );
     }
 
     /**
@@ -144,7 +152,10 @@ export class InventoryFlow {
 
         newName = InventoryFlow._sanitzeName(newName);
 
-        if (newName.length === 0) return console.error('Shadowrun 5e | The given name has been reduced to a zero length, please try another name');
+        if (newName.length === 0)
+            return console.error(
+                'Shadowrun 5e | The given name has been reduced to a zero length, please try another name',
+            );
         if (this.actor.defaultInventory.name === current) return;
         if (current === newName) return;
 
@@ -158,8 +169,8 @@ export class InventoryFlow {
         const updateData = {
             'system.inventories': {
                 [`-=${current}`]: null,
-                [newName]: inventory
-            }
+                [newName]: inventory,
+            },
         };
 
         console.debug(`Shadowrun 5e | Executing update to rename inventory`, updateData);
@@ -196,28 +207,33 @@ export class InventoryFlow {
             if (item.id) this.actor.system.inventories[inventoryName].itemIds.push(item.id);
         }
 
-        const updateData = { [`system.inventories.${inventoryName}.itemIds`]: this.actor.system.inventories[inventoryName].itemIds };
+        const updateData = {
+            [`system.inventories.${inventoryName}.itemIds`]: this.actor.system.inventories[inventoryName].itemIds,
+        };
 
         console.debug(`Shadowrun 5e | Executing adding items to inventory`, updateData);
         await this.actor.update(updateData);
     }
 
     /**
-    * Remove the given item from one or any inventory it might be in.
-    *
-    * @param item The item to be removed.
-    * @param name The one inventory to remove it from. If empty, will search for inventory the item is in.
-    */
+     * Remove the given item from one or any inventory it might be in.
+     *
+     * @param item The item to be removed.
+     * @param name The one inventory to remove it from. If empty, will search for inventory the item is in.
+     */
     async removeItem(item: SR5Item, name?: string) {
-        console.debug(`Shadowrun 5e | Removing item from inventory (${name || this.actor.defaultInventory.name})`, item);
+        console.debug(
+            `Shadowrun 5e | Removing item from inventory (${name || this.actor.defaultInventory.name})`,
+            item,
+        );
 
         // The default inventory is not actual inventory.
         if (this.actor.defaultInventory.name === name) return;
 
         // Collect affected inventories.
-        const inventories: InventoryData[] = name ?
-            [this.actor.system.inventories[name]] :
-            Object.values(this.actor.system.inventories).filter(({ itemIds }) => itemIds.includes(item.id as string));
+        const inventories: InventoryData[] = name
+            ? [this.actor.system.inventories[name]]
+            : Object.values(this.actor.system.inventories).filter(({ itemIds }) => itemIds.includes(item.id as string));
 
         // No inventory found means, it's in the default inventory and no removal is needed.
         if (inventories.length === 0) return;
@@ -225,7 +241,7 @@ export class InventoryFlow {
         // Collect all inventories with remaining ids after the item's been removed.
         const updateData = {};
         for (const inventory of inventories) {
-            const itemIds = inventory.itemIds.filter(id => id !== item.id);
+            const itemIds = inventory.itemIds.filter((id) => id !== item.id);
             updateData[`system.inventories.${inventory.name}.itemIds`] = itemIds;
         }
 
@@ -235,7 +251,7 @@ export class InventoryFlow {
 
     /**
      * Sanitize inventory name to not use characters used within FoundryVTT Document#update and expandObject methods.
-     * 
+     *
      * @param name The inventory name, maybe containing prohibited characters
      */
     static _sanitzeName(name: string): string {
@@ -255,7 +271,7 @@ export class InventoryFlow {
 
     /**
      * Check if a remove would be allowed.
-     * 
+     *
      * @param name The current name of the to be removed invenotry
      * @returns true, when it's not and false when it is.
      */
@@ -267,10 +283,10 @@ export class InventoryFlow {
 
     /**
      * Check if the given item is within the given inventory.
-     * 
+     *
      * @param name Inventory name to check for item in
      * @param item Item to check for in inventory
-     * @returns 
+     * @returns
      */
     isItemInInventory(name: string, item: SR5Item) {
         const inventory = this.actor.inventory.getOne(name);

@@ -1,9 +1,4 @@
 /// <reference path="../Shadowrun.ts" />
 declare namespace Shadowrun {
-    export interface SpritePowerData extends
-        ActionPartData,
-        ImportFlags,
-        DescriptionPartData {
-
-    }
+    export interface SpritePowerData extends ActionPartData, ImportFlags, DescriptionPartData {}
 }

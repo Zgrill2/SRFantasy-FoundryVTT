@@ -1,12 +1,12 @@
 /**
  * Handle all things related to the action template (template.json)
  */
-import {SR5Actor} from "../../actor/SR5Actor";
-import {Helpers} from "../../helpers";
-import {SR5Item} from "../SR5Item";
-import {PartsList} from "../../parts/PartsList";
-import { SR5 } from "../../config";
-import { DataDefaults } from "../../data/DataDefaults";
+import { SR5Actor } from '../../actor/SR5Actor';
+import { Helpers } from '../../helpers';
+import { SR5Item } from '../SR5Item';
+import { PartsList } from '../../parts/PartsList';
+import { SR5 } from '../../config';
+import { DataDefaults } from '../../data/DataDefaults';
 
 export class ActionFlow {
     /**
@@ -27,10 +27,10 @@ export class ActionFlow {
         }
 
         this._applyModifiableValue(damage, actor);
-        damage.value = Helpers.calcTotal(damage, {min: 0});
+        damage.value = Helpers.calcTotal(damage, { min: 0 });
 
         this._applyModifiableValue(damage.ap, actor);
-        damage.ap.value = Helpers.calcTotal(damage.ap, {min: 0});
+        damage.ap.value = Helpers.calcTotal(damage.ap, { min: 0 });
 
         return damage;
     }
@@ -40,22 +40,24 @@ export class ActionFlow {
         if (!attribute) return;
 
         if (!value.base_formula_operator) {
-            console.error(`Unsupported formula operator: '${value.base_formula_operator}' used. Falling back to 'add'.`);
+            console.error(
+                `Unsupported formula operator: '${value.base_formula_operator}' used. Falling back to 'add'.`,
+            );
             value.base_formula_operator = 'add';
         }
 
         // Avoid altering base OR value fields and raising the resulting damage on multiple function calls.
         switch (value.base_formula_operator) {
-            case "add":
+            case 'add':
                 PartsList.AddUniquePart(value.mod, attribute.label, attribute.value);
                 break;
-            case "subtract":
+            case 'subtract':
                 PartsList.AddUniquePart(value.mod, attribute.label, -attribute.value);
                 break;
-            case "multiply":
-                PartsList.AddUniquePart(value.mod, 'SR5.Value', (value.base * attribute.value) - value.base);
+            case 'multiply':
+                PartsList.AddUniquePart(value.mod, 'SR5.Value', value.base * attribute.value - value.base);
                 break;
-            case "divide":
+            case 'divide':
                 // Remove base from value by modifying.
                 PartsList.AddUniquePart(value.mod, 'SR5.BaseValue', value.base * -1);
                 // Add division result as modifier on zero.
@@ -76,15 +78,15 @@ export class ActionFlow {
             actorId: actor.id || '',
             itemId: item.id || '',
             itemName: item.name || '',
-            itemType: item.type
-        }
+            itemType: item.type,
+        };
     }
 
     /**
      * Does an action based damage contain any damaging content.
-     * 
+     *
      * @param damage Any Shadowrun.DamageData taken from an template action section
-     * 
+     *
      * @returns true, when the user configured damage contains any parts.
      */
     static hasDamage(damage: Shadowrun.DamageData): boolean {
@@ -98,7 +100,7 @@ export class ActionFlow {
 
     /**
      * Collect all active skills either from global context or from within a given document.
-     * 
+     *
      * @param actor An optional actor to retrieve skills from (including custom skills)
      * @param skillName An optional skill that should be included in the selection, even if it's missing from the global list.
      * @returns Sorted list of skills for sheet usage.
@@ -121,7 +123,8 @@ export class ActionFlow {
 
         // Inject this items custom skill into the global skill list.
         const activeSkills = actor.getActiveSkills();
-        if (skillName && !activeSkills[skillName]) activeSkills[skillName] = DataDefaults.skillData({name: skillName});
+        if (skillName && !activeSkills[skillName])
+            activeSkills[skillName] = DataDefaults.skillData({ name: skillName });
 
         const skills = Helpers.sortSkills(actor.getActiveSkills());
         for (const [id, skill] of Object.entries(skills)) {

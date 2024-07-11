@@ -1,5 +1,5 @@
-import {DamageApplicationDialog} from "../../apps/dialogs/DamageApplicationDialog";
-import {SR5Actor} from "../SR5Actor";
+import { DamageApplicationDialog } from '../../apps/dialogs/DamageApplicationDialog';
+import { SR5Actor } from '../SR5Actor';
 import DamageData = Shadowrun.DamageData;
 import DamageType = Shadowrun.DamageType;
 import DamageElement = Shadowrun.DamageElement;
@@ -7,14 +7,13 @@ import { Helpers } from '../../helpers';
 import { TestCreator } from '../../tests/TestCreator';
 
 export class DamageApplicationFlow {
-
     /**
      * Runs the flow to apply damage to multiple actors with user interaction
      * This will also take care of changing the damage type if necessary
      * @param actors The actors that are affected
      * @param damage The damage the actors will receive
      */
-    async runApplyDamage(actors: SR5Actor[], damage : DamageData) {
+    async runApplyDamage(actors: SR5Actor[], damage: DamageData) {
         // Show user the affected actors and the damage values
         const damageApplicationDialog = await new DamageApplicationDialog(actors, damage);
         await damageApplicationDialog.select();
@@ -32,7 +31,7 @@ export class DamageApplicationFlow {
      *
      * @param damage The damage to apply. Stun damage will be turned to physical for grunts.
      */
-    async applyDamageToActor(actor : SR5Actor, damage: DamageData) {
+    async applyDamageToActor(actor: SR5Actor, damage: DamageData) {
         if (damage.value <= 0) {
             return;
         }
@@ -44,7 +43,7 @@ export class DamageApplicationFlow {
         await actor.addDamage(damage);
     }
 
-    private changeStunToPhysicalForGrunts(actor : SR5Actor, damage: DamageData): DamageData {
+    private changeStunToPhysicalForGrunts(actor: SR5Actor, damage: DamageData): DamageData {
         const updatedDamage = foundry.utils.duplicate(damage) as DamageData;
         if (!actor.isGrunt()) {
             return updatedDamage;
@@ -59,14 +58,14 @@ export class DamageApplicationFlow {
     }
 
     static handleRenderChatMessage(app: ChatMessage, html, data) {
-        html.on('click', '.apply-damage', event => DamageApplicationFlow.chatMessageActionApplyDamage(html, event));
+        html.on('click', '.apply-damage', (event) => DamageApplicationFlow.chatMessageActionApplyDamage(html, event));
     }
 
     /**
-     * When triggered from a chat message 
-     * @param html 
-     * @param event 
-     * @returns 
+     * When triggered from a chat message
+     * @param html
+     * @param event
+     * @returns
      */
     static async chatMessageActionApplyDamage(html, event) {
         event.stopPropagation();
@@ -86,18 +85,18 @@ export class DamageApplicationFlow {
             const messageId = html.data('messageId');
 
             const test = await TestCreator.fromMessage(messageId);
-            if (!test) return
+            if (!test) return;
             await test.populateDocuments();
 
             // If targeting is available, use that.
-            if (test.hasTargets) test.targets.forEach(target => actors.push(target.actor as SR5Actor));
+            if (test.hasTargets) test.targets.forEach((target) => actors.push(target.actor as SR5Actor));
             // Otherwise apply to the actor casting the damage.
             else actors.push(test.actor as SR5Actor);
         }
 
         // Abort if no actors could be collected.
         if (actors.length === 0) {
-            ui.notifications?.warn(game.i18n.localize("SR5.Warnings.TokenSelectionNeeded"));
+            ui.notifications?.warn(game.i18n.localize('SR5.Warnings.TokenSelectionNeeded'));
             return;
         }
 

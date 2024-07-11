@@ -1,4 +1,4 @@
-import {CORE_FLAGS, CORE_NAME} from './constants';
+import { CORE_FLAGS, CORE_NAME } from './constants';
 
 /**
  * The legacy chat message approach of the system uses a generic chat message to display roll and item information.
@@ -8,7 +8,7 @@ import {CORE_FLAGS, CORE_NAME} from './constants';
  * @param template The dist path to be used as a template file.
  * @param templateData An untyped object carrying data to display. The template should itself check for what properties are available and only renders what's given.
  */
-export async function createChatMessage(template: string, templateData): Promise<ChatMessage|null> {
+export async function createChatMessage(template: string, templateData): Promise<ChatMessage | null> {
     const chatData = await createChatData(template, templateData);
     const message = await ChatMessage.create(chatData);
 
@@ -27,11 +27,11 @@ const createChatData = async (template: string, templateData) => {
         speaker: {
             actor: templateData.actor?.id,
             token: templateData.token?.id,
-            alias: game.user?.name
+            alias: game.user?.name,
         },
         item: templateData.item,
         content: html,
-        rollMode: game.settings.get(CORE_NAME, CORE_FLAGS.RollMode)
+        rollMode: game.settings.get(CORE_NAME, CORE_FLAGS.RollMode),
     };
 
     // @ts-expect-error
@@ -48,10 +48,10 @@ export async function createItemChatMessage(options) {
 function createChatTemplateData(options) {
     // field extraction is explicit to enforce visible data flow to ensure clean data.
     // NOTE: As soon as clear data dynamic data flow can be established, this should be removed for a simple {...options}
-    let {actor, item, description, tests} = options;
+    let { actor, item, description, tests } = options;
 
     const token = actor?.getToken();
-    const title = game.i18n.localize("SR5.Description");
+    const title = game.i18n.localize('SR5.Description');
 
     return {
         title,
@@ -59,6 +59,6 @@ function createChatTemplateData(options) {
         token,
         item,
         description,
-        tests
-    }
+        tests,
+    };
 }

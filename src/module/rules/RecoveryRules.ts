@@ -6,5 +6,5 @@ export const RecoveryRules = {
      */
     canHealPhysicalDamage: (stunBoxes: number): boolean => {
         return stunBoxes === 0;
-    }
-}
+    },
+};

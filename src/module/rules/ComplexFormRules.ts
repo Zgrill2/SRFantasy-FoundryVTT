@@ -10,11 +10,11 @@ export const ComplexFormRules = {
      * Based on the minimal level value use this as the minimal usable level value.
      * @param fadeModifier The fade modifier defined within the complex forms action configuration.
      */
-    calculateMinimalLevel: function(fadeModifier: number): number {
+    calculateMinimalLevel: function (fadeModifier: number): number {
         return Math.max(1, this.minimalFade - fadeModifier);
     },
 
-    calculateLevel: function(level: number): number {
+    calculateLevel: function (level: number): number {
         return Math.max(1, level);
     },
 
@@ -22,7 +22,7 @@ export const ComplexFormRules = {
      * The threading test limit as defined in SR5#250 Thread Complex Form action.
      * @param level
      */
-    calculateLimit: function(level: number): number {
+    calculateLimit: function (level: number): number {
         return level;
     },
 
@@ -32,8 +32,8 @@ export const ComplexFormRules = {
      * @param level The level chosen to thread this complex form.
      * @param fadeModifier The action modifier for fade damage.
      */
-    calculateFade: function(level: number, fadeModifier: number): number {
+    calculateFade: function (level: number, fadeModifier: number): number {
         const fade = level + fadeModifier;
         return Math.max(this.minimalFade, fade);
-    }
-}
+    },
+};

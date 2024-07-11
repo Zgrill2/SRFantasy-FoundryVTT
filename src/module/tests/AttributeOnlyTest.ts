@@ -1,12 +1,11 @@
-import {SuccessTest, SuccessTestData} from "./SuccessTest";
-import {PartsList} from "../parts/PartsList";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { PartsList } from '../parts/PartsList';
 
 export interface AttributeOnlyTestData extends SuccessTestData {
     // Selection for attributes used. attribute1 will be preselected.
-    attribute1: string
-    attribute2: string
+    attribute1: string;
+    attribute2: string;
 }
-
 
 /**
  * Handle custom attribute-only tests as defined in SR5#152.
@@ -15,7 +14,7 @@ export interface AttributeOnlyTestData extends SuccessTestData {
  * Main difference is the user ability to change attributes before rolling dice.
  */
 export class AttributeOnlyTest extends SuccessTest {
-    override data: AttributeOnlyTestData
+    override data: AttributeOnlyTestData;
 
     override get _dialogTemplate() {
         return 'systems/shadowrun5e/dist/templates/apps/dialogs/attribute-only-test-dialog.html';

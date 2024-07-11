@@ -1,17 +1,16 @@
 import { CharacterPrep } from './CharacterPrep';
-import {InitiativePrep} from './functions/InitiativePrep';
-import {ModifiersPrep} from './functions/ModifiersPrep';
-import {MatrixPrep} from './functions/MatrixPrep';
-import {ItemPrep} from './functions/ItemPrep';
-import {SkillsPrep} from './functions/SkillsPrep';
-import {LimitsPrep} from './functions/LimitsPrep';
-import {MovementPrep} from './functions/MovementPrep';
-import {WoundsPrep} from './functions/WoundsPrep';
-import {AttributesPrep} from './functions/AttributesPrep';
-import {SR5ItemDataWrapper} from "../../data/SR5ItemDataWrapper";
+import { InitiativePrep } from './functions/InitiativePrep';
+import { ModifiersPrep } from './functions/ModifiersPrep';
+import { MatrixPrep } from './functions/MatrixPrep';
+import { ItemPrep } from './functions/ItemPrep';
+import { SkillsPrep } from './functions/SkillsPrep';
+import { LimitsPrep } from './functions/LimitsPrep';
+import { MovementPrep } from './functions/MovementPrep';
+import { WoundsPrep } from './functions/WoundsPrep';
+import { AttributesPrep } from './functions/AttributesPrep';
+import { SR5ItemDataWrapper } from '../../data/SR5ItemDataWrapper';
 import CritterData = Shadowrun.CritterData;
 import { GruntPrep } from './functions/GruntPrep';
-
 
 export class CritterPrep {
     static prepareBaseData(system: CritterData) {
@@ -24,7 +23,7 @@ export class CritterPrep {
     static prepareDerivedData(system: CritterData, items: SR5ItemDataWrapper[]) {
         AttributesPrep.prepareAttributes(system);
         AttributesPrep.prepareEssence(system, items);
-        
+
         SkillsPrep.prepareSkills(system);
 
         ItemPrep.prepareArmor(system, items);

@@ -6,13 +6,13 @@ import { SR5Item } from './item/SR5Item';
  * @param {number} slot     The hotbar slot to use
  * @returns {Promise}
  */
-import {Helpers} from "./helpers";
+import { Helpers } from './helpers';
 import SkillField = Shadowrun.SkillField;
-import {SR5Actor} from "./actor/SR5Actor";
+import { SR5Actor } from './actor/SR5Actor';
 
 /**
  * Create a roll item action macro when an item is dropped from actor sheet onto the macro hotbar.
- * 
+ *
  * @param dropData Foundry DropData
  * @param slot The slot to be dropped into on the Macro bar
  */
@@ -20,7 +20,11 @@ export async function createItemMacro(dropData, slot) {
     if (!game || !game.macros) return;
 
     const item = await SR5Item.fromDropData(dropData);
-    if (!(item instanceof SR5Item)) return console.error(`Shadowrun 5e | Macro Drop expected an item document but got a different document type`, item);
+    if (!(item instanceof SR5Item))
+        return console.error(
+            `Shadowrun 5e | Macro Drop expected an item document but got a different document type`,
+            item,
+        );
 
     const command = `game.shadowrun5e.rollItemMacro("${item.name}");`;
     let macro = game.macros.contents.find((m) => m.name === item.name);
@@ -69,14 +73,14 @@ export function rollItemMacro(itemName) {
  * @param data A data object for skill macros.
  * @param slot The hotbar slot to use.
  */
-export async function createSkillMacro(data: {skillId: string, skill: SkillField}, slot) {
+export async function createSkillMacro(data: { skillId: string; skill: SkillField }, slot) {
     if (!game.macros || !game.user) return;
 
-    const {skillId, skill} = data;
+    const { skillId, skill } = data;
 
     // Abort when skill macro already exists. This is done for consistency with createItemMacro behavior.
     const name = Helpers.getSkillLabelOrName(skill);
-    const existingMacro = game.macros.contents.find(macro => macro.name === name);
+    const existingMacro = game.macros.contents.find((macro) => macro.name === name);
     if (existingMacro) return;
 
     // Setup macro data.
@@ -102,9 +106,9 @@ export async function rollSkillMacro(skillLabel) {
     // Fetch the actor from the current users token or the actor collection.
     const speaker = ChatMessage.getSpeaker();
     if (!speaker) return;
-    const actor =  (game.actors.tokens[speaker.token as string] || game.actors.get(speaker.actor as string)) as SR5Actor
+    const actor = (game.actors.tokens[speaker.token as string] || game.actors.get(speaker.actor as string)) as SR5Actor;
 
     if (!actor) return;
-    return await actor.rollSkill(skillLabel, {byLabel: true});
+    return await actor.rollSkill(skillLabel, { byLabel: true });
     // TODO: Macro for skills may need their own TestCreate.fromSkillMacro... as they need getSkill('Label', {byLabel: true});
 }

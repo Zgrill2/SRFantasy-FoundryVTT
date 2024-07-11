@@ -7,7 +7,10 @@ export class SpellParserBase extends ItemParserBase<SpellItemData> {
     public override Parse(jsonData: object, item: SpellItemData, jsonTranslation?: object): SpellItemData {
         item.name = ImportHelper.StringValue(jsonData, 'name');
 
-        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(jsonData, 'page')}`;
+        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(
+            jsonData,
+            'page',
+        )}`;
         item.system.category = ImportHelper.StringValue(jsonData, 'category').toLowerCase() as SpellCateogry;
 
         let damage = ImportHelper.StringValue(jsonData, 'damage');
@@ -52,7 +55,10 @@ export class SpellParserBase extends ItemParserBase<SpellItemData> {
         if (jsonTranslation) {
             const origName = ImportHelper.StringValue(jsonData, 'name');
             item.name = ImportHelper.MapNameToTranslation(jsonTranslation, origName);
-            item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                jsonData,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
         }
 
         return item;

@@ -1,7 +1,7 @@
 import SkillEditFormData = Shadowrun.SkillEditFormData;
-import {SR5Actor} from "../../actor/SR5Actor";
-import {SR5} from "../../config";
-import { LinksHelpers } from "../../utils/links";
+import { SR5Actor } from '../../actor/SR5Actor';
+import { SR5 } from '../../config';
+import { LinksHelpers } from '../../utils/links';
 import { Translation } from '../../utils/strings';
 
 export class SkillEditSheet extends DocumentSheet {
@@ -91,14 +91,13 @@ export class SkillEditSheet extends DocumentSheet {
             name,
             attribute,
             canDefault,
-            link
+            link,
         };
 
         // Avoid re-applying active effects without actual base level changes.
         // An actual base level change will come without an active effect, since it's user input.
         if (event.currentTarget.name === 'skill.base') updateData[this._updateString()].base = base;
     }
-
 
     /** @override */
     // @ts-expect-error // SkillEditSheet vs DocumentSheet typing, I don't quite get it...
@@ -185,7 +184,7 @@ export class SkillEditSheet extends DocumentSheet {
     /** Enhance attribute selection by an empty option to allow newly created skills to have no attribute selected.
      */
     _getSkillAttributesForSelect() {
-        return {...SR5.attributes, '': ''};
+        return { ...SR5.attributes, '': '' };
     }
 
     _allowSkillNameEditing(): boolean {

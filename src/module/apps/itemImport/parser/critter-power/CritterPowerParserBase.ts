@@ -4,10 +4,17 @@ import { ItemParserBase } from '../item/ItemParserBase';
 import CritterPowerItemData = Shadowrun.CritterPowerItemData;
 
 export class CritterPowerParserBase extends ItemParserBase<CritterPowerItemData> {
-    public override Parse(jsonData: object, item: CritterPowerItemData, jsonTranslation?: object): CritterPowerItemData {
+    public override Parse(
+        jsonData: object,
+        item: CritterPowerItemData,
+        jsonTranslation?: object,
+    ): CritterPowerItemData {
         item.name = ImportHelper.StringValue(jsonData, 'name');
 
-        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(jsonData, 'page')}`;
+        item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.StringValue(
+            jsonData,
+            'page',
+        )}`;
         item.system.category = ImportHelper.StringValue(jsonData, 'category').toLowerCase() as CritterPowerCategory;
 
         let duration = ImportHelper.StringValue(jsonData, 'duration');
@@ -20,7 +27,7 @@ export class CritterPowerParserBase extends ItemParserBase<CritterPowerItemData>
         } else if (duration === 'Permanent') {
             item.system.duration = 'permanent';
         } else {
-              item.system.duration = 'special';
+            item.system.duration = 'special';
         }
 
         let range = ImportHelper.StringValue(jsonData, 'range');
@@ -31,9 +38,9 @@ export class CritterPowerParserBase extends ItemParserBase<CritterPowerItemData>
         } else if (range === 'LOS (A)') {
             item.system.range = 'los_a';
         } else if (range === 'Self') {
-           item.system.range = 'self';
+            item.system.range = 'self';
         } else {
-          item.system.range = 'special';
+            item.system.range = 'special';
         }
 
         let type = ImportHelper.StringValue(jsonData, 'type');
@@ -46,7 +53,10 @@ export class CritterPowerParserBase extends ItemParserBase<CritterPowerItemData>
         if (jsonTranslation) {
             const origName = ImportHelper.StringValue(jsonData, 'name');
             item.name = ImportHelper.MapNameToTranslation(jsonTranslation, origName);
-            item.system.description.source = `${ImportHelper.StringValue(jsonData, 'source')} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                jsonData,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(jsonTranslation, origName)}`;
         }
 
         return item;

@@ -1,12 +1,5 @@
 declare namespace Shadowrun {
-    export interface MetamagicData extends
-        MetamagicPartData,
-        ActionPartData,
-        ImportFlags,
-        DescriptionPartData {
+    export interface MetamagicData extends MetamagicPartData, ActionPartData, ImportFlags, DescriptionPartData {}
 
-    }
-
-    export interface MetamagicPartData {
-    }
+    export interface MetamagicPartData {}
 }

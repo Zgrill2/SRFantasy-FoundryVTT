@@ -4,21 +4,18 @@ import { TestDocuments, TestOptions } from './SuccessTest';
 import { RitualSpellcastingTest } from './RitualSpellcastingTest';
 import { Translation } from '../utils/strings';
 
-
-interface OpposedRitualTestData extends OpposedTestData {
-
-}
+interface OpposedRitualTestData extends OpposedTestData {}
 
 /**
  * The opposed test of summoning a spirit.
- * 
+ *
  * The summoner is the active actor and the spirit is the opposed actor.
  */
 export class OpposedRitualTest extends OpposedTest<OpposedRitualTestData> {
-    public override against: RitualSpellcastingTest
+    public override against: RitualSpellcastingTest;
 
     constructor(data, documents?: TestDocuments, options?: TestOptions) {
-        super(data, documents, options);       
+        super(data, documents, options);
 
         this._assertCorrectAgainst();
     }
@@ -27,11 +24,14 @@ export class OpposedRitualTest extends OpposedTest<OpposedRitualTestData> {
      * Prohibit opposing any other test than SpellCastingTest
      */
     _assertCorrectAgainst() {
-        if (this.against.type !== 'RitualSpellcastingTest') throw new Error(`${this.constructor.name} can only oppose RitualSpellcastingTest but is opposing a ${this.against.type}`);
+        if (this.against.type !== 'RitualSpellcastingTest')
+            throw new Error(
+                `${this.constructor.name} can only oppose RitualSpellcastingTest but is opposing a ${this.against.type}`,
+            );
     }
 
     override get _chatMessageTemplate(): string {
-        return 'systems/shadowrun5e/dist/templates/rolls/success-test-message.html'
+        return 'systems/shadowrun5e/dist/templates/rolls/success-test-message.html';
     }
 
     /**
@@ -76,7 +76,7 @@ export class OpposedRitualTest extends OpposedTest<OpposedRitualTestData> {
 
     async updateRitualTestForFollowup() {
         // Finalize the original test values.
-        let opposingHits = this.hits.value
+        let opposingHits = this.hits.value;
 
         this.against.calcDrain(opposingHits);
         await this.against.saveToMessage();

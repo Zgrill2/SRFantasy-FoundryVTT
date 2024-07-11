@@ -1,19 +1,17 @@
-import {SR5BaseActorSheet} from "./SR5BaseActorSheet";
+import { SR5BaseActorSheet } from './SR5BaseActorSheet';
 import SR5ActorSheetData = Shadowrun.SR5ActorSheetData;
 import MarkedDocument = Shadowrun.MarkedDocument;
-import { Helpers } from "../../helpers";
-import { SR5 } from "../../config";
-
+import { Helpers } from '../../helpers';
+import { SR5 } from '../../config';
 
 export interface CharacterSheetData extends SR5ActorSheetData {
-    awakened: boolean
-    emerged: boolean
-    woundTolerance: number
-    markedDocuments: MarkedDocument[]
-    handledItemTypes: string[]
-    inventory: Record<string, any>
+    awakened: boolean;
+    emerged: boolean;
+    woundTolerance: number;
+    markedDocuments: MarkedDocument[];
+    handledItemTypes: string[];
+    inventory: Record<string, any>;
 }
-
 
 export class SR5CharacterSheet extends SR5BaseActorSheet {
     /**
@@ -41,7 +39,7 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
             'metamagic',
             'critter_power',
             'call_in_action',
-            'ritual'
+            'ritual',
         ];
     }
 
@@ -55,21 +53,11 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
     override getInventoryItemTypes(): string[] {
         const itemTypes = super.getInventoryItemTypes();
 
-        return [
-            ...itemTypes,
-            'weapon',
-            'ammo',
-            'armor',
-            'bioware',
-            'cyberware',
-            'device',
-            'equipment',
-            'modification'
-        ];
+        return [...itemTypes, 'weapon', 'ammo', 'armor', 'bioware', 'cyberware', 'device', 'equipment', 'modification'];
     }
 
     override async getData(options) {
-        const data = await super.getData(options) as CharacterSheetData;
+        const data = (await super.getData(options)) as CharacterSheetData;
 
         // Character actor types are matrix actors.
         super._prepareMatrixAttributes(data);
@@ -94,22 +82,22 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
      *
      * @param type The call in action sub type.
      */
-    async _onCallInActionCreate(type: 'summoning'|'compilation') {
+    async _onCallInActionCreate(type: 'summoning' | 'compilation') {
         // Determine actor type from sub item type.
         const typeToActorType = {
-            'summoning': 'spirit',
-            'compilation': 'sprite'
-        }
+            summoning: 'spirit',
+            compilation: 'sprite',
+        };
         const actor_type = typeToActorType[type];
         if (!actor_type) return console.error('Shadowrun 5e | Call In Action Unknown actor type during creation');
 
         // TODO: Add translation for item names...
         const itemData = {
-            name: `${game.i18n.localize('SR5.New')} ${Helpers.label(type)}`,
-            type: 'call_in_action',
-            'system.actor_type': actor_type
+            'name': `${game.i18n.localize('SR5.New')} ${Helpers.label(type)}`,
+            'type': 'call_in_action',
+            'system.actor_type': actor_type,
         };
 
-        await this.actor.createEmbeddedDocuments('Item',  [itemData], {renderSheet: true});
+        await this.actor.createEmbeddedDocuments('Item', [itemData], { renderSheet: true });
     }
 }

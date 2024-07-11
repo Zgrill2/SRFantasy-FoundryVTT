@@ -1,7 +1,6 @@
 declare namespace Shadowrun {
-
     export type DescriptionPartData = {
-        description: DescriptionData
+        description: DescriptionData;
     };
 
     export type DescriptionData = {

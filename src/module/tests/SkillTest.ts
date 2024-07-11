@@ -4,14 +4,13 @@ import { SuccessTest, SuccessTestData, TestOptions } from './SuccessTest';
 import { Translation } from '../utils/strings';
 
 export interface SkillTestData extends SuccessTestData {
-    attribute: string
-    limitSelection: string
+    attribute: string;
+    limitSelection: string;
 }
-
 
 /**
  * Skill tests allow users to change the connected attribute and limit.
- * 
+ *
  * Rule wise a skill test doesn't alter a default success test.
  */
 export class SkillTest extends SuccessTest<SkillTestData> {
@@ -38,7 +37,9 @@ export class SkillTest extends SuccessTest<SkillTestData> {
      */
     override get title() {
         if (!this.actor) return super.title;
-        return `${game.i18n.localize(this.actor.getSkillLabel(this.data.action.skill) as Translation)} ${game.i18n.localize('SR5.Test')}`;
+        return `${game.i18n.localize(
+            this.actor.getSkillLabel(this.data.action.skill) as Translation,
+        )} ${game.i18n.localize('SR5.Test')}`;
     }
 
     /**
@@ -77,8 +78,7 @@ export class SkillTest extends SuccessTest<SkillTestData> {
         const usedAttribute = this.actor.getAttribute(selectedAttribute);
         const lastUsedAttribute = this.actor.getAttribute(this.lastUsedAttribute);
 
-        if (!usedAttribute || !lastUsedAttribute) return; 
-
+        if (!usedAttribute || !lastUsedAttribute) return;
 
         const pool = new PartsList<number>(this.pool.mod);
 

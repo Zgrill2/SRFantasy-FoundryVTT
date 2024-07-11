@@ -10,7 +10,7 @@ export class LanguageSkillEditSheet extends SkillEditSheet {
         return foundry.utils.mergeObject(super.getData(), {
             editable_name: true,
             editable_canDefault: false,
-            editable_attribute: false
+            editable_attribute: false,
         } as SkillEditFormData);
     }
 

@@ -1,6 +1,6 @@
 import { Helpers } from '../../../helpers';
-import {SR} from "../../../constants";
-import {SR5} from "../../../config";
+import { SR } from '../../../constants';
+import { SR5 } from '../../../config';
 import AttributeField = Shadowrun.AttributeField;
 import ActorTypesData = Shadowrun.ShadowrunActorDataData;
 import { PartsList } from '../../../parts/PartsList';
@@ -12,7 +12,7 @@ export class AttributesPrep {
      * Prepare actor data for attributes
      */
     static prepareAttributes(system: ActorTypesData) {
-        const {attributes} = system;
+        const { attributes } = system;
 
         // always have special attributes set to hidden
         attributes.magic.hidden = true;
@@ -26,7 +26,7 @@ export class AttributesPrep {
             // needed to be able to migrate things correctly
             if (name === 'edge' && attribute['uses'] === undefined) return;
 
-            AttributesPrep.prepareAttribute(name, attribute)
+            AttributesPrep.prepareAttribute(name, attribute);
         }
     }
 
@@ -65,7 +65,7 @@ export class AttributesPrep {
 
     /**
      * Calculate the Essence attribute and it's modifiers.
-     * 
+     *
      * @param system A system actor having an essence attribute
      * @param items The items that might cause an essence loss.
      */
@@ -75,7 +75,7 @@ export class AttributesPrep {
 
         // Modify essence by actor modifer
         const parts = new PartsList<number>(system.attributes.essence.mod);
-        
+
         const essenceMod = system.modifiers['essence'];
         if (essenceMod && !Number.isNaN(essenceMod)) {
             parts.addUniquePart('SR5.Bonus', Number(essenceMod));

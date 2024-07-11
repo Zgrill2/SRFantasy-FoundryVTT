@@ -1,16 +1,15 @@
 declare namespace Shadowrun {
     export type RangesTemplateData = {
-        short: RangeTemplateData,
-        medium: RangeTemplateData,
-        long: RangeTemplateData,
-        extreme: RangeTemplateData,
-    }
+        short: RangeTemplateData;
+        medium: RangeTemplateData;
+        long: RangeTemplateData;
+        extreme: RangeTemplateData;
+    };
 
-    export type RangeTemplateData =
-        LabelField &
+    export type RangeTemplateData = LabelField &
         ModifierField & {
-        distance: number
-    }
+            distance: number;
+        };
 
     /**
      * Ranges of targeted TokenDocuments.
@@ -18,10 +17,10 @@ declare namespace Shadowrun {
      *       to not store that document when calling SuccessTest.toJSON()
      */
     export interface TargetRangeTemplateData {
-        tokenUuid: string
-        name: string
-        distance: number
-        unit: string
-        range: RangeTemplateData
+        tokenUuid: string;
+        name: string;
+        distance: number;
+        unit: string;
+        range: RangeTemplateData;
     }
 }

@@ -1,30 +1,30 @@
-import { SR5Actor } from "../actor/SR5Actor";
-import { SR5 } from "../config";
-import { SYSTEM_NAME } from "../constants";
-import { ActionFlow } from "../item/flows/ActionFlow";
-import { createTagifyOnInput } from "../utils/sheets";
-import { Translation } from "../utils/strings";
-import { SR5ActiveEffect } from "./SR5ActiveEffect";
+import { SR5Actor } from '../actor/SR5Actor';
+import { SR5 } from '../config';
+import { SYSTEM_NAME } from '../constants';
+import { ActionFlow } from '../item/flows/ActionFlow';
+import { createTagifyOnInput } from '../utils/sheets';
+import { Translation } from '../utils/strings';
+import { SR5ActiveEffect } from './SR5ActiveEffect';
 
 /**
  * Shadowrun system alters some behaviors of Active Effects, making a custom ActiveEffectConfig necessary.
- * 
+ *
  * NOTE: A ActiveEffectConfig class is comparable to a DocumentSheet class, but Foundry differentiates between
  * 'Config' and 'Sheet'.
- * 
+ *
  * The ActiveEffectConfig differs from other sheets in updating / submitting behavior due to changes needing a
- * multi step configuration process. If a change is partially configured it might break the underlying data structure 
+ * multi step configuration process. If a change is partially configured it might break the underlying data structure
  * and sheet rendering. To prevent this, the config sheet is rendered with a manually triggered 'submit' button.
- * 
+ *
  * The Shadowrun5e system uses ActiveEffects for more than only altering actor data.
  * Besides the default 'actor' apply-to type others are also supported, with all changes of an effect applying to that target only.
- * 
- * Some apply-to types follow the default key-value change structure of altering data, while others (modifiers) allow defining 
+ *
+ * Some apply-to types follow the default key-value change structure of altering data, while others (modifiers) allow defining
  * custom handlers to apply complex behaviors to targets.
- * 
+ *
  * Each apply-to target defines what effects are applicable to it and how changes are to be applied. These differing behaviors
  * are defined in <>EffectsFlow.ts or <>ChangeFlow.ts and follow the Foundry interface of 'apply' and 'allApplicableEffects' methods.
- * 
+ *
  * While actors apply effects as part of their prepareData flow the modifier apply-to target applies effects as part of the calculation of their
  * situational modifiers and others still can behave differently.
  */
@@ -36,7 +36,7 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
     }
 
     override async getData(options?: Application.RenderOptions): Promise<ActiveEffectConfig.Data> {
-        const data = await super.getData(options) as any;
+        const data = (await super.getData(options)) as any;
 
         data.modes = this.applyModifyLabelToCustomMode(data.modes);
 
@@ -62,25 +62,26 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
 
     /**
      * Handle adding a new change to the changes array.
-     * 
+     *
      * This overrides the Foundry default behavior of using ADD as default.
      * Shadowrun mostly uses MODIFY, so we use that as default.
-     * 
+     *
      * @private
      */
     override async _addEffectChange(): Promise<this> {
         const idx = this.document.changes.length;
         return this.submit({
-            preventClose: true, updateData: {
-                [`changes.${idx}`]: { key: "", mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: "" }
-            }
+            preventClose: true,
+            updateData: {
+                [`changes.${idx}`]: { key: '', mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM, value: '' },
+            },
         }) as unknown as this;
     }
 
     /**
      * Assure both no changes are present before changing the applyTo type
      * and re-render the sheet to refresh prepared change value options.
-     * 
+     *
      * This is to avoid configured changes breaking when changing to other applyTo types
      * that do not support the same change keys.
      */
@@ -96,16 +97,16 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
         } else {
             // Make sure applyTo is saved but also save all other form data on sheet.
             const updateData = { 'flags.shadowrun5e.applyTo': select.value };
-            await this._onSubmit(event, {updateData, preventClose: true})
+            await this._onSubmit(event, { updateData, preventClose: true });
         }
     }
 
     /**
      * Foundry provides a custom mode for systems to implement behavior with.
-     * 
+     *
      * Shadowrun uses this mode to implement 'modify' mode, with complex behavior.
      * To give users better information about the mode, inject a 'modify' label.
-     * 
+     *
      * @param modes A object prepared for display using Foundry select handlebarjs helper.
      * @returns Copy of the original modes and labels.
      */
@@ -130,7 +131,7 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
 
     /**
      * Determine if the effect has changes applied already.
-     * 
+     *
      * This should be used to prohibit changing of applyTo selections.
      * @returns true if changes are present, false otherwise.
      */
@@ -155,9 +156,10 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
 
         // Tagify expects this format for localized tags.
         // @ts-expect-error TODO: I've been lazy and need proper typing of class SuccessTest
-        const values = Object.values(game.shadowrun5e.tests).map(((test: any) => ({
-            label: test.label, id: test.name
-        })));
+        const values = Object.values(game.shadowrun5e.tests).map((test: any) => ({
+            label: test.label,
+            id: test.name,
+        }));
 
         // Tagify dropdown should show all whitelist tags.
         const maxItems = values.length;
@@ -165,20 +167,20 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
         // Fetch current selections.
         const value = this.object.getFlag(SYSTEM_NAME, 'selection_tests') as string;
         const selected = value ? JSON.parse(value) : [];
-        
+
         createTagifyOnInput(inputElement, values, maxItems, selected);
     }
 
     /**
      * Action Categories multi selection via tagify element.
-     * 
+     *
      * @param html ActiveEffectConfig html
      */
     _prepareActionCategoriesSelectionTagify(html: JQuery) {
         const inputElement = html.find('input#categories-selection').get(0) as HTMLInputElement;
 
         // Tagify expects this format for localized tags.
-        const values = Object.entries(SR5.actionCategories).map(([category, label]) => ({label, id: category}));
+        const values = Object.entries(SR5.actionCategories).map(([category, label]) => ({ label, id: category }));
 
         // Tagify dropdown should show all whitelist tags.
         const maxItems = values.length;
@@ -193,7 +195,12 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
     _prepareSkillSelectionTagify(html: JQuery) {
         const inputElement = html.find('input#skill-selection').get(0) as HTMLInputElement;
 
-        if (!this.object.parent) return console.error('Shadowrun 5e | SR5ActiveEffect unexpecedtly has no parent document', this.object, this);
+        if (!this.object.parent)
+            return console.error(
+                'Shadowrun 5e | SR5ActiveEffect unexpecedtly has no parent document',
+                this.object,
+                this,
+            );
 
         // Discard token effects
         // Create a SR5ActiveEffect.actorOwner similar to SR5Item.actorOwner
@@ -202,7 +209,7 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
 
         // Use ActionFlow to assure either custom skills or global skills to be included.
         const skills = ActionFlow.sortedActiveSkills(actorOrNothing);
-        const values = Object.entries(skills).map(([id, label]) => ({label: label as Translation, id}));
+        const values = Object.entries(skills).map(([id, label]) => ({ label: label as Translation, id }));
         const maxItems = values.length;
         const value = this.object.getFlag(SYSTEM_NAME, 'selection_skills') as string;
         const selected = value ? JSON.parse(value) : [];
@@ -213,7 +220,7 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
     _prepareAttributesSelectionTagify(html: JQuery) {
         const inputElement = html.find('input#attribute-selection').get(0) as HTMLInputElement;
 
-        const values = Object.entries(SR5.attributes).map(([attribute, label]) => ({label, id: attribute}));
+        const values = Object.entries(SR5.attributes).map(([attribute, label]) => ({ label, id: attribute }));
         const maxItems = values.length;
         const value = this.object.getFlag(SYSTEM_NAME, 'selection_attributes') as string;
         const selected = value ? JSON.parse(value) : [];
@@ -224,7 +231,7 @@ export class SR5ActiveEffectConfig extends ActiveEffectConfig {
     _prepareLimitsSelectionTagify(html: JQuery) {
         const inputElement = html.find('input#limit-selection').get(0) as HTMLInputElement;
 
-        const values = Object.entries(SR5.limits).map(([limit, label]) => ({label, id: limit}));
+        const values = Object.entries(SR5.limits).map(([limit, label]) => ({ label, id: limit }));
         const maxItems = values.length;
         const value = this.object.getFlag(SYSTEM_NAME, 'selection_limits') as string;
         const selected = value ? JSON.parse(value) : [];

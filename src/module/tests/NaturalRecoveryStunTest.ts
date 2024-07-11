@@ -1,5 +1,5 @@
-import {SuccessTest} from "./SuccessTest";
-import {PartsList} from "../parts/PartsList";
+import { SuccessTest } from './SuccessTest';
+import { PartsList } from '../parts/PartsList';
 
 export class NaturalRecoveryStunTest extends SuccessTest {
     override prepareBaseValues() {
@@ -8,7 +8,7 @@ export class NaturalRecoveryStunTest extends SuccessTest {
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['recovery', 'recovery_stun']
+        return ['recovery', 'recovery_stun'];
     }
 
     /**
@@ -21,7 +21,7 @@ export class NaturalRecoveryStunTest extends SuccessTest {
         const boxes = track?.value || 0;
 
         const threshold = new PartsList(this.threshold.mod);
-        threshold.addUniquePart('SR5.StunTrack', boxes)
+        threshold.addUniquePart('SR5.StunTrack', boxes);
     }
 
     /**

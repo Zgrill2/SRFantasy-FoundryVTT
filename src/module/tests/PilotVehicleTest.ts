@@ -1,4 +1,4 @@
-import {SuccessTest} from "./SuccessTest";
+import { SuccessTest } from './SuccessTest';
 export class PilotVehicleTest extends SuccessTest {
     /**
      * Piloting a vehicle will alter the kind of test that needs to be made based on a few factors.
@@ -12,17 +12,17 @@ export class PilotVehicleTest extends SuccessTest {
 
         const vehicleData = actor.asVehicle();
         if (!vehicleData) {
-            await ui.notifications?.error(game.i18n.localize('SR5.Errors.TestExpectsVehicleOnly'))
+            await ui.notifications?.error(game.i18n.localize('SR5.Errors.TestExpectsVehicleOnly'));
             return {};
         }
 
         switch (vehicleData.system.controlMode) {
-            case "autopilot": {
+            case 'autopilot': {
                 const attribute = 'pilot';
                 const skill = actor.getVehicleTypeSkillName();
-                const limit = {attribute: vehicleData.system.environment};
+                const limit = { attribute: vehicleData.system.environment };
 
-                return {attribute, skill, limit};
+                return { attribute, skill, limit };
             }
 
             default:
@@ -32,6 +32,6 @@ export class PilotVehicleTest extends SuccessTest {
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['rigging']
+        return ['rigging'];
     }
 }

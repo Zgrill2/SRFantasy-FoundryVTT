@@ -7,51 +7,50 @@ import ActiveModifierValue = Shadowrun.ActiveModifierValue;
 import { SituationModifierEffectsFlow } from '../../effect/flows/SituationModifierEffectsFlow';
 import { SR5 } from '../../config';
 
-
 export interface SituationalModifierApplyOptions {
     // When set to true, applied will be regenerated always.
-    reapply?: boolean
+    reapply?: boolean;
     // When new source data is given, internal source is overwritten.
-    source?: SourceModifierData
+    source?: SourceModifierData;
     // When given will be used to ONLY use applied active selections of a modifier.
     // keys should be included as applied.active.<applicable>
     // <applicable> would be <light> or <wind> based on modifier 'environmental.light'/'.wind'.
-    applicable?: string[]
+    applicable?: string[];
     // Apply modifier within this tests context.
-    test?: SuccessTest
+    test?: SuccessTest;
 }
 
-export type ModifierTypes = Partial<keyof typeof SR5['modifierTypes']>;
+export type ModifierTypes = Partial<keyof (typeof SR5)['modifierTypes']>;
 
 /**
  * Base class for handling a single modifier type that's applied to a document.
- * 
+ *
  * Each situational modifier allows for generic handling of it's active selections, totals and manual
  * override values, while also allowing to apply custom rules to each.
- * 
+ *
  * A modifier category would be: environmental, matrix, magic/astral, social, ...
- * 
+ *
  * Each modifier works on the document level, which might have local source modifier data containing
  * selections for a scene, a position, an actor or else.
- * 
+ *
  * A user/GM can select specific modifier values (so called active modifiers) via GUI.
- * 
- * This allows users to have active selections for their character, while the GM has active selections 
+ *
+ * This allows users to have active selections for their character, while the GM has active selections
  * for a more global document (scene, token position, ...). All active selections will be merged
  * to an applied selection, which is used to calculate the total modifier value. The more specific
  * a document is, the higher it's priority in the merge order.
- * 
+ *
  * Each SituationModifier only handles its own type, while the DocumentSituationModifiers handles
  * all types for a document.
  */
 export class SituationModifier {
     type: Shadowrun.SituationModifierType;
     // A reference to the modifiers this handler is used within.
-    modifiers?: DocumentSituationModifiers
+    modifiers?: DocumentSituationModifiers;
     // The original source modifier data. This shouldn't be altered.
-    source: SourceModifierData
+    source: SourceModifierData;
     // The applied modifier data, originating from the original source data.
-    applied: Modifier
+    applied: Modifier;
 
     globalActivesApplied: boolean;
 
@@ -59,7 +58,7 @@ export class SituationModifier {
     effects: SituationModifierEffectsFlow<this>;
 
     /**
-     * 
+     *
      * @param data The low level modifier data for this handler to work on.
      * @param modifiers Modifiers instances this handler is used in.
      */
@@ -72,16 +71,16 @@ export class SituationModifier {
 
     /**
      * Prepare valid source modifier data.
-     * 
+     *
      * @param data A documents source modifier data
      * @returns Either a documents source modifier data or a valid fallback.
      */
-    _prepareSourceData(data: Partial<SourceModifierData>={}): SourceModifierData {
+    _prepareSourceData(data: Partial<SourceModifierData> = {}): SourceModifierData {
         // Avoid incomplete source data from documents.
-        return {...{active: {}}, ...data};
+        return { ...{ active: {} }, ...data };
     }
 
-    /** 
+    /**
      * Determine if any documents have been added to this instance.
      */
     get hasDocuments(): boolean {
@@ -100,7 +99,7 @@ export class SituationModifier {
      */
     get sourceDocumentIsScene(): boolean {
         return this.modifiers !== undefined && this.modifiers.documentIsScene;
-    }    
+    }
 
     /**
      * Return the source active values for use during selection.
@@ -111,9 +110,9 @@ export class SituationModifier {
 
     /**
      * Allow a situational modifier to NOT need any source data to apply it's modifiers.
-     * 
+     *
      * This can be used to implement a modifier that IS situational but doesn't need data structures for selection.
-     * 
+     *
      * @returns false, when a handler doesn't use any document source data.
      */
     static get hasSourceData(): boolean {
@@ -151,11 +150,11 @@ export class SituationModifier {
 
     /**
      * Does the applied selection match?
-     * 
+     *
      * Use applied as source might not match, but applied might.
-     * 
+     *
      * In that case a matching applied might need to be altered in source.
-     * 
+     *
      * @param modifier The selection / active identifier
      * @param level The modifier level
      */
@@ -165,7 +164,7 @@ export class SituationModifier {
 
     /**
      * Set a active selection to a modifier level.
-     * 
+     *
      * @param modifier The selection / active identifier.
      * @param level The modifier level
      */
@@ -194,13 +193,13 @@ export class SituationModifier {
 
     /**
      * When using a selection this method will toggle an active modifier on and off.
-     * 
+     *
      * @param modifier The active modifier name
      * @param value The value the modifier uses currently.
      */
     toggleSelection(modifier: string, value: number) {
         if (this.isMatching(modifier, value)) {
-            this.setInactive(modifier)
+            this.setInactive(modifier);
         } else {
             this.setActive(modifier, value);
         }
@@ -209,19 +208,19 @@ export class SituationModifier {
     /**
      * Using the local documents source modifier data apply all higher-level situational modifiers
      * on top and apply to the actual modifiers.
-     * 
+     *
      * @params options An optional set of options.
      * @params options.reapply When set to true, should cause a full re application.
      */
-    apply(options: SituationalModifierApplyOptions={}) {
+    apply(options: SituationalModifierApplyOptions = {}) {
         // Initial application or reapplication
         if (!this.applied || options.reapply || options.source) {
             // Clear current application.
             this.applied = {
                 active: {},
-                total: 0
-            }
-        }   
+                total: 0,
+            };
+        }
 
         // Update source when given.
         this.source = options.source ?? this.source;
@@ -236,7 +235,10 @@ export class SituationModifier {
         // Note, instance against configured class to be change resistant.
         if (Object.getPrototypeOf(this).constructor.hasSourceData && this.modifiers && this.sourceDocumentIsActor) {
             // Using a document source, a category is necessary to extract the right source modifiers.
-            if (!this.type) return console.error(`Shadowrun 5e | ${this.constructor.name} can't interact with documents without a modifier category set.`)
+            if (!this.type)
+                return console.error(
+                    `Shadowrun 5e | ${this.constructor.name} can't interact with documents without a modifier category set.`,
+                );
 
             const actor = this.modifiers.document as SR5Actor;
             this._addSceneSourceDataFromActor(actor, sources);
@@ -246,7 +248,7 @@ export class SituationModifier {
         sources.push(this.source);
 
         // Apply each source in order.
-        sources.forEach(source => foundry.utils.mergeObject(this.applied, source));
+        sources.forEach((source) => foundry.utils.mergeObject(this.applied, source));
 
         // Remove not applicable active selections.
         if (applicable && applicable.length > 0) {
@@ -254,7 +256,7 @@ export class SituationModifier {
                 if (!applicable.includes(selection)) delete this.applied.active[selection];
             });
         }
-        
+
         // Apply effects applicable to situational modifiers.
         this.effects.applyAllEffects(options.test);
 
@@ -267,12 +269,15 @@ export class SituationModifier {
         if (this.hasFixed) this.applied.total = this.applied.fixed as number;
         else this.applied.total = this._calcActiveTotal(options);
 
-        console.debug(`Shadowrun 5e | Totalled situational modifiers for ${this.modifiers?.document?.name} to be: ${this.applied.total}`, this.applied);
+        console.debug(
+            `Shadowrun 5e | Totalled situational modifiers for ${this.modifiers?.document?.name} to be: ${this.applied.total}`,
+            this.applied,
+        );
     }
 
     /**
      * Add scene modifier sources into the applicable sources, when an actor is present on scene
-     * 
+     *
      * @param actor The actor to check for tokens
      * @param sources The sources list, as used within #apply
      */
@@ -287,7 +292,7 @@ export class SituationModifier {
         sources.push(sceneSource);
     }
 
-    _getDocumentsSourceData(document: ModifiableDocumentTypes): SourceModifierData|undefined {
+    _getDocumentsSourceData(document: ModifiableDocumentTypes): SourceModifierData | undefined {
         // To access another objects
         if (!this.type) return;
         // A placed token must apply it's scene modifiers first.
@@ -298,24 +303,24 @@ export class SituationModifier {
 
     /**
      * Determine the total value of all active modifier values.
-     * 
+     *
      * Override this method if you want to apply different rules depending on the situational modifier category.
-     * 
+     *
      * By default the active modifiers will simply be sumed up.
-     * 
+     *
      * @param options.test The SuccessTest implementation used to access this modifier. Use if the modifier changes based on test configuration.
-     * 
+     *
      * @returns The total modifier value to be used for this situational modifier category.
      */
-    _calcActiveTotal(options: SituationalModifierApplyOptions={}): number {
+    _calcActiveTotal(options: SituationalModifierApplyOptions = {}): number {
         return Object.values(this.applied.active).reduce((sum, current) => sum + current, 0) || 0;
     }
 
     /**
      * Give the total modifier value for this category.
-     *  
+     *
      * Should this modifier not yet been applied, this will apply it.
-     * 
+     *
      * NOTE: Always use this field to access resulting modifier values as some modifiers might have a total level applied vs a total modifer given.
      */
     get total(): number {
@@ -331,7 +336,7 @@ export class SituationModifier {
     clear() {
         this.source = this._prepareSourceData();
         // With source default, reapply all values
-        this.apply({reapply: true});
+        this.apply({ reapply: true });
 
         this._updateDocumentModifiers();
     }
@@ -340,7 +345,7 @@ export class SituationModifier {
         if (!this.type || !this.modifiers) return;
         this.modifiers.source[this.type] = this.source;
     }
-    
+
     _updateDocumentAppliedModifiers() {
         if (!this.type || !this.modifiers) return;
         this.modifiers.applied[this.type] = this.applied;

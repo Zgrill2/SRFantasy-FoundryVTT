@@ -1,34 +1,34 @@
-import {SR5Item} from "../item/SR5Item";
-import {SR5Actor} from "../actor/SR5Actor";
+import { SR5Item } from '../item/SR5Item';
+import { SR5Actor } from '../actor/SR5Actor';
 import {
     SuccessTest,
     SuccessTestMessageData,
     TestData,
     SuccessTestData,
     TestDocuments,
-    TestOptions
-} from "./SuccessTest";
-import {DataDefaults} from "../data/DataDefaults";
-import {PartsList} from "../parts/PartsList";
-import {SkillRules} from "../rules/SkillRules";
-import {FLAGS, SYSTEM_NAME} from "../constants";
-import {SR5Roll} from "../rolls/SR5Roll";
-import {Helpers} from "../helpers";
-import {OpposedTest, OpposedTestData} from "./OpposedTest";
-import {SR5} from "../config";
-import {SkillFlow} from "../actor/flows/SkillFlow";
-import {ActionFlow} from "../item/flows/ActionFlow";
+    TestOptions,
+} from './SuccessTest';
+import { DataDefaults } from '../data/DataDefaults';
+import { PartsList } from '../parts/PartsList';
+import { SkillRules } from '../rules/SkillRules';
+import { FLAGS, SYSTEM_NAME } from '../constants';
+import { SR5Roll } from '../rolls/SR5Roll';
+import { Helpers } from '../helpers';
+import { OpposedTest, OpposedTestData } from './OpposedTest';
+import { SR5 } from '../config';
+import { SkillFlow } from '../actor/flows/SkillFlow';
+import { ActionFlow } from '../item/flows/ActionFlow';
 
 /**
  * Any test implementation can either be created by calling it's constructor directly or by using the TestCreator.
- * 
+ *
  * TestCreator provides a set of helper functions to create a test from different sources, as well as test data
  * based either on an items (or generic) action data or specific input (like from numerical values for pool, threshold,
  * and limit).
- * 
+ *
  * Usage:
  * See the different from* functions for entry points.
- * 
+ *
  * To retrieve a test implementation class, use the _getTestClass function.
  */
 export const TestCreator = {
@@ -40,7 +40,10 @@ export const TestCreator = {
      * @param values The values to use for the test.
      * @param options See TestOptions documentation.
      */
-    fromPool: function(values: { pool: number, limit?: number, threshold?: number }={pool: 0, limit: 0, threshold: 0}, options?: TestOptions): SuccessTest {
+    fromPool: function (
+        values: { pool: number; limit?: number; threshold?: number } = { pool: 0, limit: 0, threshold: 0 },
+        options?: TestOptions,
+    ): SuccessTest {
         const data = TestCreator._minimalTestData();
         data.pool.base = values.pool;
         data.threshold.base = values.threshold || 0;
@@ -61,11 +64,13 @@ export const TestCreator = {
      *
      * @returns Tries to create a SuccessTest from given action item or undefined if it failed.
      */
-    fromItem: async function(item: SR5Item, actor?: SR5Actor, options?: TestOptions): Promise<any | undefined> {
+    fromItem: async function (item: SR5Item, actor?: SR5Actor, options?: TestOptions): Promise<any | undefined> {
         //@ts-expect-error Default to item parent actor, if none given.
         if (!actor) actor = item.parent;
         if (!(actor instanceof SR5Actor)) {
-            console.error("Shadowrun 5e | A SuccessTest can only be created with an explicit Actor or Item with an actor parent.")
+            console.error(
+                'Shadowrun 5e | A SuccessTest can only be created with an explicit Actor or Item with an actor parent.',
+            );
             return;
         }
 
@@ -86,7 +91,7 @@ export const TestCreator = {
         // Any action item will return a list of values to create the test pool from.
         const cls = TestCreator._getTestClass(action.test);
         const data = await TestCreator._getTestDataFromItemAction(cls, item, actor);
-        const documents = {item, actor};
+        const documents = { item, actor };
         return new cls(data, documents, options);
     },
 
@@ -97,7 +102,11 @@ export const TestCreator = {
      * @param actor The actor to use for retrieving source values defined within the action.
      * @param options See TestOptions documentation.
      */
-    fromAction: async function(action: Shadowrun.ActionRollData, actor: SR5Actor, options?: TestOptions): Promise<SuccessTest | undefined> {
+    fromAction: async function (
+        action: Shadowrun.ActionRollData,
+        actor: SR5Actor,
+        options?: TestOptions,
+    ): Promise<SuccessTest | undefined> {
         if (!action.test) {
             action.test = 'SuccessTest';
             console.warn(`Shadowrun 5e | An action without a defined test handler defaulted to ${'SuccessTest'}`);
@@ -112,7 +121,7 @@ export const TestCreator = {
         // Any action item will return a list of values to create the test pool from.
         const cls = TestCreator._getTestClass(action.test);
         const data = await TestCreator._prepareTestDataWithAction(action, actor, TestCreator._minimalTestData());
-        const documents = {actor};
+        const documents = { actor };
 
         return new cls(data, documents, options);
     },
@@ -124,7 +133,12 @@ export const TestCreator = {
      * @param actor The actor used to roll the test with
      * @param options General TestOptions
      */
-    fromPackAction: async function(packName: string, actionName: string, actor: SR5Actor, options?: TestOptions): Promise<SuccessTest|undefined> {
+    fromPackAction: async function (
+        packName: string,
+        actionName: string,
+        actor: SR5Actor,
+        options?: TestOptions,
+    ): Promise<SuccessTest | undefined> {
         const item = await Helpers.getPackAction(packName, actionName);
         if (!item) {
             console.error(`Shadowrun5 | The pack ${packName} doesn't include an item ${actionName}`);
@@ -136,19 +150,19 @@ export const TestCreator = {
 
     /**
      * Create a test implementation from a past test included within a message
-     * 
+     *
      * @param id The message id to retrieve test data from.
      */
-    fromMessage: async function(id: string, options?: TestOptions): Promise<SuccessTest | undefined> {
+    fromMessage: async function (id: string, options?: TestOptions): Promise<SuccessTest | undefined> {
         const flagData = TestCreator.getTestDataFromMessage(id);
         return this._fromMessageTestData(flagData, options);
     },
 
     /**
      * Retrieve possible test data from a given message id.
-     * 
+     *
      * If you need the test implementation, use @fromMessage instead.
-     * 
+     *
      * @param id The message id to retrieve test data from.
      * @returns Raw test data from message flags or undefined if none found.
      */
@@ -165,20 +179,19 @@ export const TestCreator = {
 
         return flagData;
     },
-    
-    
+
     /**
      * Create a test implementation directly from a message flags test data.
-     * @param testData 
-     * @returns 
+     * @param testData
+     * @returns
      */
-    _fromMessageTestData: function(testData, options?: TestOptions) {
+    _fromMessageTestData: function (testData, options?: TestOptions) {
         // Use test data to create the original test from it.
         testData = foundry.utils.duplicate(testData) as SuccessTestMessageData;
         if (!testData || !testData.rolls) return;
 
-        const rolls = testData.rolls.map(roll => SR5Roll.fromData<SR5Roll>(roll as any));
-        const documents = {rolls};
+        const rolls = testData.rolls.map((roll) => SR5Roll.fromData<SR5Roll>(roll as any));
+        const documents = { rolls };
 
         // Allow callers to overwrite previous test options, otherwise fall back.
         options = options ?? testData.data.options;
@@ -194,9 +207,13 @@ export const TestCreator = {
      * @param testClsName The test class name to be used with the message test data.
      * @param options See TestOptions documentation.
      */
-    fromMessageAction: async function(id: string, testClsName: string, options?: TestOptions): Promise<SuccessTest | undefined> {
+    fromMessageAction: async function (
+        id: string,
+        testClsName: string,
+        options?: TestOptions,
+    ): Promise<SuccessTest | undefined> {
         if (!game.user) return;
-        
+
         const message = game.messages?.get(id);
         if (!message) {
             console.error(`Shadowrun 5e | Couldn't find a message for id ${id} to create a message action`);
@@ -221,13 +238,13 @@ export const TestCreator = {
 
         // Inform user about tokens with deleted sidebar actors.
         // This can both happen for linked tokens immediately and unlinked tokens after reloading.
-        if (actors.filter(actor => !actor).length > 0) {
-            ui.notifications?.warn('TOKEN.WarningNoActor', {localize: true});
+        if (actors.filter((actor) => !actor).length > 0) {
+            ui.notifications?.warn('TOKEN.WarningNoActor', { localize: true });
             return;
         }
 
         // filter out actors current user shouldn't be able to test with.
-        actors = actors.filter(actor => actor.isOwner);
+        actors = actors.filter((actor) => actor.isOwner);
         // Fallback to player character.
         if (actors.length === 0 && game.user.character) {
             actors.push(game.user.character);
@@ -235,8 +252,7 @@ export const TestCreator = {
 
         if (actors.length === 0) {
             ui.notifications?.warn(game.i18n.localize('SR5.Warnings.TokenSelectionNeeded'));
-        } 
-        else {
+        } else {
             console.log('Shadowrun 5e | Casting an opposed test using these actors', actors, testData);
         }
 
@@ -244,7 +260,7 @@ export const TestCreator = {
             const data = await testClass._getOpposedActionTestData(testData.data, actor, id);
             if (!data) return;
 
-            const documents = {actor};
+            const documents = { actor };
             const test = new testClass(data, documents, options);
 
             // Await test chain resolution for each actor, to avoid dialog spam.
@@ -254,15 +270,15 @@ export const TestCreator = {
 
     /**
      * Helper method to create a test implementation from given test data directly.
-     * 
+     *
      * Test values will be taken from data and not refreshed from the source actor.
      *
      * @param data The TestData of some test implementation within test registry.
-     * @param documents Documents to connect test to. These don't have to match the ones originally used and 
+     * @param documents Documents to connect test to. These don't have to match the ones originally used and
      *                  won't be used for retrieving source values.
      * @param options Optional test options.
      */
-    fromTestData: function(data: TestData, documents?: TestDocuments, options?: TestOptions): SuccessTest {
+    fromTestData: function (data: TestData, documents?: TestDocuments, options?: TestOptions): SuccessTest {
         const type = data.type || 'SuccessTest';
         const cls = TestCreator._getTestClass(type);
         return new cls(data, documents, options);
@@ -270,50 +286,64 @@ export const TestCreator = {
 
     /**
      * Use any kind of opposed test to create a resist test based on that.
-     * 
+     *
      * This can be used for damage resistance tests.
-     * 
+     *
      * Within a typical success test, opposed test and resist test flow, this will
-     * happen after both main and opposed test have finished. The resiting test will be 
+     * happen after both main and opposed test have finished. The resiting test will be
      * executed in context of both with the actor of the opposed test as source.
-     * 
+     *
      * The original action provides both the opposing and resiting test.
      *
      * @param opposed The opposed test to create a resist test with.
      * @param options See TestOptions documentation.
      */
-    fromOpposedTestResistTest: async function(opposed: OpposedTest, options?: TestOptions): Promise<SuccessTest | void> {
+    fromOpposedTestResistTest: async function (
+        opposed: OpposedTest,
+        options?: TestOptions,
+    ): Promise<SuccessTest | void> {
         // Don't change the data's source.
         const opposedData = foundry.utils.duplicate(opposed.data);
 
-        if (!opposedData?.against?.opposed?.resist?.test) return console.error(`Shadowrun 5e | Given test doesn't define an opposed resist test`, opposed);
-        if (!opposed.actor) return console.error(`Shadowrun 5e | A ${opposed.title} can't operate without a populated actor given`);
+        if (!opposedData?.against?.opposed?.resist?.test)
+            return console.error(`Shadowrun 5e | Given test doesn't define an opposed resist test`, opposed);
+        if (!opposed.actor)
+            return console.error(`Shadowrun 5e | A ${opposed.title} can't operate without a populated actor given`);
 
         const resistTestCls = TestCreator._getTestClass(opposedData.against.opposed.resist.test);
 
-        const data = await TestCreator._getOpposedResistTestData(resistTestCls, opposedData, opposed.actor, opposed.data.messageUuid);
-        const documents = {actor: opposed.actor};
+        const data = await TestCreator._getOpposedResistTestData(
+            resistTestCls,
+            opposedData,
+            opposed.actor,
+            opposed.data.messageUuid,
+        );
+        const documents = { actor: opposed.actor };
 
         return new resistTestCls(data, documents, options);
     },
 
     /**
      * Use any kind of test to create a followup test based on that.
-     * 
+     *
      * This can be used for drain tests.
-     * 
+     *
      * TODO: Describe a clear separation between resist and follow up test use cases.
      *
      * @param test Any test implementation with an action providing a follow up test.
      * @param options See TestOptions documentation.
      */
-    fromFollowupTest: async function(test: SuccessTest, options?: TestOptions): Promise<SuccessTest  | void> {
+    fromFollowupTest: async function (test: SuccessTest, options?: TestOptions): Promise<SuccessTest | void> {
         if (!test?.data?.action?.followed?.test) return;
         if (!test.item) return console.error(`Shadowrun 5e | Test doesn't have a populated item document`);
         if (!test.actor) return console.error(`Shadowrun 5e | Test doesn't have a populated actor document`);
 
         const testCls = TestCreator._getTestClass(test.data.action.followed.test);
-        if (!testCls) return console.error(`Shadowrun 5e | A ${test.constructor.name} has a unregistered follow up test configured`, this);
+        if (!testCls)
+            return console.error(
+                `Shadowrun 5e | A ${test.constructor.name} has a unregistered follow up test configured`,
+                this,
+            );
 
         const data = TestCreator._minimalTestData();
         data.title = testCls.title;
@@ -322,14 +352,15 @@ export const TestCreator = {
 
         // Allow different elements of this to override action data.
         const action = TestCreator._mergeMinimalActionDataInOrder(
-            DataDefaults.actionRollData({test: testCls.name}),
+            DataDefaults.actionRollData({ test: testCls.name }),
             await testCls._getDocumentTestAction(test.item, test.actor),
-            testCls._getDefaultTestAction());
+            testCls._getDefaultTestAction(),
+        );
 
         const testData = await testCls._prepareActionTestData(action, test.actor, data);
         testData.following = test.data;
 
-        const documents = {item: test.item, actor: test.actor};
+        const documents = { item: test.item, actor: test.actor };
 
         return new testCls(testData, documents, options);
     },
@@ -337,11 +368,11 @@ export const TestCreator = {
     /*
      * Prompt the user for a default SuccessTest.
      */
-    promptSuccessTest: async function() {
+    promptSuccessTest: async function () {
         // Get the last used pool size for simple SuccessTestDialogs
         const lastPoolValue = Number(game.user?.getFlag(SYSTEM_NAME, FLAGS.LastRollPromptValue)) || 0;
 
-        const test = TestCreator.fromPool({pool: lastPoolValue});
+        const test = TestCreator.fromPool({ pool: lastPoolValue });
         await test.execute();
 
         if (test.evaluated) {
@@ -355,13 +386,17 @@ export const TestCreator = {
      *
      * @param testName A Test class constructor name registered as a test.
      */
-    _getTestClass: function(testName: string): any | undefined {
+    _getTestClass: function (testName: string): any | undefined {
         if (!testName) return;
         //@ts-expect-error
-        if (!game.shadowrun5e.tests.hasOwnProperty(testName)) { //@ts-expect-error
-            console.error(`Shadowrun 5e | Tried getting a Test Class ${testName}, which isn't registered in: `, game.shadowrun5e.tests);
+        if (!game.shadowrun5e.tests.hasOwnProperty(testName)) {
+            //@ts-expect-error
+            console.error(
+                `Shadowrun 5e | Tried getting a Test Class ${testName}, which isn't registered in: `,
+                game.shadowrun5e.tests,
+            );
             return;
-        } 
+        }
         //@ts-expect-error
         return game.shadowrun5e.tests[testName];
     },
@@ -373,7 +408,7 @@ export const TestCreator = {
      * @param item
      * @param actor
      */
-    _getTestDataFromItemAction: async function(testCls, item: SR5Item, actor: SR5Actor): Promise<TestData> {
+    _getTestDataFromItemAction: async function (testCls, item: SR5Item, actor: SR5Actor): Promise<TestData> {
         // Prepare general data structure with labeling.
         const data = TestCreator._minimalTestData();
 
@@ -386,7 +421,8 @@ export const TestCreator = {
         action = TestCreator._mergeMinimalActionDataInOrder(
             action,
             await testCls._getDocumentTestAction(item, actor),
-            testCls._getDefaultTestAction());
+            testCls._getDefaultTestAction(),
+        );
 
         return await TestCreator._prepareTestDataWithAction(action, actor, data);
     },
@@ -402,9 +438,18 @@ export const TestCreator = {
      * @param actor The actor doing the testing.
      * @param previousMessageId The Message id of the originating opposing test.
      */
-    _getOpposedResistTestData: async function(resistTestCls, opposedData: OpposedTestData, actor: SR5Actor, previousMessageId?: string) {
+    _getOpposedResistTestData: async function (
+        resistTestCls,
+        opposedData: OpposedTestData,
+        actor: SR5Actor,
+        previousMessageId?: string,
+    ) {
         if (!opposedData.against.opposed.resist.test) {
-            console.error(`Shadowrun 5e | Supplied test action doesn't contain an resist test in it's opposed test configuration`, opposedData, this);
+            console.error(
+                `Shadowrun 5e | Supplied test action doesn't contain an resist test in it's opposed test configuration`,
+                opposedData,
+                this,
+            );
             return;
         }
         if (!actor) {
@@ -420,13 +465,13 @@ export const TestCreator = {
 
         // Setup the original item actions minimal action resist configuration as a complete item action.
         let action = DataDefaults.actionRollData({
-            ...opposedData.against.opposed.resist
+            ...opposedData.against.opposed.resist,
         });
         // Provide default action information.
         action = TestCreator._mergeMinimalActionDataInOrder(
             action,
             resistTestCls._getDocumentTestAction(),
-            resistTestCls._getDefaultTestAction()
+            resistTestCls._getDefaultTestAction(),
         );
 
         // Alter default action information with user defined information.
@@ -440,7 +485,11 @@ export const TestCreator = {
      * @param actor Actor to use for retrieving source values and execute test with.
      * @param data Any test implementations resulting basic test data.
      */
-    _prepareTestDataWithAction: async function(action: Shadowrun.ActionRollData, actor: SR5Actor, data: SuccessTestData) {
+    _prepareTestDataWithAction: async function (
+        action: Shadowrun.ActionRollData,
+        actor: SR5Actor,
+        data: SuccessTestData,
+    ) {
         // Action values might be needed later to redo the same test.
         data.action = action;
 
@@ -449,10 +498,11 @@ export const TestCreator = {
         // Prepare pool values.
         if (action.skill) {
             // Grab the skill by its id (default skills), or its label (custom skills).
-            const skill = actor.getSkill(action.skill) ?? actor.getSkill(action.skill, {byLabel: true});
+            const skill = actor.getSkill(action.skill) ?? actor.getSkill(action.skill, { byLabel: true });
 
             // Notify user about their sins.
-            if (skill && !SkillFlow.allowRoll(skill)) ui.notifications?.warn('SR5.Warnings.SkillCantBeDefault', {localize: true});
+            if (skill && !SkillFlow.allowRoll(skill))
+                ui.notifications?.warn('SR5.Warnings.SkillCantBeDefault', { localize: true });
 
             // Custom skills don't have a label, but a name.
             // Legacy skill don't have a name, but have a label.
@@ -477,22 +527,22 @@ export const TestCreator = {
             // Apply matrix modifiers, when applicable
             if (attribute && actor._isMatrixAttribute(action.attribute2)) actor._addMatrixParts(pool, true);
         }
-        
+
         // TODO: Test and check if this still works.
         if (action.mod) {
             data.modifiers.mod = PartsList.AddUniquePart(data.modifiers.mod, 'SR5.DicePoolModifier', action.mod);
         }
-        
+
         // Include pool modifiers that have been collected on the action item.
         // These can come from nested items and more.
-        if(action.dice_pool_mod) {
-            action.dice_pool_mod.forEach(mod => PartsList.AddUniquePart(data.modifiers.mod, mod.name, mod.value));
+        if (action.dice_pool_mod) {
+            action.dice_pool_mod.forEach((mod) => PartsList.AddUniquePart(data.modifiers.mod, mod.name, mod.value));
         }
-        
+
         // Add the armor value as a pool modifier, since 'armor' is part of the test description.
         if (action.armor) {
             const armor = actor.getArmor();
-            data.pool.mod = PartsList.AddUniquePart(data.pool.mod,'SR5.Armor', armor.value);
+            data.pool.mod = PartsList.AddUniquePart(data.pool.mod, 'SR5.Armor', armor.value);
         }
 
         // Prepare limit values...
@@ -503,7 +553,7 @@ export const TestCreator = {
         }
         //...add limit modifiers
         if (action.limit.mod) {
-            action.limit.mod.forEach(mod => PartsList.AddUniquePart(data.limit.mod, mod.name, mod.value));
+            action.limit.mod.forEach((mod) => PartsList.AddUniquePart(data.limit.mod, mod.name, mod.value));
         }
         //...add limit attribute value based on actor.
         if (action.limit.attribute) {
@@ -530,22 +580,26 @@ export const TestCreator = {
             data.opposed = action.opposed;
         }
 
-        
         // Prepare test modifiers and possible applicable selections
-        const modifiers: {[key in Shadowrun.ModifierTypes]?: string[]} = {};
+        const modifiers: { [key in Shadowrun.ModifierTypes]?: string[] } = {};
         for (const modifier of data.action.modifiers) {
             // A modifier with an applicable selection is found.
             if (modifier.includes('.')) {
                 // Assert correct action modifier segment structure.
                 const segments = modifier.split('.') as string[];
-                if (segments.length > 2) console.error('Shadowrun 5e | Action contained a partial modifier with more than two segments', modifier, data.action);
+                if (segments.length > 2)
+                    console.error(
+                        'Shadowrun 5e | Action contained a partial modifier with more than two segments',
+                        modifier,
+                        data.action,
+                    );
 
                 // Record the modifier category with it's single applicable.
                 const [category, applicable] = segments;
                 modifiers[category] = modifiers[category] ?? [];
                 modifiers[category].push(applicable);
 
-            // No applicable found yet, just collect the modifier
+                // No applicable found yet, just collect the modifier
             } else {
                 modifiers[modifier] = modifiers[modifier] ?? [];
             }
@@ -555,7 +609,7 @@ export const TestCreator = {
         for (const [name, applicable] of Object.entries(modifiers)) {
             // Setup the resulting modifier value.
             const label = SR5.modifierTypes[name];
-            const options = {applicable};
+            const options = { applicable };
             const value = actor.modifiers.totalFor(name, options);
             data.modifiers.mod = PartsList.AddUniquePart(data.modifiers.mod, label, value);
         }
@@ -569,16 +623,16 @@ export const TestCreator = {
     /**
      * Return minimal viable test data without test specific customization.
      */
-    _minimalTestData: function(): any {
+    _minimalTestData: function (): any {
         return {
-            pool: DataDefaults.valueData({label: 'SR5.DicePool'}),
-            limit: DataDefaults.valueData({label: 'SR5.Limit'}),
-            threshold: DataDefaults.valueData({label: 'SR5.Threshold'}),
+            pool: DataDefaults.valueData({ label: 'SR5.DicePool' }),
+            limit: DataDefaults.valueData({ label: 'SR5.Limit' }),
+            threshold: DataDefaults.valueData({ label: 'SR5.Threshold' }),
             damage: DataDefaults.damageData(),
-            modifiers: DataDefaults.valueData({label: 'SR5.Labels.Action.Modifiers'}),
+            modifiers: DataDefaults.valueData({ label: 'SR5.Labels.Action.Modifiers' }),
             values: {},
             action: DataDefaults.actionRollData(),
-            opposed: {}
+            opposed: {},
         };
     },
 
@@ -587,7 +641,7 @@ export const TestCreator = {
      * not all action keys.
      *
      * A value of a minimal action will only overwrite the main action value if that is not set.
-     * 
+     *
      * For example:
      * A: action.skill == '' will be overwritten by minimalAction.skill == 'Spellcasting'
      * B: action.skill == 'ritual_spellcasting' won't be overwritten by minimalAction.skill == 'Spellcasting'
@@ -597,11 +651,14 @@ export const TestCreator = {
      * @param defaultActions List of partial actions, as defined by test implementations.
      * @returns A copy of the main action with all minimalActions properties applied in order of arguments.
      */
-    _mergeMinimalActionDataInOrder: function(sourceAction, ...defaultActions: Partial<Shadowrun.MinimalActionData>[]): Shadowrun.ActionRollData {
+    _mergeMinimalActionDataInOrder: function (
+        sourceAction,
+        ...defaultActions: Partial<Shadowrun.MinimalActionData>[]
+    ): Shadowrun.ActionRollData {
         // This action might be taken from ItemData, causing changes to be reflected upstream.
         const resultAction = foundry.utils.duplicate(sourceAction);
 
-        // Check if overwriting default 
+        // Check if overwriting default
         for (const defaultAction of defaultActions) {
             if (Object.keys(defaultAction).length === 0) continue;
 
@@ -619,37 +676,43 @@ export const TestCreator = {
 
     /**
      * Should an action value be kept even if a default action defines another value?
-     * 
-     * This comparison checks either a simple value against defaults OR checks values grouped as a 
+     *
+     * This comparison checks either a simple value against defaults OR checks values grouped as a
      * logical unit (skill+attribute/2)
-     * 
+     *
      * @param action The original action data.
      * @param defaultAction A partial action that may provide values to apply to the main action.
      * @param key The action key to take the value from
      * @returns true for when the original action value should be kept, false if it's to be overwritten.
      */
-    _keepItemActionValue(action: Shadowrun.ActionRollData, defaultAction: Partial<Shadowrun.MinimalActionData>, key: string): boolean {
+    _keepItemActionValue(
+        action: Shadowrun.ActionRollData,
+        defaultAction: Partial<Shadowrun.MinimalActionData>,
+        key: string,
+    ): boolean {
         if (!defaultAction.hasOwnProperty(key)) return true;
 
         // Avoid user confusion. A user might change one value of a logical value grouping (skill+attribute)
-        // and get a default value for the other. 
+        // and get a default value for the other.
         // Instead check some values as a section and only use default values when not one value of that
         // section has been changed by user input.
         const skillSection = ['skill', 'attribute', 'attribute2', 'armor'];
         if (skillSection.includes(key)) {
-            const noneDefault = skillSection.some(sectionKey => TestCreator._actionHasNoneDefaultValue(action, sectionKey));
+            const noneDefault = skillSection.some((sectionKey) =>
+                TestCreator._actionHasNoneDefaultValue(action, sectionKey),
+            );
             return noneDefault;
         }
-    
+
         // Fallback to basic value checking.
         return TestCreator._actionHasNoneDefaultValue(action, key);
     },
 
     /**
      * Determine if the field value behind the action property 'key' is of a none-default value.
-     * 
+     *
      * This can be used to determine if a user / automated change has been made.
-     * 
+     *
      * @param action Any action configuration.
      * @param key A key of action configuration within action parameter
      * @returns false, when the value behind key is a default value. true, when it's a custom value.
@@ -675,12 +738,12 @@ export const TestCreator = {
 
     /**
      * Determine if a test's dialog should NOT be shown, when executing a test.
-     * 
+     *
      * @param event A PointerEvent by user interaction
      */
-    shouldHideDialog(event: Shadowrun.RollEvent|undefined): boolean {
+    shouldHideDialog(event: Shadowrun.RollEvent | undefined): boolean {
         if (!event) return false;
-        const bindings = game.keybindings.get("shadowrun5e", "hide-test-dialog");
+        const bindings = game.keybindings.get('shadowrun5e', 'hide-test-dialog');
         for (const binding of bindings) {
             return event[binding.key] === true;
         }
@@ -689,24 +752,24 @@ export const TestCreator = {
 
     /**
      * Determine if a test's dialog should be shown, when executing a test.
-     * 
+     *
      * @param event A PointerEvent by user interaction
      */
-    shouldShowDialog(event: Shadowrun.RollEvent|undefined): boolean {
+    shouldShowDialog(event: Shadowrun.RollEvent | undefined): boolean {
         return !TestCreator.shouldHideDialog(event);
     },
 
     /**
      * Determine if instead of rolling an item based test, only the item's description should be posted as a chat message.
-     * 
+     *
      * @param event A PointerEvent by user interaction
      */
-    shouldPostItemDescription(event: Shadowrun.RollEvent|undefined): boolean {
+    shouldPostItemDescription(event: Shadowrun.RollEvent | undefined): boolean {
         if (!event) return false;
-        const bindings = game.keybindings.get("shadowrun5e", "show-item-card");
+        const bindings = game.keybindings.get('shadowrun5e', 'show-item-card');
         for (const binding of bindings) {
             return event[binding.key] === true;
         }
         return false;
-    }
+    },
 };

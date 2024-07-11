@@ -3,8 +3,7 @@ import { RangedAttackTestData } from './RangedAttackTest';
 import { SR5Item } from '../item/SR5Item';
 import { WeaponRangeTestBehavior, WeaponRangeTestDataFragment } from '../rules/WeaponRangeRules';
 
-export interface ThrownAttackTestData extends SuccessTestData, WeaponRangeTestDataFragment {
-}
+export interface ThrownAttackTestData extends SuccessTestData, WeaponRangeTestDataFragment {}
 
 /**
  * Test implementation for attack tests using weapon of category thrown.
@@ -29,14 +28,14 @@ export class ThrownAttackTest extends SuccessTest<ThrownAttackTestData> {
     }
 
     override get testCategories(): Shadowrun.ActionCategories[] {
-        return ['attack', 'attack_thrown']
+        return ['attack', 'attack_thrown'];
     }
 
     override get testModifiers(): Shadowrun.ModifierTypes[] {
         return ['global', 'wounds', 'environmental'];
     }
 
-    override async prepareDocumentData(){
+    override async prepareDocumentData() {
         WeaponRangeTestBehavior.prepareDocumentData(this, (weapon) => weapon.system.thrown.ranges);
         await super.prepareDocumentData();
     }
@@ -69,7 +68,6 @@ export class ThrownAttackTest extends SuccessTest<ThrownAttackTestData> {
     override prepareTestModifiers() {
         WeaponRangeTestBehavior.prepareTestModifiers(this);
     }
-
 
     override async processResults() {
         await super.processResults();

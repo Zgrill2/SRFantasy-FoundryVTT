@@ -4,7 +4,7 @@ declare namespace Shadowrun {
         [id: string]: SkillField;
     };
 
-    export type SkillCategories = 'active'|'language'|'knowledge';
+    export type SkillCategories = 'active' | 'language' | 'knowledge';
 
     export type SkillField = BaseValuePair<number> &
         NameField &
@@ -15,13 +15,13 @@ declare namespace Shadowrun {
         HasAttribute &
         RemovableField & {
             specs: string[];
-            canDefault: boolean
+            canDefault: boolean;
 
             // Optional fields not defined within template.json.
             // Use to identify a skill when fetched by its label
-            id?: string
+            id?: string;
             // A pdf-pager <pdf> <page> code to open the rulebook to the skill's description
-            link?: string
+            link?: string;
         };
 
     export type HasAttribute = {

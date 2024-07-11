@@ -20,9 +20,9 @@ export class WeaponImporter extends DataImporter<WeaponItemData, WeaponData> {
         return jsonObject.hasOwnProperty('weapons') && jsonObject['weapons'].hasOwnProperty('weapon');
     }
 
-    public override GetDefaultData({ type }: { type: any; }): WeaponItemData {
-        const systemData = {action: {type: 'varies', attribute: 'agility'}} as WeaponData;
-        return DataDefaults.baseItemData<WeaponItemData, WeaponData>({type}, systemData);
+    public override GetDefaultData({ type }: { type: any }): WeaponItemData {
+        const systemData = { action: { type: 'varies', attribute: 'agility' } } as WeaponData;
+        return DataDefaults.baseItemData<WeaponItemData, WeaponData>({ type }, systemData);
     }
 
     ExtractTranslation() {
@@ -39,7 +39,10 @@ export class WeaponImporter extends DataImporter<WeaponItemData, WeaponData> {
         const folders = await ImportHelper.MakeCategoryFolders(jsonObject, 'Weapons', this.categoryTranslations);
 
         folders['gear'] = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/Weapons/Gear`, true);
-        folders['quality'] = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/Weapons/Quality`, true);
+        folders['quality'] = await ImportHelper.GetFolderAtPath(
+            `${Constants.ROOT_IMPORT_FOLDER_NAME}/Weapons/Quality`,
+            true,
+        );
 
         const parser = new ParserMap<WeaponItemData>(WeaponParserBase.GetWeaponType, [
             { key: 'range', value: new RangedParser() },
@@ -61,7 +64,7 @@ export class WeaponImporter extends DataImporter<WeaponItemData, WeaponData> {
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}), this.itemTranslations);
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }), this.itemTranslations);
             // @ts-expect-error // TODO: Foundry Where is my foundry base data?
             item.folder = folders[item.system.subcategory].id;
 
@@ -73,7 +76,7 @@ export class WeaponImporter extends DataImporter<WeaponItemData, WeaponData> {
             }
             // exception for thrown weapons and explosives
             const weaponCategory = this.formatAsSlug(item.system.subcategory);
-            if (!(subType && ( weaponCategory == 'gear'))) {
+            if (!(subType && weaponCategory == 'gear')) {
                 subType = weaponCategory;
             }
             // deal with explosives and their weird formatting
@@ -85,7 +88,9 @@ export class WeaponImporter extends DataImporter<WeaponItemData, WeaponData> {
             item.system.importFlags = this.genImportFlags(item.name, item.type, subType);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Add relevant action tests
             UpdateActionFlow.injectActionTestsIntoChangeData(item.type, item, item);

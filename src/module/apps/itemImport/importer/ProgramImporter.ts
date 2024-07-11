@@ -1,5 +1,5 @@
-import { ImportHelper } from "../helper/ImportHelper";
-import { DataImporter } from "./DataImporter";
+import { ImportHelper } from '../helper/ImportHelper';
+import { DataImporter } from './DataImporter';
 import { Constants } from './Constants';
 
 /**
@@ -23,12 +23,11 @@ export class ProgramImporter extends DataImporter<Shadowrun.ProgramItemData, Sha
     }
 
     filterGearToPrograms(jsonObject: object) {
-        const categories = [
-            'Hacking Programs',
-            'Common Programs',
-        ]
+        const categories = ['Hacking Programs', 'Common Programs'];
 
-        return jsonObject['gears']['gear'].filter(gear => categories.includes(ImportHelper.StringValue(gear, 'category', '')));
+        return jsonObject['gears']['gear'].filter((gear) =>
+            categories.includes(ImportHelper.StringValue(gear, 'category', '')),
+        );
     }
 
     async parsePrograms(programs: object[], setIcons: boolean) {
@@ -37,21 +36,23 @@ export class ProgramImporter extends DataImporter<Shadowrun.ProgramItemData, Sha
         const parserType = 'program';
 
         for (const program of programs) {
-
             // Check to ensure the data entry is supported
             if (DataImporter.unsupportedEntry(program)) continue;
 
             // Create the item
-            const item = this.GetDefaultData({type: parserType});
+            const item = this.GetDefaultData({ type: parserType });
             item.name = ImportHelper.StringValue(program, 'name');
-            item.system.type = Constants.MAP_CHUMMER_PROGRAMM_CATEGORY[ImportHelper.StringValue(program, 'category')]
+            item.system.type = Constants.MAP_CHUMMER_PROGRAMM_CATEGORY[ImportHelper.StringValue(program, 'category')];
 
             // Get the program category
-            const categoryEN = ImportHelper.StringValue(program, 'category')
+            const categoryEN = ImportHelper.StringValue(program, 'category');
 
             // Get the item's folder information
             const category = ImportHelper.TranslateCategory(categoryEN, this.categoryTranslations).replace('/', ' ');
-            let categoryFolder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.Programs')}/${category}`, true);
+            let categoryFolder = await ImportHelper.GetFolderAtPath(
+                `${Constants.ROOT_IMPORT_FOLDER_NAME}/${game.i18n.localize('SR5.Programs')}/${category}`,
+                true,
+            );
             //@ts-expect-error TODO: foundry-vtt-types v10
             item.folder = categoryFolder.id;
 
@@ -59,11 +60,20 @@ export class ProgramImporter extends DataImporter<Shadowrun.ProgramItemData, Sha
             item.system.importFlags = this.genImportFlags(item.name, item.type, item.system.type);
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Finish the importing
             item.system.technology.rating = ImportHelper.IntValue(program, 'rating', 0);
-            item.system.description.source = `${ImportHelper.StringValue(program, 'source')} ${ImportHelper.MapNameToPageSource(this.itemTranslations, ImportHelper.StringValue(program, 'name'), ImportHelper.StringValue(program, 'page'))}`;
+            item.system.description.source = `${ImportHelper.StringValue(
+                program,
+                'source',
+            )} ${ImportHelper.MapNameToPageSource(
+                this.itemTranslations,
+                ImportHelper.StringValue(program, 'name'),
+                ImportHelper.StringValue(program, 'page'),
+            )}`;
             item.system.technology.availability = ImportHelper.StringValue(program, 'avail');
             item.system.technology.cost = ImportHelper.IntValue(program, 'cost', 0);
 
@@ -75,7 +85,6 @@ export class ProgramImporter extends DataImporter<Shadowrun.ProgramItemData, Sha
 
         return items;
     }
-
 
     async Parse(jsonObject: object, setIcons: boolean): Promise<Item> {
         const programs = this.filterGearToPrograms(jsonObject);

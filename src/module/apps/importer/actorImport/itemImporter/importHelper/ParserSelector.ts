@@ -1,39 +1,36 @@
-import { GearParser, BaseGearParser } from "./BaseGearParser";
-import { SinParser } from "../bioImport/SinParser";
-import { DeviceParser } from "../matrixImport/DeviceParser";
-import { ProgramParser } from "../matrixImport/ProgramParser";
-import { AmmoParser } from "../weaponImport/AmmoParser";
+import { GearParser, BaseGearParser } from './BaseGearParser';
+import { SinParser } from '../bioImport/SinParser';
+import { DeviceParser } from '../matrixImport/DeviceParser';
+import { ProgramParser } from '../matrixImport/ProgramParser';
+import { AmmoParser } from '../weaponImport/AmmoParser';
 
 /**
  * Responsible for selecting the correct GearParser depending on the gear.
  */
 export class ParserSelector {
-
     /**
      * Selects the correct GearParser depending on the gear.
      * @param chummerGear The gear that needs to be parsed
      * The correct GearParser for this gear entry.
-     */ 
-    select(chummerGear : any) : GearParser {
-        if (chummerGear.issin === 'True')
-        {
+     */
+    select(chummerGear: any): GearParser {
+        if (chummerGear.issin === 'True') {
             return new SinParser();
         }
 
-        if (chummerGear.iscommlink === 'True')
-        {
+        if (chummerGear.iscommlink === 'True') {
             return new DeviceParser();
         }
 
-        if (chummerGear.isammo === 'True')
-        {
+        if (chummerGear.isammo === 'True') {
             return new AmmoParser();
         }
 
-        if (chummerGear.category_english === 'Common Programs' || 
-            chummerGear.category_english === 'Hacking Programs' || 
-            chummerGear.category_english === 'Software')
-        {
+        if (
+            chummerGear.category_english === 'Common Programs' ||
+            chummerGear.category_english === 'Hacking Programs' ||
+            chummerGear.category_english === 'Software'
+        ) {
             return new ProgramParser();
         }
 

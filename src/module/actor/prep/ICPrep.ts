@@ -1,16 +1,15 @@
-import {ModifiersPrep} from "./functions/ModifiersPrep";
-import {InitiativePrep} from "./functions/InitiativePrep";
-import {AttributesPrep} from "./functions/AttributesPrep";
-import {PartsList} from "../../parts/PartsList";
-import {SR5} from "../../config";
-import {MatrixPrep} from "./functions/MatrixPrep";
+import { ModifiersPrep } from './functions/ModifiersPrep';
+import { InitiativePrep } from './functions/InitiativePrep';
+import { AttributesPrep } from './functions/AttributesPrep';
+import { PartsList } from '../../parts/PartsList';
+import { SR5 } from '../../config';
+import { MatrixPrep } from './functions/MatrixPrep';
 import ICData = Shadowrun.ICData;
-import {SR5ItemDataWrapper} from "../../data/SR5ItemDataWrapper";
-import {DataDefaults} from "../../data/DataDefaults";
-import {MatrixRules} from "../../rules/MatrixRules";
+import { SR5ItemDataWrapper } from '../../data/SR5ItemDataWrapper';
+import { DataDefaults } from '../../data/DataDefaults';
+import { MatrixRules } from '../../rules/MatrixRules';
 import DeviceAttribute = Shadowrun.DeviceAttribute;
-import {SkillsPrep} from "./functions/SkillsPrep";
-
+import { SkillsPrep } from './functions/SkillsPrep';
 
 export class ICPrep {
     static prepareBaseData(system: ICData) {
@@ -73,11 +72,12 @@ export class ICPrep {
 
         // Prepare internal matrix condition monitor values
         // LEGACY: matrix.condition_monitor is no TrackType. It will only be used as a info, should ever be needed anywhere
-        matrix.condition_monitor.max = Number(modifiers['matrix_track']) + MatrixRules.getConditionMonitor(matrix.rating as number);
+        matrix.condition_monitor.max =
+            Number(modifiers['matrix_track']) + MatrixRules.getConditionMonitor(matrix.rating as number);
 
         // Prepare user visible matrix track values
         track.matrix.base = MatrixRules.getConditionMonitor(matrix.rating as number);
-        track.matrix.mod = PartsList.AddUniquePart(track.matrix.mod, "SR5.Bonus", Number(modifiers['matrix_track']));
+        track.matrix.mod = PartsList.AddUniquePart(track.matrix.mod, 'SR5.Bonus', Number(modifiers['matrix_track']));
         track.matrix.max = matrix.condition_monitor.max;
         track.matrix.label = SR5.damageTypes.matrix;
     }
@@ -85,16 +85,23 @@ export class ICPrep {
     static prepareMatrixInit(system: ICData) {
         const { initiative, modifiers, host } = system;
 
-
         // Set current initiative to matrix
         initiative.perception = 'matrix';
 
         // Prepare used initiative parts
         initiative.matrix.base.base = MatrixRules.getICInitiativeBase(host.rating);
-        initiative.matrix.base.mod = PartsList.AddUniquePart(initiative.matrix.base.mod, "SR5.Bonus", Number(modifiers['matrix_initiative']));
+        initiative.matrix.base.mod = PartsList.AddUniquePart(
+            initiative.matrix.base.mod,
+            'SR5.Bonus',
+            Number(modifiers['matrix_initiative']),
+        );
 
         initiative.matrix.dice.base = MatrixRules.getICInitiativeDice();
-        initiative.matrix.dice.mod = PartsList.AddUniquePart(initiative.matrix.dice.mod, "SR5.Bonus", Number(modifiers['matrix_initiative_dice']));
+        initiative.matrix.dice.mod = PartsList.AddUniquePart(
+            initiative.matrix.dice.mod,
+            'SR5.Bonus',
+            Number(modifiers['matrix_initiative_dice']),
+        );
     }
 
     /**
@@ -103,7 +110,7 @@ export class ICPrep {
     static prepareHostAttributes(system: ICData) {
         if (!system.host.id || !system.host.atts) return;
 
-        Object.keys(system.host.atts).forEach(deviceAttribute => {
+        Object.keys(system.host.atts).forEach((deviceAttribute) => {
             const attribute: DeviceAttribute = system.host.atts[deviceAttribute];
             system.matrix[attribute.att].base = attribute.value;
             system.matrix[attribute.att].device_att = deviceAttribute;
@@ -123,11 +130,11 @@ export class ICPrep {
 
     /**
      * Add derived attributes based on host values.
-     * 
+     *
      * As the rating attribute is only derived, it's not included in base data or template.json.
      */
     static addHostAttributes(system: ICData) {
-        system.attributes['rating'] = DataDefaults.attributeData({label: 'SR5.Rating'});
+        system.attributes['rating'] = DataDefaults.attributeData({ label: 'SR5.Rating' });
     }
 
     static prepareMeatAttributes(system: ICData) {
@@ -136,7 +143,7 @@ export class ICPrep {
         for (const id of Object.keys(SR5.attributes)) {
             if (!attributes.hasOwnProperty(id)) continue;
             // Exclude invalid attributes for IC
-            if (['magic', 'edge', 'essence', 'resonance'].includes(id)) continue
+            if (['magic', 'edge', 'essence', 'resonance'].includes(id)) continue;
 
             const attribute = attributes[id];
 
@@ -165,5 +172,4 @@ export class ICPrep {
             AttributesPrep.prepareAttribute(id, attribute);
         }
     }
-
 }

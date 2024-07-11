@@ -26,7 +26,11 @@ export class XMLStrategy extends ImportStrategy {
         }
     }
 
-    public objectValue(jsonData: object, key: string | number, fallback: object | null | undefined = undefined): object | null {
+    public objectValue(
+        jsonData: object,
+        key: string | number,
+        fallback: object | null | undefined = undefined,
+    ): object | null {
         try {
             return jsonData[key];
         } catch (e) {

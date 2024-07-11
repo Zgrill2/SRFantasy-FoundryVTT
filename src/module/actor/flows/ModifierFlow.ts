@@ -1,5 +1,5 @@
 import { SuccessTest } from './../../tests/SuccessTest';
-import {SR5Actor} from "../SR5Actor";
+import { SR5Actor } from '../SR5Actor';
 
 /**
  * Options for calling the general modifier access helper method ModifierFlow#totalFor.
@@ -8,20 +8,20 @@ export interface ModifierFlowOptions {
     // Set true to always re-apply selections.
     reapply?: boolean;
     // See SituationModifier applicable
-    applicable?: string[]
-    // If called from SuccessTest or sub-class context, allow it's documents and data to 
+    applicable?: string[];
+    // If called from SuccessTest or sub-class context, allow it's documents and data to
     // influence modifier calculation.
-    test?: SuccessTest
+    test?: SuccessTest;
 }
 
 /**
  * Map the different kinds of modifier handlings that have been deployed accross the systems lifetime.
- * 
+ *
  * All actor modifier totals should be access through this interface and only mapped onto the whatever
  * data / api lies underneath.
- * 
+ *
  * Use this interface to retrieve a total value, not values used to create that total.
- * 
+ *
  */
 export class ModifierFlow {
     // The actor document to retrieve modifiers for.
@@ -33,12 +33,12 @@ export class ModifierFlow {
 
     /**
      * Retrieve a total modifier value for a specific modifier
-     * 
+     *
      * @param name The internal modifiers name. This can either be a situation modifier or an actor modifier
-     * @param options 
+     * @param options
      * @returns Total value requested or zero, should the requested modifier not exist.
      */
-    totalFor(name: string, options: ModifierFlowOptions={}): number {
+    totalFor(name: string, options: ModifierFlowOptions = {}): number {
         // Get special cases that need local handling.
         if (this[name] !== undefined) return this[name];
 

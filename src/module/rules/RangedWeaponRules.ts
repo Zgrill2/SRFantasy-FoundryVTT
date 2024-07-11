@@ -1,7 +1,7 @@
-import { SR5Actor } from "../actor/SR5Actor";
-import { SR } from "../constants";
-import { Helpers } from "../helpers";
-import { SR5Item } from "../item/SR5Item";
+import { SR5Actor } from '../actor/SR5Actor';
+import { SR } from '../constants';
+import { Helpers } from '../helpers';
+import { SR5Item } from '../item/SR5Item';
 import RangesTemplateData = Shadowrun.RangesTemplateData;
 import RangeTemplateData = Shadowrun.RangeTemplateData;
 
@@ -12,11 +12,11 @@ export const RangedWeaponRules = {
     /**
      * Apply a distance to a selected target to the configured ranges of the used ranged weapon
      * to determine which range matches the distance.
-     * 
+     *
      * Apply ranges according to SR5#175 section 'Range'.
      * Assume that a distance matches a range up until it's farthest and lowest given value
      * in the 'Range Table' SR5#185 (i.e. the weapon item range configuration).
-     * 
+     *
      * @param distance Distance from the ranged weapon to the target in meters.
      * @param ranges Configured weapon ranges in meters taken from the weapon item configuration.
      * @returns The matching weapon range for the given distance.
@@ -24,20 +24,23 @@ export const RangedWeaponRules = {
     getRangeForTargetDistance(distance: number, ranges: RangesTemplateData): RangeTemplateData {
         // Assume ranges to be in ASC order and to define their max range.
         // Should no range be found, assume distance to be out of range.
-        const rangeKey = Object.keys(ranges).find(range => distance <= ranges[range].distance);
+        const rangeKey = Object.keys(ranges).find((range) => distance <= ranges[range].distance);
         if (rangeKey) {
             return ranges[rangeKey];
         } else {
-            const {extreme} = ranges;
-            return Helpers.createRangeDescription('SR5.OutOfRange', extreme.distance, SR.combat.environmental.range_modifiers.out_of_range);
+            const { extreme } = ranges;
+            return Helpers.createRangeDescription(
+                'SR5.OutOfRange',
+                extreme.distance,
+                SR.combat.environmental.range_modifiers.out_of_range,
+            );
         }
     },
-    
 
     /**
      * Calculate recoil compensation based on SR5#175 'Recoil' including SR5#178
-     * 
-     * @param item 
+     *
+     * @param item
      * @returns total amount of recoil compensation to be used when attacking with this item.
      */
     recoilCompensation(item: SR5Item): number {
@@ -50,8 +53,8 @@ export const RangedWeaponRules = {
 
     /**
      * Calculate recoil compensation based on SR5#175 'Recoil' including SR5#178
-     * 
-     * @param actor 
+     *
+     * @param actor
      * @returns Partial amount of recoil compensation available to this actor
      */
     actorRecoilCompensation(actor: SR5Actor): number {
@@ -62,7 +65,7 @@ export const RangedWeaponRules = {
 
     /**
      * Vehicle use their own rc calculation according to SR5#176 'Vehicle and Drones and Mounted Weapons'
-     * 
+     *
      * @returns The recoil compensation part a vehicle will add to the total recoil compensation.
      */
     vehicleRecoilCompensation(actor: SR5Actor): number {
@@ -74,7 +77,7 @@ export const RangedWeaponRules = {
 
     /**
      * Calculate the actual recoil compensation for vehicles number from source values according to SR5#175 'Recoil'
-     * 
+     *
      * @param body The body level of the vehicle
      */
     vehicleRecoilCompensationValue(body: number): number {
@@ -83,10 +86,10 @@ export const RangedWeaponRules = {
 
     /**
      * Humanoid characters use the default rc calculation according to SR5#175 'Recoil'
-     * 
+     *
      * A humanoid in this case is anything with physical attributes that's not a vehicle.
      * Matrix/Astral actors aren't included.
-     * 
+     *
      * @returns The recoil compensation part a humanoid will add to the total recoil compensation.
      */
     humanoidRecoilCompensation(actor: SR5Actor): number {
@@ -99,9 +102,9 @@ export const RangedWeaponRules = {
 
     /**
      * Calculate the actual recoil compensation for humanoids number from source values according to SR5#175 'Recoil'
-     * 
+     *
      * @param strength The strength level of the humanoid
-     * @param baseRc The base recoil compensation 
+     * @param baseRc The base recoil compensation
      * @returns The recoil compensation for a humanoid
      */
     humanoidRecoilCompensationValue(strength: number): number {
@@ -112,7 +115,7 @@ export const RangedWeaponRules = {
      * Free recoil compensation according to SR5#175 'Recoil'
      * @param baseRc Optional parameter allowing you to define a custom base rc.
      */
-    humanoidBaseRecoilCompensation(baseRc:number=1): number {
+    humanoidBaseRecoilCompensation(baseRc: number = 1): number {
         return baseRc;
-    }
-}
+    },
+};

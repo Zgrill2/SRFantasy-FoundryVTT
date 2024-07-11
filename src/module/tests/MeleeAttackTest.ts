@@ -1,14 +1,13 @@
-import { SuccessTest, SuccessTestData } from "./SuccessTest";
-import { DataDefaults } from "../data/DataDefaults";
-import { SR5Actor } from "../actor/SR5Actor";
+import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { DataDefaults } from '../data/DataDefaults';
+import { SR5Actor } from '../actor/SR5Actor';
 import ModifierTypes = Shadowrun.ModifierTypes;
 
 export interface MeleeAttackData extends SuccessTestData {
-    reach: number
+    reach: number;
 }
 
 export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
-
     override _prepareData(data, options): any {
         data = super._prepareData(data, options);
 
@@ -51,13 +50,13 @@ export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
 
     /**
      * Remove unneeded environmental modifier categories for melee tests.
-     * 
+     *
      * See SR5#187 'Environmental Modifiers'
-     * 
-     * @param actor 
-     * @param type 
+     *
+     * @param actor
+     * @param type
      */
-    override prepareActorModifier(actor: SR5Actor, type: ModifierTypes): { name: string; value: number; } {
+    override prepareActorModifier(actor: SR5Actor, type: ModifierTypes): { name: string; value: number } {
         if (type !== 'environmental') return super.prepareActorModifier(actor, type);
 
         // Only light and visibility apply.
@@ -79,7 +78,7 @@ export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
 
         // Consume one ammo per attack.
         if (!this.item.hasAmmo(1)) {
-            ui.notifications?.error('SR5.MissingRessource.SomeAmmoMelee', {localize: true});
+            ui.notifications?.error('SR5.MissingRessource.SomeAmmoMelee', { localize: true });
             return false;
         }
 
@@ -90,8 +89,8 @@ export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
      * Some Melee Weapons can consume ammo resources.
      */
     override async consumeDocumentRessources(): Promise<boolean> {
-        if (!await super.consumeDocumentRessources()) return false;
-        if (!await this.consumeWeaponAmmo()) return false;
+        if (!(await super.consumeDocumentRessources())) return false;
+        if (!(await this.consumeWeaponAmmo())) return false;
 
         return true;
     }
@@ -99,13 +98,13 @@ export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
     /**
      * Reduce the melee weapon ammunition for this attack.
      */
-    async consumeWeaponAmmo(): Promise<boolean> {  
+    async consumeWeaponAmmo(): Promise<boolean> {
         if (this.item === undefined) return true;
         if (!this.item.usesAmmo) return true;
 
         // Notify user about some but not no ammo. Still let them punch though.
         if (!this.item.hasAmmo(1)) {
-            ui.notifications?.warn('SR5.MissingRessource.SomeAmmoMelee', {localize: true});
+            ui.notifications?.warn('SR5.MissingRessource.SomeAmmoMelee', { localize: true });
         }
 
         await this.item.useAmmo(1);

@@ -4,22 +4,21 @@
  *
  */
 declare namespace Shadowrun {
-    
     export interface FireModeData {
         // Amound of rounds fired
-        value: number
+        value: number;
         // Display label string
-        label: string
+        label: string;
         // Defense modification value
-        defense: number | string
+        defense: number | string;
         // Does this firemode cause recoil?
-        recoil: boolean
+        recoil: boolean;
         // Does this firemode cause suppresssion?
-        suppression: boolean
+        suppression: boolean;
         // The ranged weapon mode to be used with
-        mode: RangedWeaponMode
+        mode: RangedWeaponMode;
         // What action must be spent
-        action: ActionType
+        action: ActionType;
     }
 
     export type SpellForceData = {

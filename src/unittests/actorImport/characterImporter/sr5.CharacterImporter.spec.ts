@@ -26,7 +26,7 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
         let testItem = new SR5TestingDocuments(SR5Item);
 
         it('Does nothing when no character found', async () => {
-            const item = await testItem.create({ type: 'weapon' }) as SR5Item;
+            const item = (await testItem.create({ type: 'weapon' })) as SR5Item;
             const character = await testActor.create({ 'type': 'character', 'system.metatype': 'human' });
             await character.createEmbeddedDocuments('Item', [item]);
             assert.lengthOf(character.items, 1);
@@ -39,8 +39,8 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
         });
 
         it('Clears all imported items', async () => {
-            const item = await testItem.create({ type: 'weapon' }) as SR5Item;
-            await item.update({'system.importFlags.isImported': true})
+            const item = (await testItem.create({ type: 'weapon' })) as SR5Item;
+            await item.update({ 'system.importFlags.isImported': true });
 
             const character = await testActor.create({ 'type': 'character', 'system.metatype': 'human' });
             await character.createEmbeddedDocuments('Item', [item]);
@@ -53,7 +53,7 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
         });
 
         it('Clears all items but not imported ones', async () => {
-            const item = await testItem.create({ type: 'weapon' }) as SR5Item;
+            const item = (await testItem.create({ type: 'weapon' })) as SR5Item;
 
             const character = await testActor.create({ 'type': 'character', 'system.metatype': 'human' });
             await character.createEmbeddedDocuments('Item', [item]);
@@ -66,10 +66,10 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
         });
 
         it('Clears all items but actions', async () => {
-            const item = await testItem.create({ type: 'action' }) as SR5Item;
+            const item = (await testItem.create({ type: 'action' })) as SR5Item;
             const character = await testActor.create({ 'type': 'character', 'system.metatype': 'human' });
             await character.createEmbeddedDocuments('Item', [item]);
-            
+
             assert.lengthOf(character.items, 1);
 
             await new CharacterImporter().importChummerCharacter(character, chummerFile, importOptions);
@@ -80,15 +80,18 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
         });
 
         it('Clears all items but effects', async () => {
-            let item = await testItem.create({ type: 'weapon' }) as Item;
-            item.createEmbeddedDocuments('ActiveEffect', [{
-                origin: item.uuid,
-                disabled: false,
-                label: 'Test Effect',
-                changes: [
-                    { key: 'system.attributes.body.mod', value: 2, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM },
-                    { key: 'system.attributes.body', value: 2, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM }]
-            }]);
+            let item = (await testItem.create({ type: 'weapon' })) as Item;
+            item.createEmbeddedDocuments('ActiveEffect', [
+                {
+                    origin: item.uuid,
+                    disabled: false,
+                    label: 'Test Effect',
+                    changes: [
+                        { key: 'system.attributes.body.mod', value: 2, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM },
+                        { key: 'system.attributes.body', value: 2, mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM },
+                    ],
+                },
+            ]);
             const character = await testActor.create({ 'type': 'character', 'system.metatype': 'human' });
             await character.createEmbeddedDocuments('Item', [item]);
             await new CharacterImporter().importChummerCharacter(character, chummerFile, importOptions);
@@ -98,5 +101,4 @@ export const characterImporterTesting = (context: QuenchBatchContext) => {
             assert.strictEqual(character.items.contents[0].type, item.type);
         });
     });
-
 };

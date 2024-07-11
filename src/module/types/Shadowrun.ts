@@ -20,7 +20,7 @@ declare namespace Shadowrun {
     /**
      * Types of actions that can be taken during the combat action phase.
      */
-    export type ActionType = 'free'|'simple'|'complex';
+    export type ActionType = 'free' | 'simple' | 'complex';
 
     export type NumberOrEmpty = number | '';
 
@@ -60,28 +60,20 @@ declare namespace Shadowrun {
     /**
      * A simple modifiable numerical value.
      */
-    export type ValueField =
-        BaseValuePair<number> &
-        ModifiableValue &
-        LabelField &
-        ManualModField;
+    export type ValueField = BaseValuePair<number> & ModifiableValue & LabelField & ManualModField;
 
     /**
      * A modifiable value of any type.
      */
-    export type GenericValueField =
-        BaseValuePair<any> &
-        ModifiableValue &
-        LabelField &
-        ManualModField
+    export type GenericValueField = BaseValuePair<any> & ModifiableValue & LabelField & ManualModField;
 
     /**
      * A value that is modifiable, having a base and current value, along with associated mod list.
      */
     export type ModifiableValue = BaseValuePair<number> & {
-        mod: ModList<number>
-        override?: ModListEntry<number>
-        temp?: number
+        mod: ModList<number>;
+        override?: ModListEntry<number>;
+        temp?: number;
     };
     /**
      * A modifiable value that also scales with an attribute.
@@ -126,11 +118,11 @@ declare namespace Shadowrun {
      * Meant for storing a connected actor while only storing it's id and source.
      */
     export type SourceEntityField = {
-        id: IDField
-        name: string
-        pack: string|null
-        type: 'Actor'|'Item'
+        id: IDField;
+        name: string;
+        pack: string | null;
+        type: 'Actor' | 'Item';
         // Custom data. Whatever you want.
-        data?: Record<string, any>
+        data?: Record<string, any>;
     };
 }

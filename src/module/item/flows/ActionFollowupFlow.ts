@@ -1,8 +1,8 @@
-import { TestCreator } from "../../tests/TestCreator";
+import { TestCreator } from '../../tests/TestCreator';
 
 /**
  * Handle manually initiating a follow up test on an action based test.
- * 
+ *
  * This would be triggered from a chat message interaction, with the chat message containing the test to follow up on.
  */
 export const ActionFollowupFlow = {
@@ -14,7 +14,7 @@ export const ActionFollowupFlow = {
             const message = game.messages?.get(id);
             if (!message) return;
 
-            await ActionFollowupFlow.chatMessageListeners(message, element, message.toObject())
+            await ActionFollowupFlow.chatMessageListeners(message, element, message.toObject());
         });
     },
 
@@ -30,7 +30,7 @@ export const ActionFollowupFlow = {
         const messageId = card.data('messageId');
 
         const showDialog = TestCreator.shouldShowDialog(event);
-        const test = await TestCreator.fromMessage(messageId, {showDialog});
+        const test = await TestCreator.fromMessage(messageId, { showDialog });
         if (!test) return;
 
         // Populate data before executing follow up.
@@ -39,5 +39,5 @@ export const ActionFollowupFlow = {
 
         // NOTE: Async but at the functions end.
         test.executeFollowUpTest();
-    }
+    },
 };

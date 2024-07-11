@@ -29,7 +29,7 @@ export const spiritInfoUpdaterTesting = (context: QuenchBatchContext) => {
         it('Imports name', async () => {
             chummerFile.characters.character.alias = 'ImportTester';
 
-            const character = await testActorFactory.create({ 'type': actorType });
+            const character = await testActorFactory.create({ type: actorType });
             await new SpiritImporter().importChummerCharacter(character, chummerFile, importOptions);
 
             assert.strictEqual(character.name, 'ImportTester');
@@ -37,7 +37,7 @@ export const spiritInfoUpdaterTesting = (context: QuenchBatchContext) => {
         });
 
         it('Sets placeholder when no alias', async () => {
-            const character = await testActorFactory.create({ 'type': actorType });
+            const character = await testActorFactory.create({ type: actorType });
             await new SpiritImporter().importChummerCharacter(character, chummerFile, importOptions);
 
             assert.strictEqual(character.name, '[Name not found]');
@@ -55,13 +55,13 @@ export const spiritInfoUpdaterTesting = (context: QuenchBatchContext) => {
                         attribute: [
                             {
                                 name_english: 'MAG',
-                                total: '3'
+                                total: '3',
                             },
                         ],
                     },
                 ],
             };
-            const character = await testActorFactory.create({ 'type': actorType });
+            const character = await testActorFactory.create({ type: actorType });
             await new SpiritImporter().importChummerCharacter(character, chummerFile, importOptions);
 
             assert.strictEqual(character.system.force, 3);
@@ -71,7 +71,7 @@ export const spiritInfoUpdaterTesting = (context: QuenchBatchContext) => {
     describe('Chummer Info Updater handles spirit type correctly', () => {
         it('maps existing spirit type', async () => {
             chummerFile.characters.character.metatype_english = 'Spirit of Fire';
-            const character = await testActorFactory.create({ 'type': actorType });
+            const character = await testActorFactory.create({ type: actorType });
             await new SpiritImporter().importChummerCharacter(character, chummerFile, importOptions);
 
             assert.strictEqual(character.system.spiritType, 'fire');
@@ -79,7 +79,7 @@ export const spiritInfoUpdaterTesting = (context: QuenchBatchContext) => {
 
         it('writes nothing when spirit type not found', async () => {
             chummerFile.characters.character.metatype_english = 'Spirit of Bullshit';
-            const character = await testActorFactory.create({ 'type': actorType });
+            const character = await testActorFactory.create({ type: actorType });
             await new SpiritImporter().importChummerCharacter(character, chummerFile, importOptions);
 
             assert.strictEqual(character.system.spiritType, '');

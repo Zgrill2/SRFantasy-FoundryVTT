@@ -53,21 +53,21 @@ export const FLAGS = {
     CreateTargetedEffects: 'CreateTargetedEffects',
     DefaultOpposedTestActorSelection: 'DefaultOpposedTestActorSelection',
     TeamworkTestFlow: 'TeamworkTestFlow',
-    UseDamageCondition: 'UseDamageCondition'
+    UseDamageCondition: 'UseDamageCondition',
 };
 export const CORE_NAME = 'core';
 export const CORE_FLAGS = {
-    RollMode: 'rollMode'
-}
+    RollMode: 'rollMode',
+};
 export const METATYPEMODIFIER = 'SR5.Character.Modifiers.NPCMetatypeAttribute';
 
 export const LENGTH_UNIT_TO_METERS_MULTIPLIERS = {
-    'm': 1,
-    'meter': 1,
-    'meters': 1,
-    'km': 1000,
-    'kilometers': 1000,
-    'kilometer': 1000,
+    m: 1,
+    meter: 1,
+    meters: 1,
+    km: 1000,
+    kilometers: 1000,
+    kilometer: 1000,
 };
 
 export const DEFAULT_ROLL_NAME = 'Roll';
@@ -86,7 +86,7 @@ export const SR = {
                 long: -3,
                 extreme: -6,
                 // A modifier of zero will allow for users/gm to still test for targets with their own judgement.
-                out_of_range: 0
+                out_of_range: 0,
             },
             levels: {
                 good: 0,
@@ -94,55 +94,55 @@ export const SR = {
                 moderate: -3,
                 heavy: -6,
                 extreme: -10,
-            }
+            },
         },
 
         INI_RESULT_MOD_AFTER_INI_PASS: -10,
         INITIAL_INI_PASS: 1,
-        INITIAL_INI_ROUND: 1
+        INITIAL_INI_ROUND: 1,
     },
     die: {
         glitch: [1],
-        success: [5, 6]
+        success: [5, 6],
     },
     defense: {
         spell: {
             direct: {
                 mana: 'willpower',
-                physical: 'body'
-            }
-        }
+                physical: 'body',
+            },
+        },
     },
     attributes: {
         // Use for min/max value ranges (general). This will need expanding for different metatypes, should that ever
         // come to  be.
         ranges: {
-            magic: {min: 0},
-            edge: {min: 0},
-            resonance: {min: 0},
-            essence: {min: 0},
-            body: {min: 1},
-            agility: {min: 1},
-            reaction: {min: 1},
-            strength: {min: 1},
-            willpower: {min: 1},
-            logic: {min: 1},
-            intuition: {min: 1},
-            charisma: {min: 1},
-            attack: {min: 0},
-            sleaze: {min: 0},
-            data_processing: {min: 0},
-            firewall: {min: 0},
-            host_rating: {min: 0, max: 12},
-            pilot: {min: 1},
-            force: {min: 1}
+            magic: { min: 0 },
+            edge: { min: 0 },
+            resonance: { min: 0 },
+            essence: { min: 0 },
+            body: { min: 1 },
+            agility: { min: 1 },
+            reaction: { min: 1 },
+            strength: { min: 1 },
+            willpower: { min: 1 },
+            logic: { min: 1 },
+            intuition: { min: 1 },
+            charisma: { min: 1 },
+            attack: { min: 0 },
+            sleaze: { min: 0 },
+            data_processing: { min: 0 },
+            firewall: { min: 0 },
+            host_rating: { min: 0, max: 12 },
+            pilot: { min: 1 },
+            force: { min: 1 },
         },
         // Use for initial default values that aren't simply range.<>.min values.
         defaults: {
-            essence: 6
+            essence: 6,
         },
         // Reaction would be displayed as REA, when set to 3.
-        SHORT_NAME_LENGTH: 3
+        SHORT_NAME_LENGTH: 3,
     },
     /**
      * Instead of general attributes, these are the attribute ranges for specific actor types
@@ -151,23 +151,23 @@ export const SR = {
         vehicle: {
             // These physical attributes don't really exist on a vehicle.
             // System does manage them in regards to GitHub issue #712
-            strength: {min: 0},
-            agility: {min: 0}
-        }
+            strength: { min: 0 },
+            agility: { min: 0 },
+        },
     },
     skill: {
         // @PDF SR5#130
         DEFAULTING_MODIFIER: -1,
-        SPECIALIZATION_MODIFIER: 2
+        SPECIALIZATION_MODIFIER: 2,
     },
     initiatives: {
         ic: {
-            dice: 4
+            dice: 4,
         },
         ranges: {
-            base: {min: 0},
-            dice: {min: 0, max: 5}
-        }
+            base: { min: 0 },
+            dice: { min: 0, max: 5 },
+        },
     },
     /**
      * Grunt related npc constant data.
@@ -178,8 +178,8 @@ export const SR = {
                 attributes: {
                     agility: +1,
                     charisma: +2,
-                    edge: -1
-                }
+                    edge: -1,
+                },
             },
             ork: {
                 attributes: {
@@ -187,8 +187,8 @@ export const SR = {
                     strength: +2,
                     logic: -1,
                     charisma: -1,
-                    edge: -1
-                }
+                    edge: -1,
+                },
             },
             troll: {
                 attributes: {
@@ -201,8 +201,8 @@ export const SR = {
                     edge: -1,
                 },
                 general: {
-                    armor: +1
-                }
+                    armor: +1,
+                },
             },
             dwarf: {
                 attributes: {
@@ -210,9 +210,9 @@ export const SR = {
                     reaction: -1,
                     strength: +2,
                     willpower: +1,
-                    edge: -1
-                }
-            }
-        }
-    }
-}
+                    edge: -1,
+                },
+            },
+        },
+    },
+};

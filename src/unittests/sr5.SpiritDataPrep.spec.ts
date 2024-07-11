@@ -12,22 +12,22 @@ export const shadowrunSR5SpiritDataPrep = (context: QuenchBatchContext) => {
     before(async () => {
         testActor = new SR5TestingDocuments(SR5Actor);
         testItem = new SR5TestingDocuments(SR5Item);
-    })
+    });
 
     after(async () => {
         await testActor.teardown();
         await testItem.teardown();
-    })
+    });
 
     describe('SpiritDataPrep', () => {
         it('Spirits are always magical', async () => {
-            const character = await testActor.create({ type: 'spirit' }) as SR5Actor;
+            const character = (await testActor.create({ type: 'spirit' })) as SR5Actor;
 
             assert.strictEqual(character.system.special, 'magic');
         });
 
         it('visibility checks', async () => {
-            const actor = await testActor.create({ type: 'spirit' }) as SR5Actor;
+            const actor = (await testActor.create({ type: 'spirit' })) as SR5Actor;
             assert.strictEqual(actor.system.visibilityChecks.astral.astralActive, true);
             assert.strictEqual(actor.system.visibilityChecks.astral.hasAura, true);
             assert.strictEqual(actor.system.visibilityChecks.astral.affectedBySpell, false);
@@ -36,9 +36,8 @@ export const shadowrunSR5SpiritDataPrep = (context: QuenchBatchContext) => {
             assert.strictEqual(actor.system.visibilityChecks.matrix.runningSilent, false);
         });
 
-
         it('Spirit default/overrides by example type', async () => {
-            const actor = await testActor.create({ type: 'spirit', 'system.spiritType': 'air' }) as SR5Actor;
+            const actor = (await testActor.create({ 'type': 'spirit', 'system.spiritType': 'air' })) as SR5Actor;
             let spirit = actor.asSpirit() as Shadowrun.SpiritActorData;
 
             // Without adequate force there will be negative base values with minimum attribute values.
@@ -53,7 +52,7 @@ export const shadowrunSR5SpiritDataPrep = (context: QuenchBatchContext) => {
             assert.strictEqual(spirit.system.skills.active.assensing.base, 0);
 
             await actor.update({
-                'system.force': 6
+                'system.force': 6,
             });
 
             spirit = actor.asSpirit() as Shadowrun.SpiritActorData;
@@ -71,14 +70,22 @@ export const shadowrunSR5SpiritDataPrep = (context: QuenchBatchContext) => {
         });
 
         it('Spirit recoil compensation', () => {
-            let actor = new SR5Actor({ name: 'Testing', type: 'spirit', system: { attributes: { strength: { base: 5 } } } });
+            let actor = new SR5Actor({
+                name: 'Testing',
+                type: 'spirit',
+                system: { attributes: { strength: { base: 5 } } },
+            });
             let spirit = actor.asSpirit();
             if (!spirit) return assert.fail();
 
             assert.strictEqual(spirit.system.values.recoil_compensation.value, 3); // SR5#175: 5 / 3 = 1,6 (rounded up) = 2 => 2 + 1
         });
         it('A NPC Grunt should only have physical track', async () => {
-            const actor = await testActor.create({ type: 'spirit', 'system.is_npc': true, 'system.npc.is_grunt': true }) as SR5Actor;
+            const actor = (await testActor.create({
+                'type': 'spirit',
+                'system.is_npc': true,
+                'system.npc.is_grunt': true,
+            })) as SR5Actor;
             const character = actor.asSpirit() as unknown as Shadowrun.CharacterActorData;
 
             assert.strictEqual(character.system.track.stun.value, 0);

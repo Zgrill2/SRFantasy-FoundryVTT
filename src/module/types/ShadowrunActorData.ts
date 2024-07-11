@@ -21,13 +21,7 @@ declare namespace Shadowrun {
         | SpriteActorData
         | VehicleActorData;
 
-    export type ShadowrunActorDataData =
-        | CharacterData
-        | CritterData
-        | ICData
-        | SpiritData
-        | SpriteData
-        | VehicleData;
+    export type ShadowrunActorDataData = CharacterData | CritterData | ICData | SpiritData | SpriteData | VehicleData;
 
     // Setup your global ActorData types below here. Try sorting your ActorData types alphabetically.
     export interface CharacterActorData {

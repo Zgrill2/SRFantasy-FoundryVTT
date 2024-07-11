@@ -10,7 +10,7 @@ import { MovementPrep } from './functions/MovementPrep';
 import { WoundsPrep } from './functions/WoundsPrep';
 import { AttributesPrep } from './functions/AttributesPrep';
 import { NPCPrep } from './functions/NPCPrep';
-import { SR5ItemDataWrapper } from "../../data/SR5ItemDataWrapper";
+import { SR5ItemDataWrapper } from '../../data/SR5ItemDataWrapper';
 import { Helpers } from '../../helpers';
 import { GruntPrep } from './functions/GruntPrep';
 import { DataDefaults } from '../../data/DataDefaults';
@@ -68,16 +68,18 @@ export class CharacterPrep {
 
     /**
      * Prepare the current progressive recoil of an actor.
-     * 
+     *
      * @param system Physical humanoid system data.
      */
-    static prepareRecoil(system: Shadowrun.CharacterData | Shadowrun.CritterData | Shadowrun.SpiritData | Shadowrun.VehicleData) {
+    static prepareRecoil(
+        system: Shadowrun.CharacterData | Shadowrun.CritterData | Shadowrun.SpiritData | Shadowrun.VehicleData,
+    ) {
         Helpers.calcTotal(system.values.recoil, { min: 0 });
     }
 
     /**
      * Prepare the base actor recoil compensation without item influence.
-     * 
+     *
      * @param system Character system data
      */
     static prepareRecoilCompensation(system: Shadowrun.CharacterData | Shadowrun.CritterData | Shadowrun.SpiritData) {
@@ -93,7 +95,15 @@ export class CharacterPrep {
         const { attributes } = system;
 
         // This is necessary to support critter actor types.
-        attributes.initiation = DataDefaults.attributeData({ base: system.magic.initiation, label: "SR5.Initiation", hidden: true });;
-        attributes.submersion = DataDefaults.attributeData({ base: system.technomancer.submersion, label: "SR5.Submersion", hidden: true });;
+        attributes.initiation = DataDefaults.attributeData({
+            base: system.magic.initiation,
+            label: 'SR5.Initiation',
+            hidden: true,
+        });
+        attributes.submersion = DataDefaults.attributeData({
+            base: system.technomancer.submersion,
+            label: 'SR5.Submersion',
+            hidden: true,
+        });
     }
 }

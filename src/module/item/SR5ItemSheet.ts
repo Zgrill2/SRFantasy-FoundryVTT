@@ -1,7 +1,7 @@
 import { Helpers } from '../helpers';
 import { SR5Item } from './SR5Item';
-import { SR5 } from "../config";
-import { onManageActiveEffect, prepareSortedEffects, prepareSortedItemEffects } from "../effects";
+import { SR5 } from '../config';
+import { onManageActiveEffect, prepareSortedEffects, prepareSortedItemEffects } from '../effects';
 import { createTagify } from '../utils/sheets';
 import { SR5Actor } from '../actor/SR5Actor';
 import { SR5ActiveEffect } from '../effect/SR5ActiveEffect';
@@ -13,20 +13,20 @@ import RangeData = Shadowrun.RangeData;
  */
 interface FoundryItemSheetData {
     // Item type
-    type: string
+    type: string;
     // Legacy Item Document Data
-    data: Shadowrun.ShadowrunItemData
+    data: Shadowrun.ShadowrunItemData;
     // Item Document System Data
-    system: Shadowrun.ShadowrunItemDataData
+    system: Shadowrun.ShadowrunItemDataData;
     // A descriptive document  reference
-    item: SR5Item
-    document: SR5Item
+    item: SR5Item;
+    document: SR5Item;
 
-    cssClass: string
-    editable: boolean
-    limited: boolean
-    owner: boolean
-    title: string
+    cssClass: string;
+    editable: boolean;
+    limited: boolean;
+    owner: boolean;
+    title: string;
 }
 
 /**
@@ -34,11 +34,11 @@ interface FoundryItemSheetData {
  */
 export interface SR5BaseItemSheetData extends FoundryItemSheetData {
     // SR5-FoundryVTT configuration
-    config: typeof SR5
-    effects: SR5ActiveEffect[]
-    itemEffects: SR5ActiveEffect[]
+    config: typeof SR5;
+    effects: SR5ActiveEffect[];
+    itemEffects: SR5ActiveEffect[];
     // FoundryVTT rollmodes
-    rollModes: CONFIG.Dice.RollModes
+    rollModes: CONFIG.Dice.RollModes;
 }
 
 /**
@@ -46,39 +46,39 @@ export interface SR5BaseItemSheetData extends FoundryItemSheetData {
  */
 interface SR5ItemSheetData extends SR5BaseItemSheetData {
     // Nested item typing for different sheets
-    ammunition: Shadowrun.AmmoItemData[]
-    weaponMods: Shadowrun.ModificationItemData[]
-    armorMods: Shadowrun.ModificationItemData[]
-    vehicleMods: Shadowrun.ModificationItemData[]
-    droneMods: Shadowrun.ModificationItemData[]
+    ammunition: Shadowrun.AmmoItemData[];
+    weaponMods: Shadowrun.ModificationItemData[];
+    armorMods: Shadowrun.ModificationItemData[];
+    vehicleMods: Shadowrun.ModificationItemData[];
+    droneMods: Shadowrun.ModificationItemData[];
 
     // Sorted lists for usage in select elements.
-    activeSkills: Record<string, string> // skill id: label
-    attributes: Record<string, string>  // key: label
-    limits: Record<string, string> // key: label
+    activeSkills: Record<string, string>; // skill id: label
+    attributes: Record<string, string>; // key: label
+    limits: Record<string, string>; // key: label
 
     // Host Item.
-    markedDocuments: Shadowrun.MarkedDocument[]
-    networkDevices: (SR5Item | SR5Actor)[]
-    networkController: SR5Item | undefined
+    markedDocuments: Shadowrun.MarkedDocument[];
+    networkDevices: (SR5Item | SR5Actor)[];
+    networkController: SR5Item | undefined;
 
     // Action Items. (not only type = action)
     //@ts-expect-error
-    tests: typeof game.shadowrun5e.tests
+    tests: typeof game.shadowrun5e.tests;
     // @ts-expect-error
-    opposedTests: typeof game.shadowrun5e.opposedTests
+    opposedTests: typeof game.shadowrun5e.opposedTests;
     // @ts-expect-error
-    activeTests: typeof game.shadowrun5e.activeTests
+    activeTests: typeof game.shadowrun5e.activeTests;
     // @ts-expect-error
-    resistTests: typeof game.shadowrun5e.resistTests
+    resistTests: typeof game.shadowrun5e.resistTests;
 
     // Rendered description field
-    descriptionHTML: string
+    descriptionHTML: string;
 
     // Can be used to check if the source field contains a URL.
-    sourceIsURL: boolean
+    sourceIsURL: boolean;
 
-    isUsingRangeCategory: boolean
+    isUsingRangeCategory: boolean;
 }
 
 /**
@@ -155,20 +155,49 @@ export class SR5ItemSheet extends ItemSheet {
          * Reduce nested items into typed lists.
          */
         const itemTypes = this.item.items.reduce(
-            (sheetItemData: [Shadowrun.AmmoItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[]], nestedItem: SR5Item) => {
+            (
+                sheetItemData: [
+                    Shadowrun.AmmoItemData[],
+                    Shadowrun.ModificationItemData[],
+                    Shadowrun.ModificationItemData[],
+                    Shadowrun.ModificationItemData[],
+                    Shadowrun.ModificationItemData[],
+                ],
+                nestedItem: SR5Item,
+            ) => {
                 const itemData = nestedItem.toObject();
                 // itemData.descriptionHTML = await TextEditor.enrichHTML(itemData.system.description.value);
 
                 //@ts-expect-error
                 if (nestedItem.type === 'ammo') sheetItemData[0].push(itemData); // TODO: foundry-vtt-types v10
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (nestedItem.type === 'modification' && "type" in nestedItem.system && nestedItem.system.type === 'weapon') sheetItemData[1].push(itemData);
+                if (
+                    nestedItem.type === 'modification' &&
+                    'type' in nestedItem.system &&
+                    nestedItem.system.type === 'weapon'
+                )
+                    sheetItemData[1].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (nestedItem.type === 'modification' && "type" in nestedItem.system && nestedItem.system.type === 'armor') sheetItemData[2].push(itemData);
+                if (
+                    nestedItem.type === 'modification' &&
+                    'type' in nestedItem.system &&
+                    nestedItem.system.type === 'armor'
+                )
+                    sheetItemData[2].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (nestedItem.type === 'modification' && "type" in nestedItem.system && nestedItem.system.type === 'vehicle') sheetItemData[3].push(itemData);
+                if (
+                    nestedItem.type === 'modification' &&
+                    'type' in nestedItem.system &&
+                    nestedItem.system.type === 'vehicle'
+                )
+                    sheetItemData[3].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (nestedItem.type === 'modification' && "type" in nestedItem.system && nestedItem.system.type === 'drone') sheetItemData[4].push(itemData);
+                if (
+                    nestedItem.type === 'modification' &&
+                    'type' in nestedItem.system &&
+                    nestedItem.system.type === 'drone'
+                )
+                    sheetItemData[4].push(itemData);
 
                 return sheetItemData;
             },
@@ -286,7 +315,7 @@ export class SR5ItemSheet extends ItemSheet {
         this.form.ondrop = (event) => this._onDrop(event);
 
         // Active Effect management
-        html.find(".effect-control").click(event => onManageActiveEffect(event, this.item));
+        html.find('.effect-control').click((event) => onManageActiveEffect(event, this.item));
 
         /**
          * General item handling
@@ -336,7 +365,10 @@ export class SR5ItemSheet extends ItemSheet {
         html.find('.select-ranged-range-category').on('change', this._onSelectRangedRangeCategory.bind(this));
         html.find('.select-thrown-range-category').on('change', this._onSelectThrownRangeCategory.bind(this));
 
-        html.find('input[name="system.technology.equipped"').on('change', this._onToggleEquippedDisableOtherDevices.bind(this))
+        html.find('input[name="system.technology.equipped"').on(
+            'change',
+            this._onToggleEquippedDisableOtherDevices.bind(this),
+        );
 
         this._activateTagifyListeners(html);
     }
@@ -377,24 +409,27 @@ export class SR5ItemSheet extends ItemSheet {
         // Add items to hosts WAN.
         if (this.item.isHost && data.type === 'Actor') {
             const actor = await fromUuid(data.uuid);
-            if (!actor || !actor.id) return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
+            if (!actor || !actor.id)
+                return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
             return await this.item.addIC(actor.id, data.pack);
         }
 
         // Add items to a network (PAN/WAN).
         if (this.item.canBeNetworkController && data.type === 'Item') {
-            const item = await fromUuid(data.uuid) as SR5Item;
+            const item = (await fromUuid(data.uuid)) as SR5Item;
 
-            if (!item || !item.id) return console.error('Shadowrun 5e | Item could not be retrieved from DropData', data);
+            if (!item || !item.id)
+                return console.error('Shadowrun 5e | Item could not be retrieved from DropData', data);
 
             return await this.item.addNetworkDevice(item);
         }
 
         // Add vehicles to a network (PAN/WAN).
         if (this.item.canBeNetworkController && data.type === 'Actor') {
-            const actor = await fromUuid(data.uuid) as SR5Actor;
+            const actor = (await fromUuid(data.uuid)) as SR5Actor;
 
-            if (!actor || !actor.id) return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
+            if (!actor || !actor.id)
+                return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
 
             if (!actor.isVehicle()) {
                 return ui.notifications?.error(game.i18n.localize('SR5.Errors.CanOnlyAddTechnologyItemsToANetwork'));
@@ -415,18 +450,18 @@ export class SR5ItemSheet extends ItemSheet {
     }
 
     async _onSelectRangedRangeCategory(event) {
-        await this._onSelectRangeCategory("system.range.ranges", event);
+        await this._onSelectRangeCategory('system.range.ranges', event);
     }
 
     async _onSelectThrownRangeCategory(event) {
-        await this._onSelectRangeCategory("system.thrown.ranges", event);
+        await this._onSelectRangeCategory('system.thrown.ranges', event);
     }
 
     async _onSelectRangeCategory(key: string, event) {
         event.stopPropagation();
         const selectedRangeCategory = event.currentTarget.value as keyof typeof SR5.weaponRangeCategories;
 
-        if (selectedRangeCategory === "manual") {
+        if (selectedRangeCategory === 'manual') {
             await this.item.update({
                 [key]: {
                     category: selectedRangeCategory,
@@ -456,7 +491,7 @@ export class SR5ItemSheet extends ItemSheet {
 
         const oldValue = this.item.system.atts[changedSlot].att;
 
-        let data = {}
+        let data = {};
 
         Object.entries(this.item.system.atts).forEach(([slot, { att }]) => {
             if (slot === changedSlot) {
@@ -520,7 +555,7 @@ export class SR5ItemSheet extends ItemSheet {
         const itemData = {
             name: `${game.i18n.localize('SR5.New')} ${Helpers.label(game.i18n.localize(SR5.itemTypes[type]))}`,
             type: type,
-            system: { type: 'weapon' }
+            system: { type: 'weapon' },
         };
         // @ts-expect-error
         const item = new SR5Item(itemData, { parent: this.item });
@@ -546,7 +581,7 @@ export class SR5ItemSheet extends ItemSheet {
         const type = 'ammo';
         const itemData = {
             name: `${game.i18n.localize('SR5.New')} ${Helpers.label(game.i18n.localize(SR5.itemTypes[type]))}`,
-            type: type
+            type: type,
         };
         // @ts-expect-error
         const item = new SR5Item(itemData, { parent: this.item });
@@ -555,7 +590,8 @@ export class SR5ItemSheet extends ItemSheet {
     }
 
     async _onOwnedItemRemove(event) {
-        event.preventDefault(); 1
+        event.preventDefault();
+        1;
 
         const userConsented = await Helpers.confirmDeletion();
         if (!userConsented) return;
@@ -578,7 +614,9 @@ export class SR5ItemSheet extends ItemSheet {
         const userConsented = await Helpers.confirmDeletion();
         if (!userConsented) return;
 
-        const networkDeviceIndex = Helpers.parseInputToNumber(event.currentTarget.closest('.list-item').dataset.listItemIndex);
+        const networkDeviceIndex = Helpers.parseInputToNumber(
+            event.currentTarget.closest('.list-item').dataset.listItemIndex,
+        );
 
         await this.item.removeNetworkDevice(networkDeviceIndex);
     }
@@ -594,7 +632,7 @@ export class SR5ItemSheet extends ItemSheet {
      * Add a tagify element for an action-modifier dom element.
      *
      * Usage: Call method after render with a singular item's html sub-dom-tree.
-     * 
+     *
      * Only action items will trigger the creation of a tagify element.
      *
      * @param html see DocumentSheet.activateListeners#html param for documentation.
@@ -608,9 +646,9 @@ export class SR5ItemSheet extends ItemSheet {
         }
 
         // Tagify expects this format for localized tags.
-        const whitelist = Object.keys(SR5.modifierTypes).map(modifier => ({
+        const whitelist = Object.keys(SR5.modifierTypes).map((modifier) => ({
             value: game.i18n.localize(SR5.modifierTypes[modifier]),
-            id: modifier
+            id: modifier,
         }));
 
         // Tagify dropdown should show all whitelist tags.
@@ -618,15 +656,15 @@ export class SR5ItemSheet extends ItemSheet {
 
         // Use localized label as value, and modifier as the later to be extracted value
         const modifiers = this.item.system.action?.modifiers ?? [];
-        const tags = modifiers.map(modifier => ({
+        const tags = modifiers.map((modifier) => ({
             value: game.i18n.localize(SR5.modifierTypes[modifier]),
-            id: modifier
+            id: modifier,
         }));
 
         const tagify = createTagify(inputElement, { whitelist, maxItems, tags });
 
         html.find('input#action-modifier').on('change', async (event) => {
-            const modifiers = tagify.value.map(tag => tag.id);
+            const modifiers = tagify.value.map((tag) => tag.id);
             // render would loose tagify input focus. submit on close will save.
             await this.item.update({ 'system.action.modifiers': modifiers }, { render: false });
         });
@@ -634,11 +672,11 @@ export class SR5ItemSheet extends ItemSheet {
 
     /**
      * Add a tagify element for an action-categories dom element.
-     * 
+     *
      * Usage: Call method after render with a singular item's html sub-dom-tree.
-     * 
+     *
      * Only action items will trigger the creation of a tagify element.
-     * @param html 
+     * @param html
      */
     _createActionCategoriesTagify(html) {
         const inputElement = html.find('input#action-categories').get(0) as HTMLInputElement;
@@ -649,9 +687,9 @@ export class SR5ItemSheet extends ItemSheet {
         }
 
         // Tagify expects this format for localized tags.
-        const whitelist = Object.keys(SR5.actionCategories).map(category => ({
+        const whitelist = Object.keys(SR5.actionCategories).map((category) => ({
             value: game.i18n.localize(SR5.actionCategories[category]),
-            id: category
+            id: category,
         }));
 
         // Tagify dropdown should show all whitelist tags.
@@ -659,16 +697,16 @@ export class SR5ItemSheet extends ItemSheet {
 
         // Use localized label as value, and category as the later to be extracted value
         const categories = this.item.system.action?.categories ?? [];
-        const tags = categories.map(category => ({
+        const tags = categories.map((category) => ({
             value: game.i18n.localize(SR5.actionCategories[category]) ?? category,
-            id: category
+            id: category,
         }));
 
         const tagify = createTagify(inputElement, { whitelist, maxItems, tags });
 
         html.find('input#action-categories').on('change', async (event) => {
             // Custom tags will not have an id, so use value as id.
-            const categories = tagify.value.map(tag => tag.id ?? tag.value);
+            const categories = tagify.value.map((tag) => tag.id ?? tag.value);
             // render would loose tagify input focus. submit on close will save.
             await this.item.update({ 'system.action.categories': categories }, { render: false });
         });
@@ -790,7 +828,22 @@ export class SR5ItemSheet extends ItemSheet {
      * @param html The JQuery HTML as given by the activateListeners method.
      */
     _activateTagifyListeners(html) {
-        if (!['action', 'metamagic', 'bioware', 'cyberware', 'equipment', 'quality', 'ritual', 'call_in_action', 'sprite_power', 'critter_power', 'adept_power'].includes(this.document.type)) return;
+        if (
+            ![
+                'action',
+                'metamagic',
+                'bioware',
+                'cyberware',
+                'equipment',
+                'quality',
+                'ritual',
+                'call_in_action',
+                'sprite_power',
+                'critter_power',
+                'adept_power',
+            ].includes(this.document.type)
+        )
+            return;
 
         this._createActionModifierTagify(html);
         this._createActionCategoriesTagify(html);

@@ -1,21 +1,22 @@
-import { SR5Actor } from "../actor/SR5Actor";
-import { Helpers } from "../helpers";
-import { EffectChangeData, EffectChangeDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
-import { SYSTEM_NAME } from "../constants";
-import { SR5Item } from "../item/SR5Item";
-import { TagifyTags, tagifyFlagsToIds } from "../utils/sheets";
-
-
+import { SR5Actor } from '../actor/SR5Actor';
+import { Helpers } from '../helpers';
+import {
+    EffectChangeData,
+    EffectChangeDataSource,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
+import { SYSTEM_NAME } from '../constants';
+import { SR5Item } from '../item/SR5Item';
+import { TagifyTags, tagifyFlagsToIds } from '../utils/sheets';
 
 /**
  * Shadowrun Active Effects implement additional ways of altering document data.
- * 
+ *
  * The main difference to the base implementation is the ability to modify Value structures without the need to define
  * sub-keys. Instead of active effects adding on top of a numerical they'll be included in the mod array of the Value.
- * 
- * Overriding a value is also altered for Values to allow for a more dynamic approach. The original values are still available 
+ *
+ * Overriding a value is also altered for Values to allow for a more dynamic approach. The original values are still available
  * but during calculation the override value will be used instead.
- * 
+ *
  * Effects can also define the type of target data to be applied to. Default effects only apply to actor data, system effects
  * can apply to actors, tests and also only to actors targeted by tests.
  */
@@ -135,7 +136,7 @@ export class SR5ActiveEffect extends ActiveEffect {
      *
      * To keep the ActiveEffect workflow simple and still allow to override values that aren't a ModifiableValue,
      * check for such values and give the ActorDataPreparation flow some hints.
-     * 
+     *
      * To complicate things, there are some use cases when overwriting an actual property of a ValueField
      * is needed. The SR5 uneducated quality needs to override the canDefault field of a skill.
      *
@@ -160,7 +161,9 @@ export class SR5ActiveEffect extends ActiveEffect {
         const possibleValue = foundry.utils.getProperty(actor, key);
         const possibleValueType = foundry.utils.getType(possibleValue);
 
-        return possibleValue && possibleValueType === 'Object' && Helpers.objectHasKeys(possibleValue, this.minValueKeys);
+        return (
+            possibleValue && possibleValueType === 'Object' && Helpers.objectHasKeys(possibleValue, this.minValueKeys)
+        );
     }
 
     /**
@@ -172,48 +175,48 @@ export class SR5ActiveEffect extends ActiveEffect {
 
     /**
      * Apply to target configured for this effect.
-     * 
+     *
      * @returns Either the configured value or 'actor' as a default.
      */
     get applyTo() {
-        return this.getFlag(SYSTEM_NAME, 'applyTo') as Shadowrun.EffectApplyTo || 'actor';
+        return (this.getFlag(SYSTEM_NAME, 'applyTo') as Shadowrun.EffectApplyTo) || 'actor';
     }
 
     /**
      * Some effects should only be applied depending on their parent items wireless status.
-     * 
+     *
      * When this flag is set, the parent item wireless status is taken into account.
      */
     get onlyForWireless(): boolean {
-        return this.getFlag(SYSTEM_NAME, 'onlyForWireless') as boolean || false;
+        return (this.getFlag(SYSTEM_NAME, 'onlyForWireless') as boolean) || false;
     }
 
     /**
      * Some effects should only be applied depending on their parent items enabled status.
-     * 
+     *
      * When this flag is set, the parent item enabled status is taken into account.
      */
     get onlyForEquipped(): boolean {
-        return this.getFlag(SYSTEM_NAME, 'onlyForEquipped') as boolean || false;
+        return (this.getFlag(SYSTEM_NAME, 'onlyForEquipped') as boolean) || false;
     }
 
     /**
      * Some modifier effects should only be applied if they're applied for their parent items test.
-     * 
+     *
      * When this flag is set, this effect shouldn't apply always.
      */
     get onlyForItemTest(): boolean {
-        return this.getFlag(SYSTEM_NAME, 'onlyForItemTest') as boolean || false;
+        return (this.getFlag(SYSTEM_NAME, 'onlyForItemTest') as boolean) || false;
     }
 
     /**
      * Determine if this effect has been created using the test effect application flow
      * typically reserved for targeted_actor effects.
-     * 
+     *
      * @returns true, when the effect has been applied by a test.
      */
     get appliedByTest(): boolean {
-        return this.getFlag(SYSTEM_NAME, 'appliedByTest') as boolean || false;
+        return (this.getFlag(SYSTEM_NAME, 'appliedByTest') as boolean) || false;
     }
 
     get selectionTests(): string[] {
@@ -242,17 +245,17 @@ export class SR5ActiveEffect extends ActiveEffect {
         if (this.onlyForEquipped && !this.parent.isEquipped()) return true;
         if (this.onlyForWireless && !this.parent.isWireless()) return true;
 
-        return false; 
+        return false;
     }
 
     /**
      * Determine if this effect is meant to be applied to the actor it's existing on.
-     * 
+     *
      * Some effects are meant to be applied to other actors, and those shouldn't apply or show
      * on the actor that will cause them.
-     * 
+     *
      * Especially targeted_actor effects are meant to be applied to another actor acted upon but not the one acting.
-     * 
+     *
      * @return true, when the effect is meant to be applied to the actor it's existing on.
      */
     get appliesToLocalActor(): boolean {
@@ -268,12 +271,12 @@ export class SR5ActiveEffect extends ActiveEffect {
 
     /**
      * Inject features into default FoundryVTT ActiveEffect implementation.
-     * 
+     *
      * - dynamic source properties as change values
      * - apply to non-Actor objects
-     * 
-     * @param object 
-     * @param change 
+     *
+     * @param object
+     * @param change
      */
     override apply(object: any, change) {
         // @ts-expect-error
@@ -294,13 +297,13 @@ export class SR5ActiveEffect extends ActiveEffect {
 
     /**
      * Resolve a dynamic change value to the actual numerical value.
-     * 
+     *
      * A dynamic change value follows the same rules as a Foundry roll formula (including dice pools).
-     * 
+     *
      * So a change could have the key of 'system.attributes.body' with the mode Modify and a dynamic value of
-     * '@system.technology.rating * 3'. The dynamic property path would be taken from either the source or parent 
+     * '@system.technology.rating * 3'. The dynamic property path would be taken from either the source or parent
      * document of the effect before the resolved value would be applied onto the target document / object.
-     * 
+     *
      * @param source Any object style value, either a Foundry document or a plain object
      * @param change A singular EffectChangeData object
      */
@@ -321,9 +324,9 @@ export class SR5ActiveEffect extends ActiveEffect {
 
     /**
      * Handle application for none-Document objects
-     * @param object 
-     * @param change 
-     * @returns 
+     * @param object
+     * @param change
+     * @returns
      */
     _applyToObject(object, change) {
         // Determine the data type of the target field
@@ -340,15 +343,17 @@ export class SR5ActiveEffect extends ActiveEffect {
         // Cast the effect change value to the correct type
         let delta;
         try {
-            if (targetType === "Array") {
-                const innerType = target.length ? foundry.utils.getType(target[0]) : "string";
+            if (targetType === 'Array') {
+                const innerType = target.length ? foundry.utils.getType(target[0]) : 'string';
                 //@ts-expect-error TODO: foundry-vtt-types v10
                 delta = this._castArray(change.value, innerType);
             }
             //@ts-expect-error TODO: foundry-vtt-types v10
             else delta = this._castDelta(change.value, targetType);
         } catch (err) {
-            console.warn(`Test [${object.constructor.name}] | Unable to parse active effect change for ${change.key}: "${change.value}"`);
+            console.warn(
+                `Test [${object.constructor.name}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
+            );
             return;
         }
 
@@ -385,11 +390,11 @@ export class SR5ActiveEffect extends ActiveEffect {
 
     /**
      * Override Foundry effect data migration to avoid data => system migration.
-     * 
+     *
      * Since the system provides autocomplete-inline-properties as a relationship and
      * has it configured to provide system as the default key, the Foundry migration
      * shouldn't be necessary. The migration hinders effects with apply-to test.
-     * 
+     *
      * All migrations here are taken from FoundryVtt common.js BaseActiveEffect#migrateData
      * for v11.315
      */
@@ -400,7 +405,7 @@ export class SR5ActiveEffect extends ActiveEffect {
          * @deprecated since v11
          */
         // @ts-expect-error TODO: foundry-vtt-types v10
-        this._addDataFieldMigration(data, "label", "name", d => d.label || "Unnamed Effect");
+        this._addDataFieldMigration(data, 'label', 'name', (d) => d.label || 'Unnamed Effect');
 
         return data;
     }

@@ -10,15 +10,15 @@ import RangeData = Shadowrun.RangeData;
 import WeaponItemData = Shadowrun.WeaponItemData;
 
 export interface WeaponRangeTestDataFragment {
-    damage: Shadowrun.DamageData
-    ranges: Shadowrun.RangesTemplateData
-    range: number
-    targetRanges: Shadowrun.TargetRangeTemplateData[]
+    damage: Shadowrun.DamageData;
+    ranges: Shadowrun.RangesTemplateData;
+    range: number;
+    targetRanges: Shadowrun.TargetRangeTemplateData[];
     // index of selected target range in targetRanges
-    targetRangesSelected: number
+    targetRangesSelected: number;
 }
 
-type WeaponRangeTest = SuccessTest<WeaponRangeTestDataFragment & SuccessTestData>
+type WeaponRangeTest = SuccessTest<WeaponRangeTestDataFragment & SuccessTestData>;
 
 // Experimental - the idea of a test behavior is that it can be applied to multiple different types of tests
 // without having to be a base class of both tests. This paradigm, if implemented correctly,
@@ -45,14 +45,15 @@ export class WeaponRangeTestBehavior {
 
         // Transform weapon ranges to something usable
         const ranges = rangesAccessor(weapon);
-        const {range_modifiers} = SR.combat.environmental;
+        const { range_modifiers } = SR.combat.environmental;
         const newRanges = {} as Shadowrun.RangesTemplateData;
 
-        for (const key of ["short", "medium", "long", "extreme"] as const) {
+        for (const key of ['short', 'medium', 'long', 'extreme'] as const) {
             const rangeValue = ranges[key];
-            const distance = (test.actor && !!ranges.attribute) ?
-                test.actor.getAttribute(ranges.attribute).value * rangeValue :
-                rangeValue;
+            const distance =
+                test.actor && !!ranges.attribute
+                    ? test.actor.getAttribute(ranges.attribute).value * rangeValue
+                    : rangeValue;
             newRanges[key] = Helpers.createRangeDescription(SR5.weaponRanges[key], distance, range_modifiers[key]);
         }
         test.data.ranges = newRanges;
@@ -63,7 +64,7 @@ export class WeaponRangeTestBehavior {
 
         const modifiers = actor.getSituationModifiers();
         // Provide test context to allow effects to limit application.
-        modifiers.environmental.apply({test});
+        modifiers.environmental.apply({ test });
         // If no range is active, set to zero.
         test.data.range = modifiers.environmental.applied.active.range || 0;
     }
@@ -87,7 +88,7 @@ export class WeaponRangeTestBehavior {
         }
 
         // Build target ranges for template display.
-        test.data.targetRanges = test.targets.map(token => {
+        test.data.targetRanges = test.targets.map((token) => {
             const distance = Helpers.measureTokenDistance(attacker, token);
             const range = RangedWeaponRules.getRangeForTargetDistance(distance, test.data.ranges);
             return {
@@ -109,11 +110,11 @@ export class WeaponRangeTestBehavior {
         // if no range is active, set to first target selected.
         const modifiers = test.actor.getSituationModifiers();
         // Provide test context to allow effects to limit application.
-        modifiers.environmental.apply({test});
+        modifiers.environmental.apply({ test });
         test.data.range = modifiers.environmental.applied.active.range || test.data.targetRanges[0].range.modifier;
     }
 
-    static prepareDocumentData(test:WeaponRangeTest, rangesAccessor: (weapon: WeaponItemData) => RangeData){
+    static prepareDocumentData(test: WeaponRangeTest, rangesAccessor: (weapon: WeaponItemData) => RangeData) {
         WeaponRangeTestBehavior.prepareWeaponRanges(test, rangesAccessor);
         WeaponRangeTestBehavior.prepareTargetRanges(test);
     }
@@ -149,7 +150,8 @@ export class WeaponRangeTestBehavior {
 
             // Reduce all targets selected down to the actual target fired upon.
             const token = fromUuidSync(target.tokenUuid) as TokenDocument;
-            if (!(token instanceof TokenDocument)) return console.error(`Shadowrun 5e | ${test.type} got a target that is no TokenDocument`, token);
+            if (!(token instanceof TokenDocument))
+                return console.error(`Shadowrun 5e | ${test.type} got a target that is no TokenDocument`, token);
             if (!token.actor) return console.error(`Shadowrun 5e | ${test.type} got a token that has no actor`, token);
             test.data.targetActorsUuid = [token.actor.uuid];
             test.targets = [token];
@@ -172,12 +174,14 @@ export class WeaponRangeTestBehavior {
         const poolMods = new PartsList(test.data.modifiers.mod);
 
         // Apply altered environmental modifiers
-        const range = test.hasTargets ? test.data.targetRanges[test.data.targetRangesSelected].range.modifier : test.data.range;
+        const range = test.hasTargets
+            ? test.data.targetRanges[test.data.targetRangesSelected].range.modifier
+            : test.data.range;
         const modifiers = DocumentSituationModifiers.getDocumentModifiers(test.actor);
 
         // Locally set env modifier temporarily.
         modifiers.environmental.setActive('range', Number(range));
-        modifiers.environmental.apply({reapply: true, test});
+        modifiers.environmental.apply({ reapply: true, test });
 
         poolMods.addUniquePart(SR5.modifierTypes.environmental, modifiers.environmental.total);
     }

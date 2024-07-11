@@ -1,6 +1,5 @@
-import { SR5Actor } from "../SR5Actor";
-import {SR5BaseActorSheet} from "./SR5BaseActorSheet";
-
+import { SR5Actor } from '../SR5Actor';
+import { SR5BaseActorSheet } from './SR5BaseActorSheet';
 
 export class SR5SpriteActorSheet extends SR5BaseActorSheet {
     /**
@@ -13,10 +12,7 @@ export class SR5SpriteActorSheet extends SR5BaseActorSheet {
     override getHandledItemTypes(): string[] {
         let itemTypes = super.getHandledItemTypes();
 
-        return [
-            ...itemTypes,
-            'sprite_power'
-        ];
+        return [...itemTypes, 'sprite_power'];
     }
 
     override activateListeners(html: any): void {
@@ -61,7 +57,7 @@ export class SR5SpriteActorSheet extends SR5BaseActorSheet {
      */
     async _addTechnomancerOnDrop(dropData: any): Promise<void> {
         if (dropData.type !== 'Actor') return;
-        const actor = await fromUuid(dropData.uuid) as SR5Actor;
+        const actor = (await fromUuid(dropData.uuid)) as SR5Actor;
         if (!actor.isCharacter()) return;
 
         this.document.addTechnomancer(actor);

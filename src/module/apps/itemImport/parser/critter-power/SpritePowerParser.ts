@@ -1,10 +1,9 @@
-import { ImportHelper } from "../../helper/ImportHelper";
-import { ItemParserBase } from "../item/ItemParserBase";
-
+import { ImportHelper } from '../../helper/ImportHelper';
+import { ItemParserBase } from '../item/ItemParserBase';
 
 /**
  * Handle a Chummer5a critterpower.xml power element subset for emergent powers to system spirte_power documents.
- * 
+ *
  * TODO: Use in Chummer5 character import
  */
 export class SpritePowerParser extends ItemParserBase<Shadowrun.SpritePowerItemData> {
@@ -14,7 +13,11 @@ export class SpritePowerParser extends ItemParserBase<Shadowrun.SpritePowerItemD
         else return '';
     }
 
-    public override Parse(chummerData: object, itemData: Shadowrun.SpritePowerItemData, dataTranslation?: object): Shadowrun.SpritePowerItemData {
+    public override Parse(
+        chummerData: object,
+        itemData: Shadowrun.SpritePowerItemData,
+        dataTranslation?: object,
+    ): Shadowrun.SpritePowerItemData {
         itemData = super.Parse(chummerData, itemData, dataTranslation);
 
         // Chummer has camel case for action, system uses lowercase for type. ('Complex' => 'complex', ...)

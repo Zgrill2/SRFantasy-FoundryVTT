@@ -39,7 +39,7 @@ export class ModImporter extends DataImporter<Shadowrun.ModificationItemData, Sh
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}));
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }));
 
             // Get the item's folder information
             let folderName = item.system.mount_point !== undefined ? item.system.mount_point : 'Other';
@@ -47,7 +47,10 @@ export class ModImporter extends DataImporter<Shadowrun.ModificationItemData, Sh
                 let splitName = folderName.split('/');
                 folderName = splitName[0];
             }
-            let folder = await ImportHelper.GetFolderAtPath(`${Constants.ROOT_IMPORT_FOLDER_NAME}/Mods/${folderName}`, true);
+            let folder = await ImportHelper.GetFolderAtPath(
+                `${Constants.ROOT_IMPORT_FOLDER_NAME}/Mods/${folderName}`,
+                true,
+            );
             //@ts-expect-error TODO: Foundry Where is my foundry base data?
             item.folder = folder.id;
 
@@ -55,7 +58,9 @@ export class ModImporter extends DataImporter<Shadowrun.ModificationItemData, Sh
             item.system.importFlags = this.genImportFlags(item.name, item.type, this.formatAsSlug(folderName));
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // Translate name if needed
             item.name = ImportHelper.MapNameToTranslation(this.accessoryTranslations, item.name);

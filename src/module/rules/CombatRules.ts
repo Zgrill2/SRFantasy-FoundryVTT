@@ -1,10 +1,10 @@
-import {SR} from "../constants";
-import {PartsList} from "../parts/PartsList";
-import {Helpers} from "../helpers";
+import { SR } from '../constants';
+import { PartsList } from '../parts/PartsList';
+import { Helpers } from '../helpers';
 import DamageData = Shadowrun.DamageData;
 import ValueField = Shadowrun.ValueField;
-import {SoakRules} from "./SoakRules";
-import {SR5Actor} from "../actor/SR5Actor";
+import { SoakRules } from './SoakRules';
+import { SR5Actor } from '../actor/SR5Actor';
 
 export class CombatRules {
     static iniOrderCanDoAnotherPass(scores: number[]): boolean {
@@ -103,7 +103,12 @@ export class CombatRules {
      * @param damage Incoming damage to be modified
      * @return A new damage object for modified damage.
      */
-    static modifyDamageAfterHit(defender: SR5Actor, attackerHits: number, defenderHits: number, damage: DamageData): DamageData {
+    static modifyDamageAfterHit(
+        defender: SR5Actor,
+        attackerHits: number,
+        defenderHits: number,
+        damage: DamageData,
+    ): DamageData {
         let modified = foundry.utils.duplicate(damage);
 
         // netHits should never be below zero...
@@ -113,7 +118,7 @@ export class CombatRules {
         // SR5#173  Step3: Defend B.
         PartsList.AddUniquePart(modified.mod, 'SR5.Attacker', attackerHits);
         PartsList.AddUniquePart(modified.mod, 'SR5.Defender', -defenderHits);
-        modified.value = Helpers.calcTotal(modified, {min: 0});
+        modified.value = Helpers.calcTotal(modified, { min: 0 });
 
         // SR5#173 Step 3: Defend B.
         modified = CombatRules.modifyDamageTypeAfterHit(modified, defender);
@@ -128,8 +133,13 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isBlockedByVehicleArmor(incomingDamage: DamageData, attackerHits: number, defenderHits: number, actor: SR5Actor): boolean {
-        if(!actor.isVehicle()) {
+    static isBlockedByVehicleArmor(
+        incomingDamage: DamageData,
+        attackerHits: number,
+        defenderHits: number,
+        actor: SR5Actor,
+    ): boolean {
+        if (!actor.isVehicle()) {
             return false;
         }
 
@@ -143,10 +153,15 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isBlockedByHardenedArmor(incomingDamage: DamageData, attackerHits: number = 0, defenderHits: number = 0, actor: SR5Actor): boolean {
+    static isBlockedByHardenedArmor(
+        incomingDamage: DamageData,
+        attackerHits: number = 0,
+        defenderHits: number = 0,
+        actor: SR5Actor,
+    ): boolean {
         const armor = actor.getArmor(incomingDamage);
 
-        if(!armor.hardened) {
+        if (!armor.hardened) {
             return false;
         }
 
@@ -161,7 +176,12 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isDamageLessThanArmor(incomingDamage: DamageData, attackerHits: number, defenderHits: number, actor: SR5Actor): boolean {
+    static isDamageLessThanArmor(
+        incomingDamage: DamageData,
+        attackerHits: number,
+        defenderHits: number,
+        actor: SR5Actor,
+    ): boolean {
         const modifiedDamage = CombatRules.modifyDamageAfterHit(actor, attackerHits, defenderHits, incomingDamage);
 
         const modifiedAv = actor.getArmor(incomingDamage).value;
@@ -176,14 +196,16 @@ export class CombatRules {
      * @param actor The active defender
      */
     static doesNoPhysicalDamageToVehicle(incomingDamage: DamageData, actor: SR5Actor): boolean {
-        return actor.isVehicle() && incomingDamage.type.value === 'stun' && incomingDamage.element.value !== "electricity";
+        return (
+            actor.isVehicle() && incomingDamage.type.value === 'stun' && incomingDamage.element.value !== 'electricity'
+        );
     }
 
     /**
      * Modify damage according to suppression defense (SR5#179). Successful attack.
-     * 
+     *
      * In case of suppression a successful attack just does weapon damage (base + ammunition)
-     * 
+     *
      * @param damage The incoming weapon damage of the attack, unaltered.
      */
     static modifyDamageAfterSuppressionHit(damage: DamageData): DamageData {
@@ -200,14 +222,14 @@ export class CombatRules {
         const modifiedDamage = foundry.utils.duplicate(damage);
 
         // Keep base and modification intact, only overwriting the result.
-        modifiedDamage.override = {name: 'SR5.TestResults.Success', value: 0};
-        Helpers.calcTotal(modifiedDamage, {min: 0});
-        modifiedDamage.ap.override = {name: 'SR5.TestResults.Success', value: 0};
+        modifiedDamage.override = { name: 'SR5.TestResults.Success', value: 0 };
+        Helpers.calcTotal(modifiedDamage, { min: 0 });
+        modifiedDamage.ap.override = { name: 'SR5.TestResults.Success', value: 0 };
         Helpers.calcTotal(modifiedDamage.ap);
         modifiedDamage.type.value = '';
 
         // If attack hits but deals no damage, keep the element of the attack for any side effects.
-        if(!isHitWithNoDamage) {
+        if (!isHitWithNoDamage) {
             modifiedDamage.element.value = '';
         }
 
@@ -226,9 +248,9 @@ export class CombatRules {
         if (hits < 0) hits = 0;
 
         // modifiedDamage.mod = PartsList.AddUniquePart(modifiedDamage.mod, 'SR5.Resist', -hits);
-        let {modified} = SoakRules.reduceDamage(actor, damage, hits);
+        let { modified } = SoakRules.reduceDamage(actor, damage, hits);
 
-        Helpers.calcTotal(modified, {min: 0});
+        Helpers.calcTotal(modified, { min: 0 });
 
         return modified;
     }
@@ -248,7 +270,7 @@ export class CombatRules {
 
         console.error('Check if ap is a negative value or positive value during weapon item configuration');
         PartsList.AddUniquePart(modifiedArmor.mod, 'SR5.AP', damage.ap.value);
-        modifiedArmor.value = Helpers.calcTotal(modifiedArmor, {min: 0});
+        modifiedArmor.value = Helpers.calcTotal(modifiedArmor, { min: 0 });
 
         return modifiedArmor;
     }
@@ -259,7 +281,7 @@ export class CombatRules {
      * @param actor The actor affected by the damage
      * @returns The updated damage data
      */
-    static modifyDamageTypeAfterHit(damage: DamageData, actor : SR5Actor) : DamageData {
+    static modifyDamageTypeAfterHit(damage: DamageData, actor: SR5Actor): DamageData {
         // Careful, order of damage conversion is very important
         // Electricity stun damage is considered physical for vehicles
         let updatedDamage = foundry.utils.duplicate(damage) as DamageData;
@@ -279,9 +301,9 @@ export class CombatRules {
 
     /**
      * Determine the amount of initiative score modifier change.
-     * 
+     *
      * According to SR5#170 'Wound Modifiers'.
-     * 
+     *
      * @param woundModBefore A negative wound modifier, before taking latest damage.
      * @param woundModAfter A negative wound modifier, after taking latest damage.
      * @return An to be applied initiative score modifier
@@ -293,20 +315,20 @@ export class CombatRules {
 
     /**
      * Can a defense mode be used with a specific initiative score
-     * 
+     *
      * @param iniScore The combatants ini score
      * @param defenseIniScoreMod  The defense modes ini score modifier
      */
     static canUseActiveDefense(iniScore: number, defenseIniScoreMod: number): boolean {
         // Validate input values against valid value range.
-        return (Math.max(iniScore, 0) + Math.min(defenseIniScoreMod, 0)) < 0
+        return Math.max(iniScore, 0) + Math.min(defenseIniScoreMod, 0) < 0;
     }
 
     /**
-     * Calculate defense modifier for multiple previous attacks in a combat turn. 
-     * 
+     * Calculate defense modifier for multiple previous attacks in a combat turn.
+     *
      * See SR5#189 'Defense Modifiers Table'.
-     * 
+     *
      * @param attacks Amount of attacks within the current combat turn
      * @returns A negative modifier or zero to be applied on physical defense tests.
      */
@@ -316,9 +338,9 @@ export class CombatRules {
 
     /**
      * Calculate the initiative score adjustment to be made for damage taken during active combat
-     * 
+     *
      * See SR5.160 'Changing Initiative'
-     * 
+     *
      * @param woundsBefore Wound modifier (-2) before damage has been taken
      * @param woundsAfter Wound modifier (-3) after damage has been taken
      */

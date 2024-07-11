@@ -88,7 +88,6 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/dist/templates/actor-limited/parts/MiscVehicle.html',
         'systems/shadowrun5e/dist/templates/actor-limited/parts/MiscCritter.html',
 
-
         'systems/shadowrun5e/dist/templates/item/parts/description.html',
         'systems/shadowrun5e/dist/templates/item/parts/technology.html',
         'systems/shadowrun5e/dist/templates/item/parts/header.html',
@@ -154,7 +153,7 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/dist/templates/rolls/parts/rolled-dice.html',
 
         // Modifier management parts
-        'systems/shadowrun5e/dist/templates/apps/partials/modifiers-physical.hbs'
+        'systems/shadowrun5e/dist/templates/apps/partials/modifiers-physical.hbs',
     ];
 
     return loadTemplates(templatePaths);

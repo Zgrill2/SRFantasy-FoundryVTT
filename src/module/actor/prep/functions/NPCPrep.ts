@@ -1,7 +1,7 @@
 import CharacterActorData = Shadowrun.CharacterData;
-import {METATYPEMODIFIER, SR} from "../../../constants";
-import {PartsList} from "../../../parts/PartsList";
-import {AttributesPrep} from "./AttributesPrep";
+import { METATYPEMODIFIER, SR } from '../../../constants';
+import { PartsList } from '../../../parts/PartsList';
+import { AttributesPrep } from './AttributesPrep';
 
 export class NPCPrep {
     static prepareNPCData(system: CharacterActorData) {
@@ -15,16 +15,19 @@ export class NPCPrep {
      */
     static applyMetatypeModifiers(system: CharacterActorData) {
         // Extract needed data.
-        const {attributes, metatype} = system;
+        const { attributes, metatype } = system;
         // Fallback to empty object if no metatype modifiers exist.
         const metatypeModifier = SR.grunt.metatype_modifiers[metatype] || {};
 
         for (const [name, attribute] of Object.entries(attributes)) {
             // old-style object mod transformation is happening in AttributePrep and is needed here. Order is important.
             if (!Array.isArray(attribute.mod)) {
-                    console.error('Actor data contains wrong data type for attribute.mod', attribute, !Array.isArray(attribute.mod));
+                console.error(
+                    'Actor data contains wrong data type for attribute.mod',
+                    attribute,
+                    !Array.isArray(attribute.mod),
+                );
             } else {
-
                 // Remove lingering modifiers from NPC actors that aren't anymore.
                 const parts = new PartsList(attribute.mod);
                 parts.removePart(METATYPEMODIFIER);

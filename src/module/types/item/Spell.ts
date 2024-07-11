@@ -1,11 +1,5 @@
 declare namespace Shadowrun {
-    export interface SpellData extends
-        SpellPartData,
-        DescriptionPartData,
-        ImportFlags,
-        ActionPartData {
-
-    }
+    export interface SpellData extends SpellPartData, DescriptionPartData, ImportFlags, ActionPartData {}
 
     export interface CombatSpellData {
         type: CombatSpellType;
@@ -28,7 +22,7 @@ declare namespace Shadowrun {
     export interface RitualSpellData {
         ritual: {
             type: string;
-        }
+        };
     }
     export interface SpellPartData {
         type: SpellType;

@@ -15,9 +15,14 @@ export class ComplexFormImporter extends DataImporter<Shadowrun.ComplexFormItemD
         return jsonObject.hasOwnProperty('complexforms') && jsonObject['complexforms'].hasOwnProperty('complexform');
     }
 
-    public override GetDefaultData({ type }: { type: any; }): Shadowrun.ComplexFormItemData {
-        const systemData = {action: {type: 'complex', attribute: 'resonance', skill: 'compiling'}} as Shadowrun.ComplexFormData;
-        return DataDefaults.baseItemData<Shadowrun.ComplexFormItemData, Shadowrun.ComplexFormData>({type}, systemData);
+    public override GetDefaultData({ type }: { type: any }): Shadowrun.ComplexFormItemData {
+        const systemData = {
+            action: { type: 'complex', attribute: 'resonance', skill: 'compiling' },
+        } as Shadowrun.ComplexFormData;
+        return DataDefaults.baseItemData<Shadowrun.ComplexFormItemData, Shadowrun.ComplexFormData>(
+            { type },
+            systemData,
+        );
     }
 
     ExtractTranslation() {
@@ -47,7 +52,7 @@ export class ComplexFormImporter extends DataImporter<Shadowrun.ComplexFormItemD
             }
 
             // Create the item
-            let item = parser.Parse(jsonData, this.GetDefaultData({type: parserType}), this.nameTranslations);
+            let item = parser.Parse(jsonData, this.GetDefaultData({ type: parserType }), this.nameTranslations);
 
             // Get the item's folder information
             // @ts-expect-error TODO: Foundry Where is my foundry base data?
@@ -57,7 +62,9 @@ export class ComplexFormImporter extends DataImporter<Shadowrun.ComplexFormItemD
             item.system.importFlags = this.genImportFlags(item.name, item.type, '');
 
             // Default icon
-            if (setIcons) {item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList)};
+            if (setIcons) {
+                item.img = await this.iconAssign(item.system.importFlags, item.system, this.iconList);
+            }
 
             // TODO: Follow ComplexFormParserBase approach.
             // Item name translation
@@ -70,6 +77,6 @@ export class ComplexFormImporter extends DataImporter<Shadowrun.ComplexFormItemD
         }
 
         // @ts-expect-error
-        return await Item.create(items) as Item;
+        return (await Item.create(items)) as Item;
     }
 }

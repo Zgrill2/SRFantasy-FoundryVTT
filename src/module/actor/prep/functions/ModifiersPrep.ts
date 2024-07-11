@@ -1,6 +1,6 @@
 import ActorTypesData = Shadowrun.ShadowrunActorDataData;
 import ShadowrunActorDataData = Shadowrun.ShadowrunActorDataData;
-import {SR5} from "../../../config";
+import { SR5 } from '../../../config';
 import CharacterData = Shadowrun.CharacterData;
 import CritterData = Shadowrun.CritterData;
 import SpiritData = Shadowrun.SpiritData;
@@ -9,7 +9,7 @@ import VehicleData = Shadowrun.VehicleData;
 export class ModifiersPrep {
     /**
      * Prepare the modifiers that are displayed in the Misc. tab
-     * 
+     *
      * NOTE: Currently these aren't controlled by the Foundry template. But ONLY here.
      *       Therefore adding a modifier to an actor DataModel happens here and during Actor#prepareData
      */
@@ -26,13 +26,13 @@ export class ModifiersPrep {
      */
     static get commonModifiers(): (keyof Shadowrun.CommonModifiers)[] {
         return [
-            'defense', 
+            'defense',
             'defense_dodge',
-            'defense_block', 
+            'defense_block',
             'defense_parry',
             'defense_melee',
             'defense_ranged',
-            'soak'
+            'soak',
         ];
     }
 
@@ -66,7 +66,7 @@ export class ModifiersPrep {
             'essence',
             'fade',
             'multi_defense',
-            'reach'
+            'reach',
         ];
     }
 
@@ -74,11 +74,7 @@ export class ModifiersPrep {
      * Modifiers that appear on all matrix actor types.
      */
     static get matrixModifiers(): (keyof Shadowrun.MatrixModifiers)[] {
-        return [
-            'matrix_initiative',
-            'matrix_initiative_dice',
-            'matrix_track'
-        ]
+        return ['matrix_initiative', 'matrix_initiative_dice', 'matrix_track'];
     }
 
     static setupModifiers(system: ShadowrunActorDataData, modifiers: string[]) {
@@ -110,14 +106,14 @@ export class ModifiersPrep {
         }
     }
 
-    static clearArmorMods(system: CharacterData|CritterData|SpiritData|VehicleData) {
-        const {armor} = system;
+    static clearArmorMods(system: CharacterData | CritterData | SpiritData | VehicleData) {
+        const { armor } = system;
 
         armor.mod = [];
     }
 
     static clearLimitMods(system: ShadowrunActorDataData) {
-        const {limits} = system;
+        const { limits } = system;
         for (const [name, limit] of Object.entries(limits)) {
             if (!SR5.limits.hasOwnProperty(name) || !limit) return;
 
@@ -127,10 +123,10 @@ export class ModifiersPrep {
 
     /**
      * Clear out modifierse from all calculate values, no matter where from and what.
-     * 
+     *
      * This is necessary to avoid items and naive modifications doubling up shoudl they be
      * saved with update calls
-     * 
+     *
      */
     static clearValueMods(system: ShadowrunActorDataData) {
         for (const [name, values] of Object.entries(system.values)) {
