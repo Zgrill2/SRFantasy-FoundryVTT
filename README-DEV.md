@@ -1,5 +1,55 @@
 # Local development environment
 
+## Shimmering Reach Dev Notes
+This section is written by Shimmering Reach developers. All changes by ShimmeingReach developers will to README-DEV.md will be in this section.
+
+### Contributing
+The `main` branch has been created for Shimmering Reach content. Changes made to support ShimmeringReach should be commited to main branch. 
+
+To sync ongoing SR5 updates into our repository, follow these steps:
+1. sync SR5-FoundryVTT/SR5-FoundryVTT@master to SRFantasy-FoundryVTT
+2. rebase SRFantasy-FoundryVTT@main on SRFantasy-FoundryVTT@master
+
+note: Routine syncing (at least weekly) should be done during the process of transforming into ShimmeringReach system.
+
+### Local Development
+This is what I had to do for my local mac to work
+
+#### System Setup
+Follow the links and install
+1. [Docker](https://docs.docker.com/get-docker/)
+2. [nvm](https://brew.sh/)
+
+Open terminal and install Node.js with the following commands:
+1. `nvm install 18`
+2. `nvm use 18`
+
+Verify dev tools are installed correctly:
+1. `docker --version` --> should print out any version
+2. `node --version` --> should print out v18.x.x
+
+Post install steps:
+1. Set default node version with `nvm alias default 18`
+
+#### Foundry Setup
+Follow these steps to get foundry running on the local machine
+1. Download from [foundryvtt](https://foundryvtt.com/) the latest recommended Linux/NodeJS zip file (Release 12.328 at time of writing)
+2. Place `FoundryVTT-12.328.zip` in `<PROJECT_ROOT>/data/cache` -- create `data/cache` directory if not existing
+3. Make a copy of `secrets-template.json` file named `secrets.json` and paste in your foundry licesnse key
+4. Run `gulp watch` --> leave this running
+5. Run `docker compose up` in the project root --> leave this running
+
+If you have a permission denied error like below, you may have to `chmod` and ensure user has write permissions
+
+```
+foundry-1  | chown: /data/Data/systems/shadowrun5e/.git/objects/pack/pack-d9358eb18198e65cdebd3c7f37b9b45e9cb1a74c.idx: Permission denied
+foundry-1 exited with code 0
+```
+I fixed the above error with `chmod -R 744 .git/objects/pack`. You will have to tweak the `chmod` command to satisfy the permissions and path to suit your specific error.
+
+#### Final Notes
+You only have to restart the foundry server if changing `template.json` or `system.json`. You will likely have to refresh browser to reload changes. Beware of browser cache when rapidly trying to test some changes.
+
 ## General development
 The main development workflow uses a build system using npm and gulp with Github pull requests required for changes made. Should you have issues while setting it up, please web search first.
 
