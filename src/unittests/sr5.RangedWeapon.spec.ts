@@ -30,8 +30,8 @@ export const shadowrunSR5RangedWeaponRules = (context: QuenchBatchContext) => {
             type: 'weapon',
             system: { category: 'ranged', ammo: { current: { value: weaponAmmo, max: weaponAmmoMax } } },
         })) as SR5Item;
-        //@ts-expect-error
         const ammoItem = new SR5Item(
+            //@ts-expect-error
             { type: 'ammo', name: 'ammo', system: { technology: { quantity: ammoQuantity, equipped: true } } },
             { parent: item },
         );

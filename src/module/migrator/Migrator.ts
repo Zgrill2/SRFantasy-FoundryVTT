@@ -20,21 +20,12 @@ export class Migrator {
      *
      */
     public static get isEmptyWorld(): boolean {
-        return (
-            game.actors?.contents.length === 0 &&
-            game.items?.contents.length === 0 &&
-            game.scenes?.contents.length === 0 &&
-            Migrator.onlySystemPacks
-        );
+        return game.actors?.contents.length === 0 && game.items?.contents.length === 0 && game.scenes?.contents.length === 0 && Migrator.onlySystemPacks;
     }
 
     public static get onlySystemPacks(): boolean {
         //@ts-expect-error // TODO: foundry-vtt-types v10
-        return (
-            game.packs.contents.filter(
-                (pack) => pack.metadata.packageType !== 'system' && pack.metadata.packageName !== 'shadowrun5e',
-            ).length === 0
-        );
+        return game.packs.contents.filter((pack) => pack.metadata.packageType !== 'system' && pack.metadata.packageName !== 'shadowrun5e').length === 0;
     }
 
     public static async InitWorldForMigration() {
@@ -44,10 +35,7 @@ export class Migrator {
     }
 
     public static async BeginMigration() {
-        let currentVersion = game.settings.get(
-            VersionMigration.MODULE_NAME,
-            VersionMigration.KEY_DATA_VERSION,
-        ) as string;
+        let currentVersion = game.settings.get(VersionMigration.MODULE_NAME, VersionMigration.KEY_DATA_VERSION) as string;
         if (currentVersion === undefined || currentVersion === null) {
             currentVersion = VersionMigration.NO_VERSION;
         }
@@ -71,15 +59,13 @@ export class Migrator {
 
         const d = new Dialog({
             title: localizedWarningTitle,
-            content:
-                `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` +
-                `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` +
-                `<p>${localizedWarningDescription}</p>` +
-                `<h3 style="color: red">${localizedWarningBackup}</h3>`,
+            content: `<h2 style="color: red; text-align: center">${localizedWarningHeader}</h2>` + `<p style="text-align: center"><i>${localizedWarningRequired}</i></p>` + `<p>${localizedWarningDescription}</p>` + `<h3 style="color: red">${localizedWarningBackup}</h3>`,
             buttons: {
                 ok: {
                     label: localizedWarningBegin,
-                    callback: () => this.migrate(migrations),
+                    callback: async () => {
+                        await this.migrate(migrations);
+                    },
                 },
             },
             default: 'ok',
@@ -110,10 +96,7 @@ export class Migrator {
         const localizedSuccessConfirm = game.i18n.localize('SR5.MIGRATION.SuccessConfirm');
         const packsDialog = new Dialog({
             title: localizedWarningTitle,
-            content:
-                `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` +
-                `<p>${localizedSuccessDescription}</p>` +
-                `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
+            content: `<h2 style="text-align: center; color: green">${localizedWarningHeader}</h2>` + `<p>${localizedSuccessDescription}</p>` + `<p style="text-align: center"><i>${localizedSuccessPacksInfo}</i></p>`,
             buttons: {
                 ok: {
                     icon: '<i class="fas fa-check"></i>',
@@ -146,9 +129,7 @@ export class Migrator {
     private static async migrateCompendium(game: Game, migrations: VersionDefinition[]) {
         // Migrate World Compendium Packs
         // @ts-expect-error // v11 onwards uses packageType
-        const packs = game.packs?.filter(
-            (pack) => pack.metadata.packageType === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.type),
-        );
+        const packs = game.packs?.filter((pack) => pack.metadata.packageType === 'world' && ['Actor', 'Item', 'Scene'].includes(pack.metadata.type));
 
         if (!packs) return;
 

@@ -39,11 +39,7 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
      * @param jsonObject JSON Data with all data translations for one language.
      */
     public static CanParseI18n(jsonObject: any): boolean {
-        return (
-            jsonObject.hasOwnProperty('chummer') &&
-            jsonObject.chummer.length > 0 &&
-            jsonObject.chummer[0].$.hasOwnProperty('file')
-        );
+        return jsonObject.hasOwnProperty('chummer') && jsonObject.chummer.length > 0 && jsonObject.chummer[0].$.hasOwnProperty('file');
     }
 
     /**
@@ -79,16 +75,16 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
      * @param importFlags The importFlags data of an item
      * @param system The item's system data
      */
-    public iconAssign(importFlags: Shadowrun.ImportFlagData, system: any, iconList: string[]): Promise<string> {
+    public async iconAssign(importFlags: Shadowrun.ImportFlagData, system: any, iconList: string[]): Promise<string> {
         // if (!this.iconList) this.getIconFiles();
-        return IconAssign.iconAssign(importFlags, system, iconList);
+        return await IconAssign.iconAssign(importFlags, system, iconList);
     }
 
     /**
      * Gets a list of icons available in the importer's folder
      */
     public async getIconFiles(): Promise<string[]> {
-        return IconAssign.getIconFiles();
+        return await IconAssign.getIconFiles();
     }
 
     /**
@@ -113,7 +109,7 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
     public genImportFlags(name: string, type: string, subType: string): Shadowrun.ImportFlagData {
         const flags = {
             name: this.formatAsSlug(name), // original english name
-            type: type,
+            type,
             subType: '',
             isFreshImport: true,
         };
@@ -163,8 +159,6 @@ export abstract class DataImporter<ItemDataType, ItemSystemDataType> {
     filterObjects(objects: any[]) {
         if (!this.unsupportedCategories) return objects;
         //@ts-expect-error
-        return objects.filter(
-            (object) => !this.unsupportedCategories.includes(ImportHelper.StringValue(object, 'category', '')),
-        );
+        return objects.filter((object) => !this.unsupportedCategories.includes(ImportHelper.StringValue(object, 'category', '')));
     }
 }

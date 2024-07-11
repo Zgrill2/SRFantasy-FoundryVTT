@@ -6,6 +6,7 @@
     "trailingComma": "all",
     "bracketSpacing": true,
     "endOfLine": "crlf",
-    "printWidth": 120,
+    "printWidth": 1000,
     "semi": true
 }
+

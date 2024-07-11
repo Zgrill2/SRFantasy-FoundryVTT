@@ -98,12 +98,12 @@ export const shadowrunSR5ItemDataPrep = (context: QuenchBatchContext) => {
             const weapon = new SR5Item({ type: 'weapon', name: 'Test' });
             // unique names are necessary
             const mods: SR5Item[] = [];
-            //@ts-expect-error
             mods.push(
+                //@ts-expect-error
                 new SR5Item({ type: 'modification', name: 'TestModA', system: { type: 'weapon', dice_pool: 2 } }),
             );
-            //@ts-expect-error
             mods.push(
+                //@ts-expect-error
                 new SR5Item({ type: 'modification', name: 'TestModB', system: { type: 'weapon', dice_pool: 4 } }),
             );
 
@@ -151,10 +151,10 @@ export const shadowrunSR5ItemDataPrep = (context: QuenchBatchContext) => {
         });
 
         it('Check for ammo to override the weapon damage info', async () => {
-            //@ts-expect-error
             const weapon = new SR5Item({
                 type: 'weapon',
                 name: 'Test',
+                //@ts-expect-error
                 system: {
                     action: {
                         damage: {
@@ -165,10 +165,10 @@ export const shadowrunSR5ItemDataPrep = (context: QuenchBatchContext) => {
                     },
                 },
             });
-            //@ts-expect-error
             const ammo = new SR5Item({
                 type: 'ammo',
                 name: 'TestModA',
+                //@ts-expect-error
                 system: { replaceDamage: true, damage: 2, damageType: 'stun', element: 'cold' },
             });
 
@@ -186,10 +186,10 @@ export const shadowrunSR5ItemDataPrep = (context: QuenchBatchContext) => {
 
     describe('RangeData preparation', () => {
         it('Check for weapon modification recoil modifiers', async () => {
-            //@ts-expect-error
             const weapon = new SR5Item({
                 type: 'weapon',
                 name: 'Test',
+                //@ts-expect-error
                 system: { range: { rc: { base: 2 } } },
             }) as unknown as Shadowrun.WeaponItemData;
             const mods: SR5Item[] = [];

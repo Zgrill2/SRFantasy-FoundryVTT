@@ -256,8 +256,7 @@ ___________________
         CONFIG.Token.objectClass = SR5Token;
 
         // Register initiative directly (outside of system.json) as DnD5e does it.
-        CONFIG.Combat.initiative.formula =
-            '@initiative.current.base.value[Base] + @initiative.current.dice.text[Dice] - @wounds.value[Wounds]';
+        CONFIG.Combat.initiative.formula = '@initiative.current.base.value[Base] + @initiative.current.dice.text[Dice] - @wounds.value[Wounds]';
         // @ts-expect-error
         Combatant.prototype._getInitiativeFormula = _combatantGetInitiativeFormula;
 
@@ -348,9 +347,13 @@ ___________________
 
         // Connect chat dice icon to shadowrun basic success test roll.
         const diceIconSelector = '#chat-controls .roll-type-select .fa-dice-d20';
-        $(document).on('click', diceIconSelector, async () => await TestCreator.promptSuccessTest());
+        $(document).on('click', diceIconSelector, async () => {
+            await TestCreator.promptSuccessTest();
+        });
         const diceIconSelectorNew = '#chat-controls .chat-control-icon .fa-dice-d20';
-        $(document).on('click', diceIconSelectorNew, async () => await TestCreator.promptSuccessTest());
+        $(document).on('click', diceIconSelectorNew, async () => {
+            await TestCreator.promptSuccessTest();
+        });
 
         Hooks.on('renderChatMessage', HooksManager.chatMessageListeners);
         Hooks.on('renderJournalPageSheet', JournalEnrichers.setEnricherHooks);
@@ -435,14 +438,12 @@ ___________________
 
         if (item.isHost) {
             // Collect actors from sidebar and active scene to update / rerender
-            let connectedIC = [
+            const connectedIC = [
                 // All sidebar actors should also include tokens with linked actors.
                 ...(game.actors.filter((actor: SR5Actor) => actor.isIC() && actor.hasHost()) as SR5Actor[]),
                 // All token actors that aren't linked.
                 // @ts-expect-error // TODO: foundry-vtt-types v10
-                ...canvas.scene.tokens
-                    .filter((token) => !token.actorLink && token.actor?.isIC() && token.actor?.hasHost())
-                    .map((t) => t.actor),
+                ...canvas.scene.tokens.filter((token) => !token.actorLink && token.actor?.isIC() && token.actor?.hasHost()).map((t) => t.actor),
             ];
 
             // Update host data on the ic actor.
@@ -480,8 +481,10 @@ ___________________
             console.log('Shadowrun 5e | Received system socket message.', message);
 
             const handlers = hooks[message.type];
-            if (!handlers || handlers.length === 0)
-                return console.warn('Shadowrun 5e | System socket message has no registered handler!', message);
+            if (!handlers || handlers.length === 0) {
+                console.warn('Shadowrun 5e | System socket message has no registered handler!', message);
+                return;
+            }
             // In case of targeted socket message only execute with target user (intended for GM usage)
             if (message.userId && game.user?.id !== message.userId) return;
             if (message.userId && game.user?.id) console.log('Shadowrun 5e | GM is handling system socket message');

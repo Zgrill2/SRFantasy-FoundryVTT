@@ -8,11 +8,7 @@ export class SR5TestingDocuments<DocumentType> {
 
     async create(data): Promise<DocumentType> {
         // @ts-expect-error
-        const document = await this.documentClass.create({
-            name: `#QUENCH_TEST_DOCUMENT_SHOULD_HAVE_BEEN_DELETED`,
-            ...data,
-            ...{ folder: this.folder },
-        });
+        const document = await this.documentClass.create({ name: `#QUENCH_TEST_DOCUMENT_SHOULD_HAVE_BEEN_DELETED`, ...data, ...{ folder: this.folder } });
         this.documents.push(document);
         return document;
     }
@@ -23,6 +19,6 @@ export class SR5TestingDocuments<DocumentType> {
     }
 
     async teardown() {
-        this.documents.forEach((document) => document.delete());
+        this.documents.forEach(async (document) => await document.delete());
     }
 }

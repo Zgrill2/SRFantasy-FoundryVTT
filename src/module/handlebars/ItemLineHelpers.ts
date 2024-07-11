@@ -38,7 +38,7 @@ interface ItemListRightSide {
 
 export const registerItemLineHelpers = () => {
     Handlebars.registerHelper('InventoryHeaderIcons', function (section: InventorySheetDataByType) {
-        var icons = Handlebars.helpers['ItemHeaderIcons'](section.type) as object[];
+        const icons = Handlebars.helpers['ItemHeaderIcons'](section.type) as object[];
 
         icons.push(
             section.isOpen
@@ -442,17 +442,13 @@ export const registerItemLineHelpers = () => {
                     {
                         text: {
                             // Instead of 'complex' only show C. This might break in some languages. At that point, you can call me lazy.
-                            text: item.system.action.type
-                                ? game.i18n.localize(SR5.actionTypes[item.system.action.type] ?? '')[0]
-                                : '',
+                            text: item.system.action.type ? game.i18n.localize(SR5.actionTypes[item.system.action.type] ?? '')[0] : '',
                         },
                     },
                     {
                         text: {
                             // Either use the legacy skill localization OR just the skill name/id instead.
-                            text: game.i18n.localize(
-                                SR5.activeSkills[wrapper.getActionSkill() ?? ''] ?? wrapper.getActionSkill(),
-                            ),
+                            text: game.i18n.localize(SR5.activeSkills[wrapper.getActionSkill() ?? ''] ?? wrapper.getActionSkill()),
                             cssClass: 'six',
                         },
                     },
@@ -465,9 +461,7 @@ export const registerItemLineHelpers = () => {
                     {
                         text: {
                             // Legacy actions could have both skill and attribute2 set, which would show both information, when it shouldn't.
-                            text: wrapper.getActionSkill()
-                                ? ''
-                                : game.i18n.localize(SR5.attributes[wrapper.getActionAttribute2() ?? '']),
+                            text: wrapper.getActionSkill() ? '' : game.i18n.localize(SR5.attributes[wrapper.getActionAttribute2() ?? '']),
                             cssClass: 'six',
                         },
                     },
@@ -491,9 +485,7 @@ export const registerItemLineHelpers = () => {
                     return [
                         {
                             text: {
-                                text: game.i18n.localize(
-                                    SR5.modificationCategories[wrapper.getModificationCategory() ?? ''],
-                                ),
+                                text: game.i18n.localize(SR5.modificationCategories[wrapper.getModificationCategory() ?? '']),
                             },
                         },
                         {
@@ -526,10 +518,7 @@ export const registerItemLineHelpers = () => {
                     const count = wrapper.getAmmo()?.current.value ?? 0;
                     const max = wrapper.getAmmo()?.current.max ?? 0;
                     // Show reload on both no ammo configured and partially consumed clips.
-                    const text =
-                        count < max || max === 0
-                            ? `${game.i18n.localize('SR5.Weapon.Reload')} (${count}/${max})`
-                            : game.i18n.localize('SR5.AmmoFull');
+                    const text = count < max || max === 0 ? `${game.i18n.localize('SR5.Weapon.Reload')} (${count}/${max})` : game.i18n.localize('SR5.AmmoFull');
 
                     const cssClass = 'no-break' + (count < max ? ' reload-ammo roll' : 'faded');
                     return [
@@ -644,9 +633,7 @@ export const registerItemLineHelpers = () => {
                         button: {
                             cssClass: `item-equip-toggle ${wrapper.isEquipped() ? 'light' : ''}`,
                             short: true,
-                            text: wrapper.isEquipped()
-                                ? game.i18n.localize('SR5.Loaded')
-                                : game.i18n.localize('SR5.Load') + ' >>',
+                            text: wrapper.isEquipped() ? game.i18n.localize('SR5.Loaded') : game.i18n.localize('SR5.Load') + ' >>',
                         },
                     },
                 ];
@@ -659,7 +646,7 @@ export const registerItemLineHelpers = () => {
              */
             case 'call_in_action':
                 if (item.system.actor_type === 'spirit') {
-                    const summoningData = item.system as Shadowrun.CallInActionData;
+                    const summoningData = item.system;
                     const spiritTypeLabel = SR5.spiritTypes[summoningData.spirit.type] ?? '';
 
                     return [
@@ -677,7 +664,7 @@ export const registerItemLineHelpers = () => {
                 }
 
                 if (item.system.actor_type === 'sprite') {
-                    const compilationData = item.system as Shadowrun.CallInActionData;
+                    const compilationData = item.system;
                     const spriteTypeLabel = SR5.spriteTypes[compilationData.sprite.type] ?? '';
 
                     return [
@@ -743,8 +730,7 @@ export const registerItemLineHelpers = () => {
             // @ts-expect-error - duration is not typed correctly
             if (effect.duration.seconds) return `${effect.duration.seconds}s`;
             // @ts-expect-error - duration is not typed correctly
-            if (effect.duration.rounds && effect.duration.turns)
-                return `${effect.duration.rounds}r, ${effect.duration.turns}t`;
+            if (effect.duration.rounds && effect.duration.turns) return `${effect.duration.rounds}r, ${effect.duration.turns}t`;
             // @ts-expect-error - duration is not typed correctly
             if (effect.duration.rounds) return `${effect.duration.rounds}r`;
             // @ts-expect-error - duration is not typed correctly

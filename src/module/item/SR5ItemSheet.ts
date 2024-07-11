@@ -155,49 +155,20 @@ export class SR5ItemSheet extends ItemSheet {
          * Reduce nested items into typed lists.
          */
         const itemTypes = this.item.items.reduce(
-            (
-                sheetItemData: [
-                    Shadowrun.AmmoItemData[],
-                    Shadowrun.ModificationItemData[],
-                    Shadowrun.ModificationItemData[],
-                    Shadowrun.ModificationItemData[],
-                    Shadowrun.ModificationItemData[],
-                ],
-                nestedItem: SR5Item,
-            ) => {
+            (sheetItemData: [Shadowrun.AmmoItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[], Shadowrun.ModificationItemData[]], nestedItem: SR5Item) => {
                 const itemData = nestedItem.toObject();
                 // itemData.descriptionHTML = await TextEditor.enrichHTML(itemData.system.description.value);
 
                 //@ts-expect-error
                 if (nestedItem.type === 'ammo') sheetItemData[0].push(itemData); // TODO: foundry-vtt-types v10
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (
-                    nestedItem.type === 'modification' &&
-                    'type' in nestedItem.system &&
-                    nestedItem.system.type === 'weapon'
-                )
-                    sheetItemData[1].push(itemData);
+                if (nestedItem.type === 'modification' && 'type' in nestedItem.system && nestedItem.system.type === 'weapon') sheetItemData[1].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (
-                    nestedItem.type === 'modification' &&
-                    'type' in nestedItem.system &&
-                    nestedItem.system.type === 'armor'
-                )
-                    sheetItemData[2].push(itemData);
+                if (nestedItem.type === 'modification' && 'type' in nestedItem.system && nestedItem.system.type === 'armor') sheetItemData[2].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (
-                    nestedItem.type === 'modification' &&
-                    'type' in nestedItem.system &&
-                    nestedItem.system.type === 'vehicle'
-                )
-                    sheetItemData[3].push(itemData);
+                if (nestedItem.type === 'modification' && 'type' in nestedItem.system && nestedItem.system.type === 'vehicle') sheetItemData[3].push(itemData);
                 //@ts-expect-error TODO: foundry-vtt-types v10
-                if (
-                    nestedItem.type === 'modification' &&
-                    'type' in nestedItem.system &&
-                    nestedItem.system.type === 'drone'
-                )
-                    sheetItemData[4].push(itemData);
+                if (nestedItem.type === 'modification' && 'type' in nestedItem.system && nestedItem.system.type === 'drone') sheetItemData[4].push(itemData);
 
                 return sheetItemData;
             },
@@ -265,7 +236,7 @@ export class SR5ItemSheet extends ItemSheet {
      * @returns Enriched HTML result
      */
     async enrichEditorFieldToHTML(editorValue: string, options: any = { async: false }): Promise<string> {
-        return await TextEditor.enrichHTML(editorValue, options);
+        return TextEditor.enrichHTML(editorValue, options);
     }
 
     /**
@@ -310,12 +281,14 @@ export class SR5ItemSheet extends ItemSheet {
          * Drag and Drop Handling
          */
         //@ts-expect-error
-        this.form.ondragover = (event) => this._onDragOver(event);
+        this.form.ondragover = (event) => {
+            this._onDragOver(event);
+        };
         //@ts-expect-error
-        this.form.ondrop = (event) => this._onDrop(event);
+        this.form.ondrop = async (event) => await this._onDrop(event);
 
         // Active Effect management
-        html.find('.effect-control').click((event) => onManageActiveEffect(event, this.item));
+        html.find('.effect-control').click(async (event) => await onManageActiveEffect(event, this.item));
 
         /**
          * General item handling
@@ -348,8 +321,12 @@ export class SR5ItemSheet extends ItemSheet {
 
         // Marks handling
         html.find('.marks-qty').on('change', this._onMarksQuantityChange.bind(this));
-        html.find('.marks-add-one').on('click', async (event) => this._onMarksQuantityChangeBy(event, 1));
-        html.find('.marks-remove-one').on('click', async (event) => this._onMarksQuantityChangeBy(event, -1));
+        html.find('.marks-add-one').on('click', async (event) => {
+            await this._onMarksQuantityChangeBy(event, 1);
+        });
+        html.find('.marks-remove-one').on('click', async (event) => {
+            await this._onMarksQuantityChangeBy(event, -1);
+        });
         html.find('.marks-delete').on('click', this._onMarksDelete.bind(this));
         html.find('.marks-clear-all').on('click', this._onMarksClearAll.bind(this));
 
@@ -360,15 +337,14 @@ export class SR5ItemSheet extends ItemSheet {
         html.find('.matrix-att-selector').on('change', this._onMatrixAttributeSelected.bind(this));
 
         // Freshly imported item toggle
-        html.find('.toggle-fresh-import-off').on('click', async (event) => this._toggleFreshImportFlag(event, false));
+        html.find('.toggle-fresh-import-off').on('click', async (event) => {
+            await this._toggleFreshImportFlag(event, false);
+        });
 
         html.find('.select-ranged-range-category').on('change', this._onSelectRangedRangeCategory.bind(this));
         html.find('.select-thrown-range-category').on('change', this._onSelectThrownRangeCategory.bind(this));
 
-        html.find('input[name="system.technology.equipped"').on(
-            'change',
-            this._onToggleEquippedDisableOtherDevices.bind(this),
-        );
+        html.find('input[name="system.technology.equipped"').on('change', this._onToggleEquippedDisableOtherDevices.bind(this));
 
         this._activateTagifyListeners(html);
     }
@@ -389,7 +365,8 @@ export class SR5ItemSheet extends ItemSheet {
             // Case 1 - Data explicitly provided
             if (data.data) {
                 if (this.item.isOwned && data.actorId === this.item.actor?.id && data.data._id === this.item.id) {
-                    return console.warn('Shadowrun 5e | Cant drop items onto themselves');
+                    console.warn('Shadowrun 5e | Cant drop items onto themselves');
+                    return;
                 }
                 item = data;
                 // Case 2 - From a Compendium Pack
@@ -401,7 +378,10 @@ export class SR5ItemSheet extends ItemSheet {
             }
 
             // Provide readable error for failing item retrieval assumptions.
-            if (!item) return console.error('Shadowrun 5e | Item could not be created from DropData', data);
+            if (!item) {
+                console.error('Shadowrun 5e | Item could not be created from DropData', data);
+                return;
+            }
 
             return await this.item.createNestedItem(item._source);
         }
@@ -409,33 +389,41 @@ export class SR5ItemSheet extends ItemSheet {
         // Add items to hosts WAN.
         if (this.item.isHost && data.type === 'Actor') {
             const actor = await fromUuid(data.uuid);
-            if (!actor || !actor.id)
-                return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
-            return await this.item.addIC(actor.id, data.pack);
+            if (!actor?.id) {
+                console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
+                return;
+            }
+            await this.item.addIC(actor.id, data.pack);
+            return;
         }
 
         // Add items to a network (PAN/WAN).
         if (this.item.canBeNetworkController && data.type === 'Item') {
             const item = (await fromUuid(data.uuid)) as SR5Item;
 
-            if (!item || !item.id)
-                return console.error('Shadowrun 5e | Item could not be retrieved from DropData', data);
+            if (!item?.id) {
+                console.error('Shadowrun 5e | Item could not be retrieved from DropData', data);
+                return;
+            }
 
-            return await this.item.addNetworkDevice(item);
+            await this.item.addNetworkDevice(item);
+            return;
         }
 
         // Add vehicles to a network (PAN/WAN).
         if (this.item.canBeNetworkController && data.type === 'Actor') {
             const actor = (await fromUuid(data.uuid)) as SR5Actor;
 
-            if (!actor || !actor.id)
-                return console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
+            if (!actor?.id) {
+                console.error('Shadowrun 5e | Actor could not be retrieved from DropData', data);
+                return;
+            }
 
             if (!actor.isVehicle()) {
                 return ui.notifications?.error(game.i18n.localize('SR5.Errors.CanOnlyAddTechnologyItemsToANetwork'));
             }
 
-            return await this.item.addNetworkDevice(actor);
+            await this.item.addNetworkDevice(actor);
         }
     }
 
@@ -491,7 +479,7 @@ export class SR5ItemSheet extends ItemSheet {
 
         const oldValue = this.item.system.atts[changedSlot].att;
 
-        let data = {};
+        const data = {};
 
         Object.entries(this.item.system.atts).forEach(([slot, { att }]) => {
             if (slot === changedSlot) {
@@ -554,7 +542,7 @@ export class SR5ItemSheet extends ItemSheet {
         // TODO: Move this into DataDefaults...
         const itemData = {
             name: `${game.i18n.localize('SR5.New')} ${Helpers.label(game.i18n.localize(SR5.itemTypes[type]))}`,
-            type: type,
+            type,
             system: { type: 'weapon' },
         };
         // @ts-expect-error
@@ -581,7 +569,7 @@ export class SR5ItemSheet extends ItemSheet {
         const type = 'ammo';
         const itemData = {
             name: `${game.i18n.localize('SR5.New')} ${Helpers.label(game.i18n.localize(SR5.itemTypes[type]))}`,
-            type: type,
+            type,
         };
         // @ts-expect-error
         const item = new SR5Item(itemData, { parent: this.item });
@@ -614,9 +602,7 @@ export class SR5ItemSheet extends ItemSheet {
         const userConsented = await Helpers.confirmDeletion();
         if (!userConsented) return;
 
-        const networkDeviceIndex = Helpers.parseInputToNumber(
-            event.currentTarget.closest('.list-item').dataset.listItemIndex,
-        );
+        const networkDeviceIndex = Helpers.parseInputToNumber(event.currentTarget.closest('.list-item').dataset.listItemIndex);
 
         await this.item.removeNetworkDevice(networkDeviceIndex);
     }
@@ -828,22 +814,7 @@ export class SR5ItemSheet extends ItemSheet {
      * @param html The JQuery HTML as given by the activateListeners method.
      */
     _activateTagifyListeners(html) {
-        if (
-            ![
-                'action',
-                'metamagic',
-                'bioware',
-                'cyberware',
-                'equipment',
-                'quality',
-                'ritual',
-                'call_in_action',
-                'sprite_power',
-                'critter_power',
-                'adept_power',
-            ].includes(this.document.type)
-        )
-            return;
+        if (!['action', 'metamagic', 'bioware', 'cyberware', 'equipment', 'quality', 'ritual', 'call_in_action', 'sprite_power', 'critter_power', 'adept_power'].includes(this.document.type)) return;
 
         this._createActionModifierTagify(html);
         this._createActionCategoriesTagify(html);
@@ -862,7 +833,7 @@ export class SR5ItemSheet extends ItemSheet {
         try {
             return JSON.parse(event.dataTransfer.getData('text/plain'));
         } catch (error) {
-            return console.log('Shadowrun 5e | Dropping a document onto an item sheet caused this error', error);
+            console.log('Shadowrun 5e | Dropping a document onto an item sheet caused this error', error);
         }
     }
 
