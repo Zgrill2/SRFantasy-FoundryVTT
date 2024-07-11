@@ -37,7 +37,7 @@ export const registerSystemSettings = () => {
         scope: 'world',
         config: true,
         type: Boolean,
-        default: true,
+        default: false,
     });
 
     /**
