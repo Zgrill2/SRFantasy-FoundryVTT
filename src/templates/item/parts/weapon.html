@@ -16,6 +16,7 @@
             </select>
         </div>
     </div>
+    {{#if system.category}} {{#ifne system.category "melee"}}
     <div class="form-line">
         <div class="label">
             {{localize "SR5.Weapon.AmmoCount"}}
@@ -40,7 +41,9 @@
             />
         </div>
     </div>
-    {{#if system.category}} {{#ife system.category "range"}}
+
+    <!-- If Weapon is Ranged display ranged weapon options-->
+    {{/ifne}} {{#ife system.category "range"}}
     <div class="form-line">
         <div class="label">
             {{localize "SR5.SpareClips"}}
@@ -181,6 +184,8 @@
             />
         </div>
     </div>
+
+    <!-- If Weapon is Thrown display thrown weapon options-->
     {{/ife}} {{#ife system.category "thrown"}}
     <div class="form-line">
         <div class="label">
@@ -243,6 +248,8 @@
             </select>
         </div>
     </div>
+
+    <!-- If Weapon is Melee display melee weapon options-->
     {{/ife}} {{#ife system.category "melee"}}
     <div class="form-line">
         <div class="label">
@@ -259,6 +266,8 @@
             />
         </div>
     </div>
+
+    <!-- If Weapon is Thrown display thrown weapon options-->
     {{/ife}} {{#ife system.category "thrown"}}
     <div class="form-line">
         <div class="label">
