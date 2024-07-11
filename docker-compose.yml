@@ -5,15 +5,13 @@ services:
     init: true
     restart: "unless-stopped"
     volumes:
-      - type: bind
-        source: ./data
-        target: /data
-      - type: bind
-        source: ./data/cache/
-        target: /cache/
-      - type: bind
-        source: .
-        target: /data/Data/systems/shadowrun5e/
+      - ./data:/data
+      - ./data/cache/:/cache/
+      - ./system.json:/data/Data/systems/shadowrun5e/system.json
+      - ./template.json:/data/Data/systems/shadowrun5e/template.json
+      - ./dist:/data/Data/systems/shadowrun5e/dist
+      - ./packs:/data/Data/systems/shadowrun5e/packs
+      - ./secrets.json:/secrets.json
     environment:
       - CONTAINER_CACHE=/cache/
       - FOUNDRY_ADMIN_KEY=123456789
