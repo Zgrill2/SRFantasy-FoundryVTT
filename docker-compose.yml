@@ -3,7 +3,7 @@ services:
     image: felddy/foundryvtt:release
     hostname: my_foundry_host
     init: true
-    restart: "unless-stopped"
+    #restart: "unless-stopped"
     volumes:
       - ./data:/data
       - ./data/cache/:/cache/

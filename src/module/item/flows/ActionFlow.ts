@@ -115,7 +115,6 @@ export class ActionFlow {
             const skillValues = Helpers.sortConfigValuesByTranslation(activeSkills);
             return skillValues;
         }
-
         // Normalize custom and legacy skills to a single format.
         // Legacy skills have no name, but use their name as id.
         // Custom skills have a name but their id is random.
