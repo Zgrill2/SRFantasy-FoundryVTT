@@ -16,10 +16,7 @@ export interface PhysicalDefenseTestData extends DefenseTestData {
     cover: number;
     // Dialog input for active defense modifier
     activeDefense: string;
-    activeDefenses: Record<
-        string,
-        { label: Translation; value: number | undefined; initMod: number; weapon?: string; disabled?: boolean }
-    >;
+    activeDefenses: Record<string, { label: Translation; value: number | undefined; initMod: number; weapon?: string; disabled?: boolean }>;
     // Melee weapon reach modification.
     isMeleeAttack: boolean;
     defenseReach: number;
@@ -114,15 +111,17 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
     override applyPoolModifiers() {
         this.applyPoolCoverModifier();
         this.applyPoolActiveDefenseModifier();
-        this.applyPoolMeleeReachModifier();
+
+        // Shimmering Reach Rules - do not subtract reach difference from defense
+        //this.applyPoolMeleeReachModifier();
+
         this.applyPoolRangedFireModModifier();
         super.applyPoolModifiers();
     }
 
     applyPoolCoverModifier() {
         // Cast dialog selection to number, when necessary.
-        this.data.cover =
-            foundry.utils.getType(this.data.cover) === 'string' ? Number(this.data.cover) : this.data.cover;
+        this.data.cover = foundry.utils.getType(this.data.cover) === 'string' ? Number(this.data.cover) : this.data.cover;
 
         // Apply zero modifier also, to sync pool.mod and modifiers.mod
         PartsList.AddUniquePart(this.data.modifiers.mod, 'SR5.Cover', this.data.cover);
@@ -168,33 +167,17 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
     }
 
     // Order is important in this array to determine which label is shown, determined by the first test whose function returns a truthy value
-    private noDamageConditions: PhysicalDefenseNoDamageCondition[] = [
+    private readonly noDamageConditions: PhysicalDefenseNoDamageCondition[] = [
         {
-            test: () =>
-                this.actor !== undefined &&
-                CombatRules.doesNoPhysicalDamageToVehicle(this.data.incomingDamage, this.actor),
+            test: () => this.actor !== undefined && CombatRules.doesNoPhysicalDamageToVehicle(this.data.incomingDamage, this.actor),
             label: 'SR5.TestResults.AttackDoesNoPhysicalDamageToVehicle',
         },
         {
-            test: () =>
-                this.actor !== undefined &&
-                CombatRules.isBlockedByVehicleArmor(
-                    this.data.incomingDamage,
-                    this.against.hits.value,
-                    this.hits.value,
-                    this.actor,
-                ),
+            test: () => this.actor !== undefined && CombatRules.isBlockedByVehicleArmor(this.data.incomingDamage, this.against.hits.value, this.hits.value, this.actor),
             label: 'SR5.TestResults.AttackBlockedByVehicleArmor',
         },
         {
-            test: () =>
-                this.actor !== undefined &&
-                CombatRules.isBlockedByHardenedArmor(
-                    this.data.incomingDamage,
-                    this.against.hits.value,
-                    this.hits.value,
-                    this.actor,
-                ),
+            test: () => this.actor !== undefined && CombatRules.isBlockedByHardenedArmor(this.data.incomingDamage, this.against.hits.value, this.hits.value, this.actor),
             label: 'SR5.TestResults.AttackBlockedByHardenedArmor',
         },
     ];
@@ -225,12 +208,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         if (this.getNoDamageCondition()) {
             this.data.modifiedDamage = CombatRules.modifyDamageAfterMiss(this.data.incomingDamage, true);
         } else {
-            this.data.modifiedDamage = CombatRules.modifyDamageAfterHit(
-                this.actor,
-                this.against.hits.value,
-                this.hits.value,
-                this.data.incomingDamage,
-            );
+            this.data.modifiedDamage = CombatRules.modifyDamageAfterHit(this.actor, this.against.hits.value, this.hits.value, this.data.incomingDamage);
         }
 
         await super.processFailure();
@@ -254,7 +232,7 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
         if (this.actor && this.data.iniMod && game.combat) {
             const combat: SR5Combat = game.combat as unknown as SR5Combat;
             const combatant = combat.getActorCombatant(this.actor);
-            if (!combatant || !combatant.initiative) return true;
+            if (!combatant?.initiative) return true;
 
             if (combatant && combatant.initiative + this.data.iniMod < 0) {
                 ui.notifications?.warn('SR5.MissingRessource.Initiative', { localize: true });
@@ -320,8 +298,6 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
         // TODO: Check ressource setting.
         const iniScore = this.actor.combatInitiativeScore;
-        Object.values(this.data.activeDefenses).forEach(
-            (mode) => (mode.disabled = CombatRules.canUseActiveDefense(iniScore, mode.initMod)),
-        );
+        Object.values(this.data.activeDefenses).forEach((mode) => (mode.disabled = CombatRules.canUseActiveDefense(iniScore, mode.initMod)));
     }
 }
