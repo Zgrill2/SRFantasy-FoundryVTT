@@ -52,10 +52,16 @@ export const ActiveDefenseRules = {
         // Melee weapons and Ranged weapons can be blocked if defender is holding a shield
         // Shield value depends on type of shield being held
         if (weapon.isMeleeWeapon || weapon.isRangedWeapon) {
-            const SHIELD_VALUE = 4; // temporary hardcode
+            // use the highest block of all equipped shields
+            let shield: SR5Item | undefined;
+            const equippedShields = actor.getEquippedShields().filter((item) => item.isShield);
+            equippedShields.forEach((item) => {
+                shield = item.getBlock() > (shield?.getBlock() ?? 0) ? item : shield;
+            });
+
             activeDefenses['block'] = {
                 label: 'SR5.Block',
-                value: SHIELD_VALUE,
+                value: shield?.getBlock() ?? 0,
                 initMod: -5,
             };
         }
@@ -65,9 +71,9 @@ export const ActiveDefenseRules = {
         if (weapon.isMeleeWeapon) {
             // use the highest reach of all equipped melee weapons
             let defenseWeapon: SR5Item | undefined;
-            const equippedMeleeWeapons = actor.getEquippedWeapons().filter((weapon) => weapon.isMeleeWeapon);
-            equippedMeleeWeapons.forEach((weapon) => {
-                defenseWeapon = weapon.getReach() > (defenseWeapon?.getReach() ?? 0) ? weapon : defenseWeapon;
+            const equippedMeleeWeapons = actor.getEquippedWeapons().filter((item) => item.isMeleeWeapon);
+            equippedMeleeWeapons.forEach((item) => {
+                defenseWeapon = weapon.getReach() > (defenseWeapon?.getReach() ?? 0) ? item : defenseWeapon;
             });
             activeDefenses['parry'] = {
                 label: 'SR5.Parry',

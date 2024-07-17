@@ -427,6 +427,13 @@ export const SR5 = {
         permanent: 'SR5.DurationPermanent',
     },
 
+    shieldCategories: {
+        buckler: 'SR5.Weapon.Category.Buckler',
+        medium: 'SR5.Weapon.Category.Medium',
+        heavy: 'SR5.Weapon.Category.Heavy',
+        tower: 'SR5.Weapon.Category.Tower',
+    },
+
     weaponCategories: {
         range: 'SR5.Weapon.Category.Range',
         melee: 'SR5.Weapon.Category.Melee',

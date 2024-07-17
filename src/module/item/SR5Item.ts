@@ -21,6 +21,7 @@ import ConditionData = Shadowrun.ConditionData;
 import ActionRollData = Shadowrun.ActionRollData;
 import SpellData = Shadowrun.SpellData;
 import WeaponData = Shadowrun.WeaponData;
+import ShieldData = Shadowrun.ShieldData;
 import AmmoData = Shadowrun.AmmoData;
 import TechnologyData = Shadowrun.TechnologyData;
 import RangeWeaponData = Shadowrun.RangeWeaponData;
@@ -146,25 +147,25 @@ export class SR5Item extends Item {
         return (this.getFlag(SYSTEM_NAME, FLAGS.LastFireMode) as FireModeData) || DataDefaults.fireModeData();
     }
     async setLastFireMode(fireMode: FireModeData) {
-        return this.setFlag(SYSTEM_NAME, FLAGS.LastFireMode, fireMode);
+        return await this.setFlag(SYSTEM_NAME, FLAGS.LastFireMode, fireMode);
     }
     getLastSpellForce(): SpellForceData {
         return (this.getFlag(SYSTEM_NAME, FLAGS.LastSpellForce) as SpellForceData) || { value: 0 };
     }
     async setLastSpellForce(force: SpellForceData) {
-        return this.setFlag(SYSTEM_NAME, FLAGS.LastSpellForce, force);
+        return await this.setFlag(SYSTEM_NAME, FLAGS.LastSpellForce, force);
     }
     getLastComplexFormLevel(): ComplexFormLevelData {
         return (this.getFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel) as ComplexFormLevelData) || { value: 0 };
     }
     async setLastComplexFormLevel(level: ComplexFormLevelData) {
-        return this.setFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel, level);
+        return await this.setFlag(SYSTEM_NAME, FLAGS.LastComplexFormLevel, level);
     }
     getLastFireRangeMod(): FireRangeData {
         return (this.getFlag(SYSTEM_NAME, FLAGS.LastFireRange) as FireRangeData) || { value: 0 };
     }
     async setLastFireRangeMod(environmentalMod: FireRangeData) {
-        return this.setFlag(SYSTEM_NAME, FLAGS.LastFireRange, environmentalMod);
+        return await this.setFlag(SYSTEM_NAME, FLAGS.LastFireRange, environmentalMod);
     }
 
     /**
@@ -173,7 +174,7 @@ export class SR5Item extends Item {
     getNestedItems(): any[] {
         let items = this.getFlag(SYSTEM_NAME, FLAGS.EmbeddedItems) as any[];
 
-        items = items ? items : [];
+        items = items || [];
 
         // moved this "hotfix" to here so that everywhere that accesses the flag just gets an array -- Shawn
         if (items && !Array.isArray(items)) {
@@ -213,11 +214,7 @@ export class SR5Item extends Item {
 
     get hasRoll(): boolean {
         const action = this.getAction();
-        return !!(
-            action &&
-            action.type !== '' &&
-            (action.skill || action.attribute || action.attribute2 || action.dice_pool_mod)
-        );
+        return !!(action && action.type !== '' && (action.skill || action.attribute || action.attribute2 || action.dice_pool_mod));
     }
 
     /**
@@ -337,7 +334,7 @@ export class SR5Item extends Item {
 
     getActionTestName(): string {
         const testName = this.getRollName();
-        return testName ? testName : game.i18n.localize('SR5.Action');
+        return testName || game.i18n.localize('SR5.Action');
     }
 
     /**
@@ -495,8 +492,7 @@ export class SR5Item extends Item {
         // Don't adhere to clip sizes, only reload from the point of capacity left.
         const missingBullets = Math.max(0, weapon.system.ammo.current.max - remainingBullets);
         // If there aren't ANY ammo items, just use weapon max as to not enforce ammo onto users without.
-        const availableBullets =
-            ammoItems > 0 ? Number(ammo.system.technology?.quantity) : weapon.system.ammo.current.max;
+        const availableBullets = ammoItems > 0 ? Number(ammo.system.technology?.quantity) : weapon.system.ammo.current.max;
 
         // Validate ammunition and clip availability.
         if (weapon.system.ammo.spare_clips.value === 0 && weapon.system.ammo.spare_clips.max > 0) {
@@ -721,7 +717,7 @@ export class SR5Item extends Item {
      * @param html
      */
     static getItemFromMessage(html): SR5Item | undefined {
-        if (!game || !game.scenes || !game.ready || !canvas || !canvas.ready || !canvas.scene) return;
+        if (!game?.scenes || !game.ready || !canvas || !canvas.ready || !canvas.scene) return;
 
         const card = html.find('.chat-card');
         let actor;
@@ -1023,6 +1019,10 @@ export class SR5Item extends Item {
         return this.wrapper.isWeapon();
     }
 
+    get isShield(): boolean {
+        return this.wrapper.isShield();
+    }
+
     get asWeapon(): WeaponItemData | undefined {
         if (this.isWeapon) {
             //@ts-expect-error // TODO: foundry-vtt-types v10
@@ -1219,7 +1219,7 @@ export class SR5Item extends Item {
         return this.wrapper.getArmorValue();
     }
 
-    getArmorElements(): { [key: string]: number } {
+    getArmorElements(): Record<string, number> {
         return this.wrapper.getArmorElements();
     }
 
@@ -1301,6 +1301,14 @@ export class SR5Item extends Item {
         if (this.isMeleeWeapon) {
             const system = this.system as WeaponData;
             return system.melee.reach ?? 0;
+        }
+        return 0;
+    }
+
+    getBlock(): number {
+        if (this.isShield) {
+            const system = this.system as ShieldData;
+            return system.shield.block ?? 0;
         }
         return 0;
     }
@@ -1397,7 +1405,7 @@ export class SR5Item extends Item {
     override async update(data, options?): Promise<this> {
         // Item.item => Embedded item into another item!
         if (this._isNestedItem) {
-            return this.updateNestedItem(data);
+            return await this.updateNestedItem(data);
         }
 
         // Actor.item => Directly owned item by an actor!
@@ -1540,14 +1548,14 @@ export class SR5Item extends Item {
         if (controllerData.system.networkDevices[index] === undefined) return;
         const networkDeviceLink = controllerData.system.networkDevices[index];
         const controller = this;
-        return await NetworkDeviceFlow.removeDeviceLinkFromNetwork(controller, networkDeviceLink);
+        await NetworkDeviceFlow.removeDeviceLinkFromNetwork(controller, networkDeviceLink);
     }
 
     async removeAllNetworkDevices() {
         const controllerData = this.asController();
         if (!controllerData) return;
 
-        return await NetworkDeviceFlow.removeAllDevicesFromNetwork(this);
+        await NetworkDeviceFlow.removeAllDevicesFromNetwork(this);
     }
 
     getAllMarkedDocuments(): Shadowrun.MarkedDocument[] {
@@ -1585,7 +1593,7 @@ export class SR5Item extends Item {
         const controller = this.asDevice || this.asHost;
         if (!controller) return [];
 
-        return NetworkDeviceFlow.getNetworkDevices(this);
+        return await NetworkDeviceFlow.getNetworkDevices(this);
     }
 
     /**

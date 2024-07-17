@@ -150,6 +150,7 @@
     "SR5.Armor": "Armor",
     "SR5.ArmorHardened": "Hardened",
     "SR5.ArmorHardenedFull": "Hardened Armor",
+    "SR5.ArmorSoak": "Armor Soak",
     "SR5.ArmorValue": "Armor Value",
     "SR5.Attacker": "Attacker",
     "SR5.AttackerHits": "Attacker Hits",
@@ -686,6 +687,7 @@
     "SR5.MeleeWeaponAttack": "Melee Weapon Attack",
     "SR5.MentalLimit": "Mental Limit",
     "SR5.MentalResist": "Mental Resist",
+    "SR5.MentalSoak": "Mental Soak",
     "SR5.Metamagic": "Metamagic",
     "SR5.Metamagics": "Metamagics",
     "SR5.Metatype": "Metatype",
@@ -818,6 +820,7 @@
     "SR5.PhysicalLimit": "Physical Limit",
     "SR5.PhysicalOverflowTrack": "Physical Overflow Track",
     "SR5.PhysicalResist": "Physical Resist",
+    "SR5.PhysicalSoak": "Physical Soak",
     "SR5.PhysicalTrack": "Physical Track",
     "SR5.PlaceMarks": "Place Marks",
     "SR5.PlaceTemplate": "Place Template",
@@ -1362,6 +1365,14 @@
         "SkillCantBeDefault": "This skill can't be rolled as it can't be defaulted",
         "SummoningNotConcluded": "Summoning incomplete. Wait for spirit to oppose summoning to determine drain.",
         "TokenSelectionNeeded": "One or more tokens need to be selected"
+    },
+    "SR5.Shield": {
+        "Category": {
+            "Buckler": "Buckler",
+            "Medium": "Medium",
+            "Heavy": "Heavy",
+            "Tower": "Tower"
+        }
     },
     "SR5.Weapon": {
         "AmmoCount": "Ammo Count",
