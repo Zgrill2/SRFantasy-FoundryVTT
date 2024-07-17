@@ -58,12 +58,13 @@ export const ActiveDefenseRules = {
             equippedShields.forEach((item) => {
                 shield = item.getBlock() > (shield?.getBlock() ?? 0) ? item : shield;
             });
-
-            activeDefenses['block'] = {
-                label: 'SR5.Block',
-                value: shield?.getBlock() ?? 0,
-                initMod: -5,
-            };
+            if (shield) {
+                activeDefenses['block'] = {
+                    label: 'SR5.Block',
+                    value: shield?.getBlock() ?? 0,
+                    initMod: -5,
+                };
+            }
         }
 
         // Melee weapons can be parried if defender is holding a melee weapon

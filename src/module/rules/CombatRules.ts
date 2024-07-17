@@ -103,12 +103,7 @@ export class CombatRules {
      * @param damage Incoming damage to be modified
      * @return A new damage object for modified damage.
      */
-    static modifyDamageAfterHit(
-        defender: SR5Actor,
-        attackerHits: number,
-        defenderHits: number,
-        damage: DamageData,
-    ): DamageData {
+    static modifyDamageAfterHit(defender: SR5Actor, attackerHits: number, defenderHits: number, damage: DamageData): DamageData {
         let modified = foundry.utils.duplicate(damage);
 
         // netHits should never be below zero...
@@ -118,6 +113,7 @@ export class CombatRules {
         // SR5#173  Step3: Defend B.
         PartsList.AddUniquePart(modified.mod, 'SR5.Attacker', attackerHits);
         PartsList.AddUniquePart(modified.mod, 'SR5.Defender', -defenderHits);
+        PartsList.AddUniquePart(modified.mod, 'SR.ArmorSoak', -defender.getArmorSoak());
         modified.value = Helpers.calcTotal(modified, { min: 0 });
 
         // SR5#173 Step 3: Defend B.
@@ -133,12 +129,7 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isBlockedByVehicleArmor(
-        incomingDamage: DamageData,
-        attackerHits: number,
-        defenderHits: number,
-        actor: SR5Actor,
-    ): boolean {
+    static isBlockedByVehicleArmor(incomingDamage: DamageData, attackerHits: number, defenderHits: number, actor: SR5Actor): boolean {
         if (!actor.isVehicle()) {
             return false;
         }
@@ -153,12 +144,7 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isBlockedByHardenedArmor(
-        incomingDamage: DamageData,
-        attackerHits: number = 0,
-        defenderHits: number = 0,
-        actor: SR5Actor,
-    ): boolean {
+    static isBlockedByHardenedArmor(incomingDamage: DamageData, attackerHits: number = 0, defenderHits: number = 0, actor: SR5Actor): boolean {
         const armor = actor.getArmor(incomingDamage);
 
         if (!armor.hardened) {
@@ -176,12 +162,7 @@ export class CombatRules {
      * @param defenderHits The attackers hits. Should be a positive number.
      * @param actor The active defender
      */
-    static isDamageLessThanArmor(
-        incomingDamage: DamageData,
-        attackerHits: number,
-        defenderHits: number,
-        actor: SR5Actor,
-    ): boolean {
+    static isDamageLessThanArmor(incomingDamage: DamageData, attackerHits: number, defenderHits: number, actor: SR5Actor): boolean {
         const modifiedDamage = CombatRules.modifyDamageAfterHit(actor, attackerHits, defenderHits, incomingDamage);
 
         const modifiedAv = actor.getArmor(incomingDamage).value;
@@ -196,9 +177,7 @@ export class CombatRules {
      * @param actor The active defender
      */
     static doesNoPhysicalDamageToVehicle(incomingDamage: DamageData, actor: SR5Actor): boolean {
-        return (
-            actor.isVehicle() && incomingDamage.type.value === 'stun' && incomingDamage.element.value !== 'electricity'
-        );
+        return actor.isVehicle() && incomingDamage.type.value === 'stun' && incomingDamage.element.value !== 'electricity';
     }
 
     /**
@@ -248,7 +227,7 @@ export class CombatRules {
         if (hits < 0) hits = 0;
 
         // modifiedDamage.mod = PartsList.AddUniquePart(modifiedDamage.mod, 'SR5.Resist', -hits);
-        let { modified } = SoakRules.reduceDamage(actor, damage, hits);
+        const { modified } = SoakRules.reduceDamage(actor, damage, hits);
 
         Helpers.calcTotal(modified, { min: 0 });
 
@@ -290,6 +269,9 @@ export class CombatRules {
         }
 
         const damageSourceItem = Helpers.findDamageSource(damage);
+
+        // Shimmering Reach Rules - Spell damage may be direct or target armor, physical, or mental soak
+        // Shimmering Reach TOTO - Spell Damage
         if (damageSourceItem && damageSourceItem.isDirectCombatSpell) {
             // Damage from direct combat spells is never converted
             return updatedDamage;

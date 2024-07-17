@@ -219,12 +219,11 @@ export class PhysicalDefenseTest<T extends PhysicalDefenseTestData = PhysicalDef
 
         // If attack hits but does no damage, don't perform the follow-up physical resist test
         if (this.getNoDamageCondition()) {
-            return;
         }
 
-        const test = await TestCreator.fromOpposedTestResistTest(this, this.data.options);
-        if (!test) return;
-        await test.execute();
+        //const test = await TestCreator.fromOpposedTestResistTest(this, this.data.options);
+        //if (!test) return;
+        //await test.execute();
     }
 
     override canConsumeDocumentResources() {

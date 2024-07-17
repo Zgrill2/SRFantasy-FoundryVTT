@@ -77,12 +77,7 @@ export const UpdateActionFlow = {
      * @param applyData An object to carry the altering data changes
      * @param item Optional item reference. This can't be given during the Chummer Item Import flow.
      */
-    injectActionTestsIntoChangeData(
-        type: string,
-        changeData: Partial<Shadowrun.ShadowrunItemData>,
-        applyData,
-        item?: SR5Item,
-    ) {
+    injectActionTestsIntoChangeData(type: string, changeData: Partial<Shadowrun.ShadowrunItemData>, applyData, item?: SR5Item) {
         if (!changeData) return;
 
         const typeHandler = {
@@ -113,10 +108,7 @@ export const UpdateActionFlow = {
 
         const test = SR5.weaponCategoryActiveTests[changeData.system.category];
         if (!test) {
-            console.error(
-                `Shadowrun 5 | There is no active test configured for the weapon category ${changeData.system.category}.`,
-                changeData,
-            );
+            console.error(`Shadowrun 5 | There is no active test configured for the weapon category ${changeData.system.category}.`, changeData);
         }
 
         foundry.utils.setProperty(applyData, 'system.action.test', test);
@@ -161,11 +153,7 @@ export const UpdateActionFlow = {
     /**
      * See injectActionTestsIntoChangeData for documentation.
      */
-    injectCallInActionTestIntoChangeData(
-        type: string,
-        changeData: DeepPartial<Shadowrun.CallInActionItemData>,
-        applyData,
-    ) {
+    injectCallInActionTestIntoChangeData(type: string, changeData: DeepPartial<Shadowrun.CallInActionItemData>, applyData) {
         if (changeData.system?.actor_type === undefined) return;
 
         if (changeData.system.actor_type === 'spirit') {

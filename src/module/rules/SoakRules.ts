@@ -46,6 +46,13 @@ export class SoakRules {
                 return updatedDamage;
             }
 
+            // Shimmering Reach Rules - Armor Soak Formula
+            // Round up -- (Armor * BOD) + LOG / 2
+            // Light Armor = 1, Normal Armor = 2
+            //const armor = 2; // todo - update actor.getArmor() for Shimmering Reach Rules
+            //const armorSoak = Math.round((armor * actor.getAttribute('body').value + actor.getAttribute('logic').value) / 2 + 0.5);
+
+            // SR5 Code - Deprecated; left for future reference
             const modifiedArmor = actor.getModifiedArmor(damage);
             if (modifiedArmor) {
                 const armorWillChangeDamageType = modifiedArmor.value > damage.value;
