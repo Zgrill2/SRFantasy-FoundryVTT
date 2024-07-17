@@ -14,5 +14,5 @@ packs/*
 !packs/_source/
 
 # Add data folder to gitignore for convinience of local developers
-data/
+data/*
 secrets.json
