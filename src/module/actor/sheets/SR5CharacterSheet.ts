@@ -23,7 +23,7 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
      */
     override getHandledItemTypes(): string[] {
         const itemTypes = super.getHandledItemTypes();
-
+        
         return [...itemTypes, 'program', 'sin', 'lifestyle', 'contact', 'spell', 'ritual_spells', 'adept_power', 'complex_form', 'quality', 'echo', 'metamagic', 'critter_power', 'call_in_action', 'ritual'];
     }
 
