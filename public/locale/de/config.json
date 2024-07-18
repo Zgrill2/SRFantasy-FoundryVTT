@@ -141,6 +141,11 @@
     "SR5.Aoe": "Flächeneffekt",
     "SR5.ApplyWounds": "Wunden anwenden",
     "SR5.Armor": "Panzerung",
+    "SR5.ArmorCategory": {
+        "Category": "Armor Type",
+        "Light": "Light",
+        "Normal": "Normal"
+    },
     "SR5.ArmorHardened": "Verstärkt",
     "SR5.ArmorHardenedFull": "Verstärkte Panzerung",
     "SR5.ArmorValue": "Panzerungswert",

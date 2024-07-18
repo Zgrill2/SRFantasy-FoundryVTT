@@ -107,6 +107,11 @@
     "SR5.Aoe": "AoE",
     "SR5.ApplyWounds": "부상 적용",
     "SR5.Armor": "방어구",
+    "SR5.ArmorCategory": {
+        "Category": "Armor Type",
+        "Light": "Light",
+        "Normal": "Normal"
+    },
     "SR5.ArmorHardened": "단단함",
     "SR5.ArmorHardenedFull": "단단한 갑옷",
     "SR5.ArmorValue": "방어구 수치",

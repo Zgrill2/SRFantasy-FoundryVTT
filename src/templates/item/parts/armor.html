@@ -20,6 +20,20 @@
     </div>
     <div class="form-line">
         <div class="label">
+            {{localize "SR5.ArmorCategory.Category"}}
+        </div>
+        <div class="inputs">
+            <select name="system.armor.category">
+                {{#select system.armor.category}}
+                <option value=""></option>
+                {{#each config.armorCategories as |name type|}}
+                <option value="{{type}}">{{localize name}}</option>
+                {{/each}} {{/select}}
+            </select>
+        </div>
+    </div>
+    <div class="form-line">
+        <div class="label">
             {{localize "SR5.Accessory"}}
         </div>
         <div class="inputs">

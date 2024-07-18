@@ -15,6 +15,9 @@ import AmmunitionData = Shadowrun.AmmunitionData;
 import WeaponData = Shadowrun.WeaponData;
 import DeviceData = Shadowrun.DeviceData;
 import AmmoData = Shadowrun.AmmoData;
+import ArmorData = Shadowrun.ArmorData;
+import ArmorCategory = Shadowrun.ArmorCategory
+
 
 export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
     getType() {
@@ -33,6 +36,12 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
      */
     isArmor(): boolean {
         return this.data.type === 'armor';
+    }
+
+    isLightArmor(): boolean {
+        if (!this.isArmor()) return false;
+        const armorData = this.getData() as ArmorData;
+        return armorData.armor.category === 'light';
     }
 
     /** Will give an indicator if an item provides an armor value, without locking into only the Armor item type.
@@ -276,6 +285,10 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
     getArmorElements(): Record<string, number> {
         const { fire, electricity, cold, acid, radiation } = this.getData().armor || {};
         return { fire: fire ?? 0, electricity: electricity ?? 0, cold: cold ?? 0, acid: acid ?? 0, radiation: radiation ?? 0 };
+    }
+
+    getArmorCategory(): ArmorCategory {
+        return this.getData()?.armor?.category ?? ''
     }
 
     getName(): string {

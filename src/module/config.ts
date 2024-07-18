@@ -428,6 +428,11 @@ export const SR5 = {
         permanent: 'SR5.DurationPermanent',
     },
 
+    armorCategories: {
+        light: 'SR5.ArmorCategory.Light',
+        normal: 'SR5.ArmorCategory.Normal',
+    },
+
     shieldCategories: {
         buckler: 'SR5.Shield.Category.Buckler',
         medium: 'SR5.Shield.Category.Medium',

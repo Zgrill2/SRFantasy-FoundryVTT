@@ -52,6 +52,7 @@ import ActionTestLabel = Shadowrun.ActionTestLabel;
 import MatrixMarks = Shadowrun.MatrixMarks;
 import RollEvent = Shadowrun.RollEvent;
 import ShadowrunItemDataData = Shadowrun.ShadowrunItemDataData;
+import ArmorCategory = Shadowrun.ArmorCategory
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { RangedWeaponRules } from '../rules/RangedWeaponRules';
 import { LinksHelpers } from '../utils/links';
@@ -992,6 +993,10 @@ export class SR5Item extends Item {
         return this.wrapper.isArmor();
     }
 
+    get isLightArmor(): boolean {
+        return this.wrapper.isLightArmor();
+    }
+
     get asArmor(): ArmorItemData | undefined {
         if (this.isArmor) {
             //@ts-expect-error // TODO: foundry-vtt-types v10
@@ -1221,6 +1226,10 @@ export class SR5Item extends Item {
 
     getArmorElements(): Record<string, number> {
         return this.wrapper.getArmorElements();
+    }
+
+    getArmorCategory(): ArmorCategory {
+        return this.wrapper.getArmorCategory();
     }
 
     getEssenceLoss(): number {

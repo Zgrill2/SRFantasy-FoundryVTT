@@ -42,6 +42,9 @@ export class ItemPrep {
             for (const element of Object.keys(SR5.elementTypes)) {
                 armor[element] += item.getArmorElements()[element];
             }
+
+            // Apply armor category - this will not resolve right if multiple armor is worn
+            armor.category = item.getArmorCategory()
         });
 
         if (system.modifiers['armor'])

@@ -443,11 +443,10 @@ export class SR5Actor extends Actor {
         }
 
         Helpers.calcTotal(armor, { min: 0 });
-
         return armor;
     }
 
-    get isLightArmorEquipped(): boolean {
+    get hasLightArmor(): boolean {
         return this.getArmor().category === 'light';
     }
 
@@ -502,7 +501,7 @@ export class SR5Actor extends Actor {
     //const armor = 2; // todo - update actor.getArmor() for Shimmering Reach Rules
     //const armorSoak = Math.round((armor * actor.getAttribute('body').value + actor.getAttribute('logic').value) / 2 + 0.5);
     getArmorSoak() {
-        return Math.round(((this.isLightArmorEquipped ? 1 : 2) * this.getAttribute('body').value + this.getAttribute('logic').value) / 2 + 0.5);
+        return Math.round(((this.hasLightArmor ? 1 : 2) * this.getAttribute('body').value + this.getAttribute('logic').value) / 2 + 0.5);
     }
 
     /**

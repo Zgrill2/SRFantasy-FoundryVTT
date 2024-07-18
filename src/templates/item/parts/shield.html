@@ -7,8 +7,8 @@
             {{localize "SR5.Shield.Type"}}
         </div>
         <div class="inputs">
-            <select name="system.category">
-                {{#select system.category}}
+            <select name="system.shield.category">
+                {{#select system.shield.category}}
                 <option value=""></option>
                 {{#each config.shieldCategories as |name type|}}
                 <option value="{{type}}">{{localize name}}</option>

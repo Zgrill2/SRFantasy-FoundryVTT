@@ -42,7 +42,7 @@ export const ActiveDefenseRules = {
         if (weapon.isSpell || weapon.isMeleeWeapon || weapon.isRangedWeapon) {
             activeDefenses['dodge'] = {
                 label: 'SR5.Dodge',
-                value: actor.findActiveSkill('dodge')?.value ?? 0,
+                value: (actor.hasLightArmor ? 2 : 1) * (actor.findActiveSkill('dodge')?.value ?? 0),
                 initMod: -5,
             };
         }

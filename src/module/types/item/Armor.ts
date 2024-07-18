@@ -12,6 +12,12 @@ declare namespace Shadowrun {
             electricity: number;
             radiation: number;
             hardened: boolean;
+            category: ArmorCategory;
         };
     }
+
+    /**
+     * Armor categories.
+     */
+    export type ArmorCategory = 'light' | 'normal' | '';
 }

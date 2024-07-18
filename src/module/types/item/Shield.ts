@@ -4,7 +4,7 @@ declare namespace Shadowrun {
 
     export interface ShieldPartData {
         shield: {
-            category: boolean;
+            category: ShieldCategory;
             block: number;
         };
     }

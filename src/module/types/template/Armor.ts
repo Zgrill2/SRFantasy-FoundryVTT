@@ -10,9 +10,4 @@ declare namespace Shadowrun {
         hardened: boolean;
         category: ArmorCategory;
     };
-
-    /**
-     * Aarmor categories.
-     */
-    export type ArmorCategory = 'light' | 'normal' | '';
 }
