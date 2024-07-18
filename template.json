@@ -815,6 +815,7 @@
             "program",
             "quality",
             "ritual",
+            "shield",
             "sin",
             "spell",
             "sprite_power",
@@ -1043,6 +1044,14 @@
             "templates": [
                 "description",
                 "armor",
+                "technology",
+                "importFlags"
+            ]
+        },
+        "shield": {
+            "templates": [
+                "description",
+                "shield",
                 "technology",
                 "importFlags"
             ]

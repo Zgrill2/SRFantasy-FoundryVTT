@@ -447,6 +447,10 @@ export class SR5Actor extends Actor {
         return armor;
     }
 
+    get isLightArmorEquipped(): boolean {
+        return this.getArmor().category === 'light';
+    }
+
     getMatrixDevice(): SR5Item | undefined {
         if (!('matrix' in this.system)) return;
         const matrix = this.system.matrix;
@@ -466,8 +470,39 @@ export class SR5Actor extends Actor {
         }
     }
 
+    // Shimmering Reach - Resist Values
+
+    // used for Block defense
+    getEquippedShields(): SR5Item[] {
+        return this.items.filter((item: SR5Item) => item.isEquipped() && item.isShield);
+    }
+
+    // Passive Defense Values - actives are handled by ActiveDefenseRules
+    getPassiveDodge() {
+        return this.getAttribute('reaction').value + this.getAttribute('intuition').value;
+    }
+
+    getPassivePhysicalResist() {
+        return this.getAttribute('body').value + this.getAttribute('agility').value;
+    }
+
+    getPassiveMentalResist() {
+        return this.getAttribute('willpower').value + this.getAttribute('charisma').value;
+    }
+
     getEquippedWeapons(): SR5Item[] {
         return this.items.filter((item: SR5Item) => item.isEquipped() && item.isWeapon);
+    }
+
+    // Shimmering Reach - Soak Values
+
+    // Shimmering Reach Rules - Armor Soak Formula
+    // Round up -- (Armor * BOD) + LOG / 2
+    // Light Armor = 1, Normal Armor = 2
+    //const armor = 2; // todo - update actor.getArmor() for Shimmering Reach Rules
+    //const armorSoak = Math.round((armor * actor.getAttribute('body').value + actor.getAttribute('logic').value) / 2 + 0.5);
+    getArmorSoak() {
+        return Math.round(((this.isLightArmorEquipped ? 1 : 2) * this.getAttribute('body').value + this.getAttribute('logic').value) / 2 + 0.5);
     }
 
     /**

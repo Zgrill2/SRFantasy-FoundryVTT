@@ -1,4 +1,5 @@
 import { SuccessTest, SuccessTestData } from './SuccessTest';
+import { PartsList } from '../parts/PartsList';
 import { DataDefaults } from '../data/DataDefaults';
 import { SR5Actor } from '../actor/SR5Actor';
 import ModifierTypes = Shadowrun.ModifierTypes;
@@ -46,6 +47,20 @@ export class MeleeAttackTest extends SuccessTest<MeleeAttackData> {
         this.data.reach += this.actor?.system.modifiers.reach || 0;
 
         await super.prepareDocumentData();
+    }
+
+    /**
+     * Add weapon reach for melee attacks
+     */
+    override applyPoolModifiers() {
+        this.applyPoolMeleeReachModifier();
+        super.applyPoolModifiers();
+    }
+
+    applyPoolMeleeReachModifier() {
+        if (!this.item || !this.item.isMeleeWeapon) return;
+
+        PartsList.AddUniquePart(this.data.modifiers.mod, 'SR5.Weapon.Reach', this.data.reach);
     }
 
     /**

@@ -8,5 +8,11 @@ declare namespace Shadowrun {
         acid: number;
         label?: string;
         hardened: boolean;
+        category: ArmorCategory;
     };
+
+    /**
+     * Aarmor categories.
+     */
+    export type ArmorCategory = 'light' | 'normal' | '';
 }

@@ -69,6 +69,10 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return this.data.type === 'weapon';
     }
 
+    isShield(): boolean {
+        return this.data.type === 'shield';
+    }
+
     isModification(): boolean {
         return this.data.type === 'modification';
     }
@@ -269,7 +273,7 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return this.getData()?.armor?.hardened ?? false;
     }
 
-    getArmorElements(): { [key: string]: number } {
+    getArmorElements(): Record<string, number> {
         const { fire, electricity, cold, acid, radiation } = this.getData().armor || {};
         return { fire: fire ?? 0, electricity: electricity ?? 0, cold: cold ?? 0, acid: acid ?? 0, radiation: radiation ?? 0 };
     }
@@ -280,22 +284,22 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
 
     /**
      * Essence loss of an item is flat value and depends on the quantity of that item
-     * 
+     *
      * Using quantity allows for two approaches:
      * - Add an item twice while still having book essence values
      * - Add an item with quantity 2 while also having book essence values
      * Both are valid.
-     * 
+     *
      * @returns A decimal as essence modifier
      */
     getEssenceLoss(): number {
         const loss = Number(this.getData()?.essence) ?? 0;
         const quantity = Number(this.getData()?.technology?.quantity) ?? 1;
 
-        return loss * quantity
+        return loss * quantity;
     }
 
-    getAmmo(): AmmunitionData|undefined {
+    getAmmo(): AmmunitionData | undefined {
         return this.getData().ammo;
     }
 
@@ -326,7 +330,7 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         if (this.isCyberdeck() || this.isRCC() || this.isCommlink()) {
             const atts = this.getData().atts;
             if (atts) {
-                for (let [key, att] of Object.entries(atts)) {
+                for (const [key, att] of Object.entries(atts)) {
                     matrix[att.att].value = att.value;
                     matrix[att.att].device_att = key;
                 }
@@ -344,7 +348,7 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return this.data.type === 'action';
     }
 
-    getAction(): ActionRollData|undefined {
+    getAction(): ActionRollData | undefined {
         return this.getData().action;
     }
 
@@ -386,15 +390,15 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
     }
 
     isUsingRangeCategory(): boolean {
-        if(this.isRangedWeapon()) {
+        if (this.isRangedWeapon()) {
             const category = this.getData().range?.ranges?.category;
 
-            return !!category && category !== "manual";
+            return !!category && category !== 'manual';
         }
-        if(this.isThrownWeapon()) {
+        if (this.isThrownWeapon()) {
             const category = this.getData().thrown?.ranges?.category;
 
-            return !!category && category !== "manual";
+            return !!category && category !== 'manual';
         }
         return false;
     }
@@ -416,22 +420,25 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return 0;
     }
 
-    getTechnology(): TechnologyData|undefined {
-        if ("technology" in this.data.system)
-            return this.data.system.technology;
+    getBlock(): number {
+        if (this.isShield()) {
+            return this.getData().shield?.block ?? 0;
+        }
+        return 0;
     }
 
-    getRange(): CritterPowerRange|SpellRange|RangeWeaponData|undefined {
-        if (!("range" in this.data.system)) return;
+    getTechnology(): TechnologyData | undefined {
+        if ('technology' in this.data.system) return this.data.system.technology;
+    }
 
-        if (this.data.type === 'critter_power')
-            return this.data.system.range as CritterPowerRange;
+    getRange(): CritterPowerRange | SpellRange | RangeWeaponData | undefined {
+        if (!('range' in this.data.system)) return;
 
-        if (this.data.type === 'spell')
-            return this.data.system.range as SpellRange;
+        if (this.data.type === 'critter_power') return this.data.system.range;
 
-        if (this.data.type === 'weapon')
-            return this.data.system.range as RangeWeaponData;
+        if (this.data.type === 'spell') return this.data.system.range as SpellRange;
+
+        if (this.data.type === 'weapon') return this.data.system.range;
     }
 
     getModificationCategory(): string {
@@ -455,3 +462,4 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return this.getData().result;
     }
 }
+

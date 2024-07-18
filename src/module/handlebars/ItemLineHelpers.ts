@@ -112,6 +112,9 @@ export const registerItemLineHelpers = () => {
             case 'weapon':
                 addIcon.title = formatStrict('SR5.Create', { type: 'SR5.ItemTypes.Weapon' });
                 return [addIcon];
+            case 'shield':
+                addIcon.title = formatStrict('SR5.Create', { type: 'SR5.ItemTypes.Shield' });
+                return [addIcon];
             case 'armor':
                 addIcon.title = formatStrict('SR5.Create', { type: 'SR5.Armor' });
                 return [addIcon];
@@ -223,6 +226,7 @@ export const registerItemLineHelpers = () => {
                 ];
             case 'weapon':
             case 'armor':
+            case 'shield':
             case 'device':
             case 'equipment':
             case 'cyberware':
@@ -512,6 +516,8 @@ export const registerItemLineHelpers = () => {
             case 'cyberware':
             case 'bioware':
                 return [qtyInput];
+            case 'shield':
+                return [qtyInput];
             case 'weapon':
                 // Both Ranged and Melee Weapons can have ammo.
                 if (wrapper.isRangedWeapon() || (wrapper.isMeleeWeapon() && item.system.ammo?.current.max > 0)) {
@@ -711,6 +717,7 @@ export const registerItemLineHelpers = () => {
         switch (wrapper.getType()) {
             case 'program':
             case 'armor':
+            case 'shield':
             case 'device':
             case 'equipment':
             case 'cyberware':
@@ -785,6 +792,7 @@ export const registerItemLineHelpers = () => {
         switch (wrapper.getType()) {
             case 'program':
             case 'armor':
+            case 'shield':
             case 'device':
             case 'equipment':
             case 'cyberware':

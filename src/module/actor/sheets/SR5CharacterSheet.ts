@@ -22,25 +22,9 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
      * @returns An array of item types from the template.json Item section.
      */
     override getHandledItemTypes(): string[] {
-        let itemTypes = super.getHandledItemTypes();
-
-        return [
-            ...itemTypes,
-            'program',
-            'sin',
-            'lifestyle',
-            'contact',
-            'spell',
-            'ritual_spells',
-            'adept_power',
-            'complex_form',
-            'quality',
-            'echo',
-            'metamagic',
-            'critter_power',
-            'call_in_action',
-            'ritual',
-        ];
+        const itemTypes = super.getHandledItemTypes();
+        
+        return [...itemTypes, 'program', 'sin', 'lifestyle', 'contact', 'spell', 'ritual_spells', 'adept_power', 'complex_form', 'quality', 'echo', 'metamagic', 'critter_power', 'call_in_action', 'ritual'];
     }
 
     /**
@@ -53,7 +37,7 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
     override getInventoryItemTypes(): string[] {
         const itemTypes = super.getInventoryItemTypes();
 
-        return [...itemTypes, 'weapon', 'ammo', 'armor', 'bioware', 'cyberware', 'device', 'equipment', 'modification'];
+        return [...itemTypes, 'weapon', 'ammo', 'armor', 'shield', 'bioware', 'cyberware', 'device', 'equipment', 'modification'];
     }
 
     override async getData(options) {
@@ -73,7 +57,10 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
         event.preventDefault();
         const type = event.currentTarget.closest('.list-header').dataset.itemId;
 
-        if (type !== 'summoning' && type !== 'compilation') return await super._onItemCreate(event);
+        if (type !== 'summoning' && type !== 'compilation') {
+            await super._onItemCreate(event);
+            return;
+        }
         await this._onCallInActionCreate(type);
     }
 
@@ -89,7 +76,10 @@ export class SR5CharacterSheet extends SR5BaseActorSheet {
             compilation: 'sprite',
         };
         const actor_type = typeToActorType[type];
-        if (!actor_type) return console.error('Shadowrun 5e | Call In Action Unknown actor type during creation');
+        if (!actor_type) {
+            console.error('Shadowrun 5e | Call In Action Unknown actor type during creation');
+            return;
+        }
 
         // TODO: Add translation for item names...
         const itemData = {

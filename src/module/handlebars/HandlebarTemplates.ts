@@ -102,6 +102,7 @@ export const preloadHandlebarsTemplates = async () => {
         'systems/shadowrun5e/dist/templates/item/parts/complex_form.html',
         'systems/shadowrun5e/dist/templates/item/parts/weapon.html',
         'systems/shadowrun5e/dist/templates/item/parts/armor.html',
+        'systems/shadowrun5e/dist/templates/item/parts/shield.html',
         'systems/shadowrun5e/dist/templates/item/parts/matrix.html',
         'systems/shadowrun5e/dist/templates/item/parts/sin.html',
         'systems/shadowrun5e/dist/templates/item/parts/contact.html',
