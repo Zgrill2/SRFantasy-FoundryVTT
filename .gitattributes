@@ -1,2 +1,6 @@
 # FoundryVTT packs are binary data and should be treated as such within git.
 packs/*/* binary
+text=auto
+*.ts text
+*.html text
+*.scss text
