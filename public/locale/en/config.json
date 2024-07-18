@@ -543,6 +543,7 @@
         "Program": "Program",
         "Quality": "Quality",
         "Ritual": "Ritual",
+        "Shield": "Shield",
         "Sin": "SIN",
         "Spell": "Spell",
         "SpritePower": "Sprite Power",
@@ -1367,12 +1368,15 @@
         "TokenSelectionNeeded": "One or more tokens need to be selected"
     },
     "SR5.Shield": {
+        "BlockValue": "Block Value",
         "Category": {
             "Buckler": "Buckler",
             "Medium": "Medium",
             "Heavy": "Heavy",
             "Tower": "Tower"
-        }
+        },
+        "Shield": "Shield",
+        "Type": "Type"
     },
     "SR5.Weapon": {
         "AmmoCount": "Ammo Count",

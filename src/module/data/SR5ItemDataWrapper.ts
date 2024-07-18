@@ -420,6 +420,13 @@ export class SR5ItemDataWrapper extends DataWrapper<ShadowrunItemData> {
         return 0;
     }
 
+    getBlock(): number {
+        if (this.isShield()) {
+            return this.getData().shield?.block ?? 0;
+        }
+        return 0;
+    }
+
     getTechnology(): TechnologyData | undefined {
         if ('technology' in this.data.system) return this.data.system.technology;
     }

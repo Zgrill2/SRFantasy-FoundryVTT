@@ -25,6 +25,7 @@ export const SR5 = {
         program: 'SR5.ItemTypes.Program',
         quality: 'SR5.ItemTypes.Quality',
         ritual: 'SR5.ItemTypes.Ritual',
+        shield: 'SR5.ItemTypes.Shield',
         sin: 'SR5.ItemTypes.Sin',
         spell: 'SR5.ItemTypes.Spell',
         sprite_power: 'SR5.ItemTypes.SpritePower',
@@ -428,10 +429,10 @@ export const SR5 = {
     },
 
     shieldCategories: {
-        buckler: 'SR5.Weapon.Category.Buckler',
-        medium: 'SR5.Weapon.Category.Medium',
-        heavy: 'SR5.Weapon.Category.Heavy',
-        tower: 'SR5.Weapon.Category.Tower',
+        buckler: 'SR5.Shield.Category.Buckler',
+        medium: 'SR5.Shield.Category.Medium',
+        heavy: 'SR5.Shield.Category.Heavy',
+        tower: 'SR5.Shield.Category.Tower',
     },
 
     weaponCategories: {

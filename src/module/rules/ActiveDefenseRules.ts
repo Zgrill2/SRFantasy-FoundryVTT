@@ -14,8 +14,6 @@ export const ActiveDefenseRules = {
      *
      * The PhysicalDefenseTest already includes passive dodge value, so active values do not include it in this file
      * Shimmering Reach Transformation - left TODO
-     *      Determine shield type for block bonus dice
-     *      Filter out Block if defender is not holding a shield
      *      Include Parry if weapon is ranged and defender has Ranged Parry ability
      *      Determine if spell is targeting dodge, physical, mental, or some combonation thereof
      *      Handle Full Defense toggle

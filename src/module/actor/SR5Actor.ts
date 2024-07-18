@@ -448,7 +448,7 @@ export class SR5Actor extends Actor {
     }
 
     get isLightArmorEquipped(): boolean {
-        return this.getArmor().category == 'light';
+        return this.getArmor().category === 'light';
     }
 
     getMatrixDevice(): SR5Item | undefined {

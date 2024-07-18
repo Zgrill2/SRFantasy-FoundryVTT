@@ -114,11 +114,12 @@ export class CombatRules {
         PartsList.AddUniquePart(modified.mod, 'SR5.Attacker', attackerHits);
         PartsList.AddUniquePart(modified.mod, 'SR5.Defender', -defenderHits);
         PartsList.AddUniquePart(modified.mod, 'SR.ArmorSoak', -defender.getArmorSoak());
+
         modified.value = Helpers.calcTotal(modified, { min: 0 });
 
         // SR5#173 Step 3: Defend B.
         modified = CombatRules.modifyDamageTypeAfterHit(modified, defender);
-
+        
         return modified;
     }
 
