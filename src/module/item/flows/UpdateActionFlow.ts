@@ -77,7 +77,12 @@ export const UpdateActionFlow = {
      * @param applyData An object to carry the altering data changes
      * @param item Optional item reference. This can't be given during the Chummer Item Import flow.
      */
-    injectActionTestsIntoChangeData(type: string, changeData: Partial<Shadowrun.ShadowrunItemData>, applyData, item?: SR5Item) {
+    injectActionTestsIntoChangeData(
+        type: string, 
+        changeData: Partial<Shadowrun.ShadowrunItemData>, 
+        applyData, 
+        item?: SR5Item
+    ) {
         if (!changeData) return;
 
         const typeHandler = {
@@ -96,7 +101,11 @@ export const UpdateActionFlow = {
     /**
      * See injectActionTestsIntoChangeData for documentation.
      */
-    injectWeaponTestIntoChangeData(type: string, changeData: Partial<Shadowrun.WeaponItemData>, applyData) {
+    injectWeaponTestIntoChangeData(
+        type: string, 
+        changeData: Partial<Shadowrun.WeaponItemData>, 
+        applyData
+    ) {
         // Abort when category isn't part of this change.
         if (changeData?.system?.category === undefined) return;
 
@@ -108,7 +117,9 @@ export const UpdateActionFlow = {
 
         const test = SR5.weaponCategoryActiveTests[changeData.system.category];
         if (!test) {
-            console.error(`Shadowrun 5 | There is no active test configured for the weapon category ${changeData.system.category}.`, changeData);
+            console.error(`Shadowrun 5 | There is no active test configured for the weapon category ${changeData.system.category}.`, 
+                changeData
+            );
         }
 
         foundry.utils.setProperty(applyData, 'system.action.test', test);
@@ -119,7 +130,11 @@ export const UpdateActionFlow = {
     /**
      * See injectActionTestsIntoChangeData for documentation.
      */
-    injectSpellTestIntoChangeData(type: string, changeData: Partial<Shadowrun.SpellItemData>, applyData) {
+    injectSpellTestIntoChangeData(
+        type: string, 
+        changeData: Partial<Shadowrun.SpellItemData>, 
+        applyData
+    ) {
         // Abort when category isn't part of this change.
         if (changeData?.system?.category === undefined) return;
 
@@ -144,7 +159,11 @@ export const UpdateActionFlow = {
     /**
      * See injectActionTestsIntoChangeData for documentation.
      */
-    injectComplexFormTestIntoChangeData(type: string, changeData: Partial<Shadowrun.SpellItemData>, applyData) {
+    injectComplexFormTestIntoChangeData(
+        type: string, 
+        changeData: Partial<Shadowrun.SpellItemData>, 
+        applyData
+    ) {
         const test = SR5.activeTests[type];
 
         foundry.utils.setProperty(applyData, 'system.action.test', test);
@@ -153,7 +172,11 @@ export const UpdateActionFlow = {
     /**
      * See injectActionTestsIntoChangeData for documentation.
      */
-    injectCallInActionTestIntoChangeData(type: string, changeData: DeepPartial<Shadowrun.CallInActionItemData>, applyData) {
+    injectCallInActionTestIntoChangeData(
+        type: string, 
+        changeData: DeepPartial<Shadowrun.CallInActionItemData>, 
+        applyData
+    ) {
         if (changeData.system?.actor_type === undefined) return;
 
         if (changeData.system.actor_type === 'spirit') {

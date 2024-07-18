@@ -14,12 +14,46 @@
  */
 declare namespace Shadowrun {
     // Register your global ItemData types here.  Try sorting your ItemData types alphabetically.
-    export type ShadowrunItemData = ActionItemData | AdeptPowerItemData | AmmoItemData | ArmorItemData | BiowareItemData | ComplexFormItemData | ContactItemData | CritterPowerItemData | CyberwareItemData | DeviceItemData | EquipmentItemData | EchoItemData | HostItemData | LifestyleItemData | MetamagicItemData | ModificationItemData | ProgramItemData | QualityItemData | SinItemData | SpellItemData | CallInActionItemData | SpritePowerItemData | WeaponItemData | ShieldItemData;
+    export type ShadowrunItemData = 
+        | ActionItemData 
+        | AdeptPowerItemData 
+        | AmmoItemData 
+        | ArmorItemData 
+        | BiowareItemData 
+        | ComplexFormItemData 
+        | ContactItemData 
+        | CritterPowerItemData 
+        | CyberwareItemData 
+        | DeviceItemData 
+        | EquipmentItemData 
+        | EchoItemData 
+        | HostItemData 
+        | LifestyleItemData 
+        | MetamagicItemData 
+        | ModificationItemData
+        | ProgramItemData
+        | QualityItemData
+        | SinItemData
+        | SpellItemData
+        | CallInActionItemData
+        | SpritePowerItemData
+        | WeaponItemData
+        | ShieldItemData;
 
     /**
      * The subset of items with technology data part.
      */
-    export type ShadowrunTechnologyItemData = AmmoItemData | ArmorItemData | DeviceItemData | EquipmentItemData | ModificationItemData | ProgramItemData | SinItemData | WareItemData | WeaponItemData | ShieldItemData;
+    export type ShadowrunTechnologyItemData = 
+    | AmmoItemData
+    | ArmorItemData
+    | DeviceItemData
+    | EquipmentItemData
+    | ModificationItemData
+    | ProgramItemData
+    | SinItemData
+    | WareItemData
+    | WeaponItemData
+    | ShieldItemData;
 
     /**
      * The whole item data data as an inclusive union.
@@ -27,7 +61,29 @@ declare namespace Shadowrun {
      * At the moment this is only used for ShadowrunItemDataWrapper.getData to work a type narrowing rework.
      * Also used for the iconAssign function. Will be needed until character and item importers are unified.
      */
-    export type ShadowrunItemDataData = Partial<ActionData> & Partial<AdeptPowerData> & Partial<AmmoData> & Partial<ArmorData> & Partial<BiowareData> & Partial<ComplexFormData> & Partial<ContactData> & Partial<CritterPowerData> & Partial<CyberwareData> & Partial<DeviceData> & Partial<EchoData> & Partial<EquipmentData> & Partial<HostData> & Partial<LifestyleData> & Partial<MetamagicData> & Partial<ModificationData> & Partial<ProgramData> & Partial<QualityData> & Partial<SinData> & Partial<SpellData> & Partial<SpritePowerData> & Partial<WeaponData> & Partial<ShieldData>;
+    export type ShadowrunItemDataData = Partial<ActionData> &
+        Partial<AdeptPowerData> &
+        Partial<AmmoData> &
+        Partial<ArmorData> &
+        Partial<BiowareData> &
+        Partial<ComplexFormData> &
+        Partial<ContactData> &
+        Partial<CritterPowerData> &
+        Partial<CyberwareData> &
+        Partial<DeviceData> &
+        Partial<EchoData> &
+        Partial<EquipmentData> &
+        Partial<HostData> &
+        Partial<LifestyleData> &
+        Partial<MetamagicData> &
+        Partial<ModificationData> &
+        Partial<ProgramData> &
+        Partial<QualityData> &
+        Partial<SinData> &
+        Partial<SpellData> &
+        Partial<SpritePowerData> &
+        Partial<WeaponData> &
+        Partial<ShieldData>;
 
     // Setup your ItemData types below here. Try sorting your ItemData types alphabetically.
     export interface ActionItemData {
