@@ -1,0 +1,7 @@
+<header class="sheet-header flexrow">
+  <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+  <h1 class="itemname">
+    <input name="name" type="text" value="{{item.name}}" placeholder="Name"
+           {{#unless isEditable}}disabled{{/unless}} />
+  </h1>
+</header>

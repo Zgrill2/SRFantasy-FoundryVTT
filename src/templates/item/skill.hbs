@@ -1,0 +1,18 @@
+<section class="item-body grid grid-2col">
+  <label>Rank
+    <input type="number" name="system.rank" value="{{system.rank}}" min="0" />
+  </label>
+
+  <label>Attribute
+    <select name="system.attr">
+      <option value="none" {{#if (eq "none" system.attr)}}selected{{/if}}>None</option>
+      {{#each abilities as |a|}}
+      <option value="{{a.key}}" {{#if (eq a.key ../system.attr)}}selected{{/if}}>{{a.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <div class="derived flexrow">
+    <span>Pool <b>{{system.dicepool}}</b></span>
+  </div>
+</section>

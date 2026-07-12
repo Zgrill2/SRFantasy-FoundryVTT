@@ -1,0 +1,20 @@
+<section class="item-body grid grid-2col">
+  {{!-- A closed list, not a free-text path. The old sheet let you type a dotted path that
+        was never validated and, as it turned out, never applied. --}}
+  <label>Adds to
+    <select name="system.target">
+      {{#each bonusTargets as |t|}}
+      <option value="{{t.key}}" {{#if (eq t.key ../system.target)}}selected{{/if}}>{{t.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <label>Bonus
+    <input type="number" name="system.bonus" value="{{system.bonus}}" />
+  </label>
+
+  <label class="checkbox">
+    <input type="checkbox" name="system.active" {{checked system.active}} />
+    Active
+  </label>
+</section>

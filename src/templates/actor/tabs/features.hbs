@@ -1,0 +1,24 @@
+<section class="tab features {{tab.cssClass}}" data-tab="features" data-group="primary">
+  <div class="section-header flexrow">
+    <h3 class="section-title">Features</h3>
+    <a class="item-control" data-action="createItem" data-type="feature" title="Add feature">
+      <i class="fas fa-plus"></i></a>
+  </div>
+
+  <ol class="item-list">
+    {{#each features as |f|}}
+    <li class="item flexrow {{#unless f.system.active}}inactive{{/unless}}" data-item-id="{{f.id}}">
+      <span class="item-name">{{f.name}}</span>
+      <span class="feature-effect">{{lookup @root.bonusLabels f.system.target}} {{numberFormat f.system.bonus sign=true}}</span>
+      <span class="feature-active">
+        <input type="checkbox" data-action="toggleFeature" {{checked f.system.active}}
+               title="Active features add their bonus" />
+      </span>
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+</section>

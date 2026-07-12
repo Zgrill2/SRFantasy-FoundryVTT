@@ -1,0 +1,246 @@
+<section class="tab stats {{tab.cssClass}}" data-tab="stats" data-group="primary">
+
+  {{!-- Build mode. Off during play, so nobody nudges a Body score mid-session. --}}
+  <div class="edit-toggle flexrow">
+    <label class="checkbox">
+      <input type="checkbox" name="system.edit_stats.enable" {{checked system.edit_stats.enable}}
+             {{#unless isEditable}}disabled{{/unless}} />
+      Edit stats
+    </label>
+
+    {{#if editMode}}
+    <div class="build-fields flexrow">
+      <label>Tradition
+        <input type="number" name="system.tradition.rank.value" value="{{system.tradition.rank.value}}" min="0" />
+      </label>
+      <label>Init dice
+        <input type="number" name="system.initiative.dice" value="{{system.initiative.dice}}" min="0" />
+      </label>
+      <label>Init bias
+        <input type="number" name="system.initiative.bias" value="{{system.initiative.bias}}" />
+      </label>
+      <label>Cast stat
+        <select name="system.castStat">
+          {{#each castStats as |c|}}
+          <option value="{{c.key}}" {{#if (eq c.key ../system.castStat)}}selected{{/if}}>{{c.label}}</option>
+          {{/each}}
+        </select>
+      </label>
+      <label>Ignore wounds
+        <input type="number" name="system.wound_penalty.ignore_wounds" value="{{system.wound_penalty.ignore_wounds}}" min="0" />
+      </label>
+      <label>Resilient wounds
+        <input type="number" name="system.wound_penalty.resilient_wounds" value="{{system.wound_penalty.resilient_wounds}}" min="0" />
+      </label>
+    </div>
+    {{/if}}
+  </div>
+
+  {{#if system.wound_penalty.value}}
+  <div class="wound-penalty">Wounded — every roll loses {{system.wound_penalty.value}} dice.</div>
+  {{/if}}
+
+  {{!-- Abilities --}}
+  <h3 class="section-title">Abilities</h3>
+  <div class="grid grid-4col abilities">
+    {{#each abilities as |a|}}
+    <div class="ability flexcol">
+      <label>{{a.label}}</label>
+      {{#if ../editMode}}
+      <input type="number" name="system.abilities.{{a.key}}.value" value="{{a.value}}" min="1" />
+      {{else}}
+      <div class="stat-value">{{a.value}}</div>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+
+  {{!-- Soaks --}}
+  <h3 class="section-title">Soaks</h3>
+  <div class="grid grid-4col soaks">
+    {{#each soaks as |s|}}
+    <div class="soak flexcol">
+      <label>{{s.label}}</label>
+      <div class="stat-value">{{s.value}}</div>
+    </div>
+    {{/each}}
+    <div class="soak flexcol">
+      <label>Drain Soak</label>
+      <div class="stat-value">{{system.drainres.value}}</div>
+    </div>
+  </div>
+
+  {{!-- Defences. Block and Parry have no passive form: you cannot interpose a shield
+        you aren't already moving. --}}
+  <h3 class="section-title">Defenses</h3>
+  <div class="grid grid-5col defenses">
+    {{#each defenses as |d|}}
+    <div class="defense flexcol">
+      <label>{{d.label}}</label>
+      <div class="defense-pools flexrow">
+        {{#if d.allowPassive}}
+        <div class="stat-value passive" title="Passive — no roll, no initiative">{{d.passive}}</div>
+        {{else}}
+        <div class="stat-value empty" title="No passive form">—</div>
+        {{/if}}
+        <div class="stat-value active" title="Active — costs initiative">{{d.active}}</div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+  {{!-- Skills --}}
+  <h3 class="section-title">Skills</h3>
+  {{#each skillGroups as |g|}}
+  <div class="skill-group">
+    <div class="skill-group-header flexrow">
+      <h4>{{g.label}}</h4>
+      {{#if g.isGroup}}
+        {{#if ../editMode}}
+        <input type="number" class="group-rank" name="system.skill_groups.{{g.key}}.value"
+               value="{{g.rank}}" min="0" title="Buying the group sets every member to this rank" />
+        {{/if}}
+      {{/if}}
+    </div>
+
+    <ol class="skill-list">
+      {{#each g.members as |s|}}
+      <li class="skill flexrow" data-skill="{{s.key}}">
+        <span class="skill-name">{{s.label}}</span>
+
+        {{#if @root.editMode}}
+          {{#if s.isGroupRanked}}
+          <span class="skill-rank locked" title="Set by the group rank">{{s.rank}}</span>
+          {{else}}
+          <input type="number" class="skill-rank" name="system.skills.{{s.key}}.value" value="{{s.rank}}" min="0" />
+          {{/if}}
+        {{else}}
+        <span class="skill-rank">{{s.rank}}</span>
+        {{/if}}
+
+        {{#unless s.hideDicepool}}
+        <a class="dicepool rollable" data-action="rollSkill" data-skill="{{s.key}}"
+           title="Roll {{s.label}}">{{s.dicepool}}</a>
+        {{else}}
+        <span class="dicepool empty" title="Rolled through the defense pools">—</span>
+        {{/unless}}
+      </li>
+      {{/each}}
+    </ol>
+  </div>
+  {{/each}}
+
+  {{!-- Knowledge skills --}}
+  <div class="section-header flexrow">
+    <h3 class="section-title">Knowledge Skills</h3>
+    {{#if editMode}}
+    <a class="item-control" data-action="createItem" data-type="skill" title="Add knowledge skill">
+      <i class="fas fa-plus"></i></a>
+    {{/if}}
+  </div>
+  <ol class="item-list">
+    {{#each knowledgeSkills as |i|}}
+    <li class="item flexrow" data-item-id="{{i.id}}">
+      <span class="item-name">{{i.name}}</span>
+      <a class="dicepool rollable" data-action="rollSkill" data-item-id="{{i.id}}"
+         title="Roll {{i.name}}">{{i.system.dicepool}}</a>
+      {{#if @root.editMode}}
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ol>
+
+  {{!-- Languages. Read by the Polyglot integration. --}}
+  {{#if editMode}}
+  <div class="section-header flexrow">
+    <h3 class="section-title">Languages</h3>
+    <a class="item-control" data-action="createItem" data-type="language" title="Add language">
+      <i class="fas fa-plus"></i></a>
+  </div>
+  <ol class="item-list">
+    {{#each languages as |i|}}
+    <li class="item flexrow" data-item-id="{{i.id}}">
+      <span class="item-name">{{i.name}}</span>
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+  {{/if}}
+
+  {{!-- Weapons. Only one may be equipped at a time. --}}
+  <div class="section-header flexrow">
+    <h3 class="section-title">Weapons</h3>
+    <a class="item-control" data-action="createItem" data-type="weapon" title="Add weapon">
+      <i class="fas fa-plus"></i></a>
+  </div>
+  <ol class="item-list weapons">
+    <li class="item flexrow item-header">
+      <span class="item-name">Name</span>
+      <span class="weapon-dv">DV</span>
+      <span class="dicepool">Pool</span>
+      <span class="equipped">Equipped</span>
+      <div class="item-controls"></div>
+    </li>
+    {{#each weapons as |w|}}
+    <li class="item flexrow" data-item-id="{{w.id}}">
+      <span class="item-name">{{w.name}}</span>
+      <span class="weapon-dv">{{w.system.dv}}</span>
+      <a class="dicepool rollable" data-action="rollAttack" title="Attack with {{w.name}}">{{w.system.dicepool}}</a>
+      <span class="equipped">
+        <input type="checkbox" data-action="equipWeapon" {{checked w.system.active}} />
+      </span>
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+
+  {{!-- Spells. A flat list: the old sheet bucketed these by spellLevel into a
+        one-element array, so owning any spell threw and the sheet never rendered. --}}
+  <div class="section-header flexrow">
+    <h3 class="section-title">Spells</h3>
+    <a class="item-control" data-action="createItem" data-type="spell" title="Add spell">
+      <i class="fas fa-plus"></i></a>
+  </div>
+  <ol class="item-list">
+    {{#each spells as |i|}}
+    <li class="item flexrow" data-item-id="{{i.id}}">
+      <span class="item-name">{{i.name}}</span>
+      <span class="spell-level">Level {{i.system.spellLevel}}</span>
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+
+  {{!-- Gear --}}
+  <div class="section-header flexrow">
+    <h3 class="section-title">Gear</h3>
+    <a class="item-control" data-action="createItem" data-type="item" title="Add gear">
+      <i class="fas fa-plus"></i></a>
+  </div>
+  <ol class="item-list">
+    {{#each gear as |i|}}
+    <li class="item flexrow" data-item-id="{{i.id}}">
+      <span class="item-name">{{i.name}}</span>
+      <span class="item-qty">×{{i.system.quantity}}</span>
+      <div class="item-controls">
+        <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
+        <a data-action="deleteItem" title="Delete"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+
+</section>

@@ -1,0 +1,14 @@
+<section class="tab effects {{tab.cssClass}}" data-tab="effects" data-group="primary">
+  <ol class="item-list">
+    {{#each effects as |e|}}
+    <li class="item flexrow {{#if e.disabled}}inactive{{/if}}" data-effect-id="{{e.id}}">
+      <img class="effect-icon" src="{{e.img}}" width="24" height="24" />
+      <span class="item-name">{{e.name}}</span>
+      <span class="effect-source">{{e.parent.name}}</span>
+    </li>
+    {{/each}}
+  </ol>
+  <p class="hint">
+    Effects may target any bonus, e.g. <code>system.bonuses.defense_dodge</code> with mode Add.
+  </p>
+</section>

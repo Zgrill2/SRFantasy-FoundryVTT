@@ -1,0 +1,62 @@
+<section class="item-body grid grid-2col">
+  <label>Power
+    <input type="number" name="system.power" value="{{system.power}}" min="0" />
+  </label>
+
+  <label>Attribute
+    <select name="system.attr">
+      {{#each abilities as |a|}}
+      <option value="{{a.key}}" {{#if (eq a.key ../system.attr)}}selected{{/if}}>{{a.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <label>Skill
+    <select name="system.skill">
+      {{#each weaponSkills as |s|}}
+      <option value="{{s.key}}" {{#if (eq s.key ../system.skill)}}selected{{/if}}>{{s.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <label>Resisted by
+    <select name="system.soak">
+      {{#each soaks as |s|}}
+      <option value="{{s.key}}" {{#if (eq s.key ../system.soak)}}selected{{/if}}>{{s.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  {{!-- Reach, heft and shields only make sense for a weapon you actually swing. --}}
+  {{#if (eq system.skill "weapon_skill")}}
+  <label>Reach
+    <input type="number" name="system.reach" value="{{system.reach}}" min="0"
+           title="Adds to your attack pool and to your Parry" />
+  </label>
+
+  <label>Size
+    <select name="system.handedness">
+      {{#each handedness as |h|}}
+      <option value="{{h.index}}" {{#if (eq h.index ../system.handedness)}}selected{{/if}}>{{h.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
+  <label>Shield
+    <select name="system.shield">
+      {{#each shields as |s|}}
+      <option value="{{s.index}}" {{#if (eq s.index ../system.shield)}}selected{{/if}}>{{s.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+  {{/if}}
+
+  <label>Sound
+    <input type="text" name="system.sound" value="{{system.sound}}" placeholder="Path to a sound file" />
+  </label>
+
+  <div class="derived flexrow">
+    <span title="Power + attribute">DV <b>{{system.dv}}</b></span>
+    <span title="Reach + skill pool">Pool <b>{{system.dicepool}}</b></span>
+  </div>
+</section>

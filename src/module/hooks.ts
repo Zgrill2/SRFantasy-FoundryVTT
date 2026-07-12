@@ -1,5 +1,7 @@
 import './types/global';
 
+import { registerActorSheet } from './apps/SRActorSheet';
+import { registerItemSheet } from './apps/SRItemSheet';
 import { SR } from './config';
 import { SYSTEM_NAME } from './constants';
 import { Character } from './data/actor/Character';
@@ -47,6 +49,9 @@ function onInit(): void {
         formula: '(@initiative.dice)d6 + @abilities.rea.value',
         decimals: 0,
     };
+
+    registerActorSheet();
+    registerItemSheet();
 }
 
 function onReady(): void {

@@ -1,0 +1,35 @@
+<header class="sheet-header flexrow">
+  <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+
+  <div class="header-fields flexcol">
+    <h1 class="charname">
+      <input name="name" type="text" value="{{actor.name}}" placeholder="Name" {{#unless isEditable}}disabled{{/unless}} />
+    </h1>
+
+    <div class="grid grid-4col resources">
+      {{#each tracks as |track|}}
+      <div class="resource flexcol">
+        <label class="resource-label">{{track.label}}</label>
+        <div class="resource-content flexrow">
+          <input type="number" name="system.{{track.key}}.value" value="{{track.value}}" {{#unless ../isEditable}}disabled{{/unless}} />
+          <span class="sep">/</span>
+          <span class="resource-max">{{track.max}}</span>
+        </div>
+      </div>
+      {{/each}}
+
+      <div class="resource flexcol">
+        <label class="resource-label">Luck</label>
+        <div class="resource-content flexrow">
+          <input type="number" name="system.luck.current.value" value="{{system.luck.current.value}}" {{#unless isEditable}}disabled{{/unless}} />
+          <span class="sep">/</span>
+          {{#if editMode}}
+          <input type="number" name="system.luck.max.value" value="{{system.luck.max.value}}" />
+          {{else}}
+          <span class="resource-max">{{system.luck.max.value}}</span>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
