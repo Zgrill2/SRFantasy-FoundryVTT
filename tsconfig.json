@@ -1,21 +1,25 @@
 {
-  "include": [
-    "src/**/*",
-    "src/module/types/global.d.ts"
-  ],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "types": [
-      "@league-of-foundry-developers/foundry-vtt-types",
-      "@ethaks/fvtt-quench"
-    ],
-    "moduleResolution": "node",
-    "strictNullChecks": true,
-    "skipLibCheck": true,
-    "noEmitOnError": false,
-    "noImplicitOverride": true,
-    "resolveJsonModule": true
-  }
+    "include": ["src/**/*", "tests/**/*", "vite.config.ts"],
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "useDefineForClassFields": true,
+        "types": ["fvtt-types", "vite/client", "node"],
+        "baseUrl": ".",
+        "paths": { "@/*": ["./src/*"] },
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        // fvtt-types is not fully sound; SR5 sets this too.
+        "noImplicitAny": false,
+        "noImplicitOverride": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "noEmit": true
+    }
 }

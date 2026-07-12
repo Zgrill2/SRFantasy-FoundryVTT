@@ -1,0 +1,38 @@
+{
+    "SR.System": "Shimmering Reach",
+
+    "SR.Ability.bod": "Body",
+    "SR.Ability.agi": "Agility",
+    "SR.Ability.rea": "Reaction",
+    "SR.Ability.str": "Strength",
+    "SR.Ability.wil": "Willpower",
+    "SR.Ability.int": "Intuition",
+    "SR.Ability.log": "Logic",
+    "SR.Ability.cha": "Charisma",
+
+    "SR.Track.health": "Health",
+    "SR.Track.stamina": "Stamina",
+    "SR.Track.mana": "Mana",
+    "SR.Luck": "Luck",
+    "SR.Tradition": "Tradition Rank",
+    "SR.CastStat": "Cast Stat",
+    "SR.DrainResistance": "Drain Resistance",
+
+    "SR.Soak.armor": "Armor Soak",
+    "SR.Soak.physical": "Physical Soak",
+    "SR.Soak.mental": "Mental Soak",
+
+    "SR.Defense.dodge": "Dodge",
+    "SR.Defense.block": "Block",
+    "SR.Defense.parry": "Parry",
+    "SR.Defense.mental": "Mental Resist",
+    "SR.Defense.physical": "Physical Resist",
+    "SR.Defense.Passive": "Passive",
+    "SR.Defense.Active": "Active",
+    "SR.Defense.Total": "Total Defense",
+
+    "SR.Tab.Stats": "Stats",
+    "SR.Tab.Description": "Description",
+    "SR.Tab.Features": "Features",
+    "SR.Tab.Effects": "Effects"
+}

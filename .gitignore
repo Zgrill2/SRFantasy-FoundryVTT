@@ -1,14 +1,16 @@
-*.swp
-.idea
 node_modules
-foundryconfig.json
-.vscode
-.vscode/launch.json
-shadowrun5e.lock
-*.code-workspace
 dist
-.vs
+.foundry-data
+.env
+*.local
 
-# NOTE: v11 packs must be ignored until system goes v11 only and drops v10 support. Until then use v11 migration path for v11 support.
-packs/*
-!packs/_source/
+.DS_Store
+.idea
+.vscode
+*.swp
+*.code-workspace
+
+# Reference material — not part of the system
+SR5-FoundryVTT/
+char-creator/
+current_deploy/

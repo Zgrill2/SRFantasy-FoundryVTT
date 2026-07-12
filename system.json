@@ -1,107 +1,45 @@
 {
-  "id": "shadowrun5e",
-  "name": "shadowrun5e",
-  "title": "Shadowrun 5th Edition",
-  "description": "Shadowrun 5th Edition game",
-  "authors": [
-    {
-      "name": "Jan Schoska",
-      "discord": "taM#9507"
-    }
-  ],
-  "url": "https://github.com/SR5-FoundryVTT/SR5-FoundryVTT",
-  "bugs": "https://github.com/SR5-FoundryVTT/SR5-FoundryVTT/issues",
-  "version": "0.20.3",
-  "compatibility": {
-    "minimum": "11",
-    "verified": "12"
-  },
-  "minimumCoreVersion": "11",
-  "scripts": [],
-  "esmodules": [
-    "dist/bundle.js"
-  ],
-  "styles": [
-    "dist/bundle.css"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "dist/locale/en/config.json"
+    "id": "shimmeringreach",
+    "title": "Shimmering Reach",
+    "description": "The Shimmering Reach system for FoundryVTT — a d6 dicepool fantasy RPG.",
+    "version": "2.0.0",
+    "compatibility": {
+        "minimum": "14",
+        "verified": "14"
     },
-    {
-      "lang": "de",
-      "name": "Deutsch",
-      "path": "dist/locale/de/config.json"
+    "authors": [{ "name": "Ernest Wunder" }, { "name": "Dimitri Dolgov" }],
+    "esmodules": ["shimmeringreach.js"],
+    "styles": ["shimmeringreach.css"],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "documentTypes": {
+        "Actor": {
+            "character": { "htmlField": ["biography"] }
+        },
+        "Item": {
+            "item": { "htmlField": ["description"] },
+            "feature": { "htmlField": ["description"] },
+            "weapon": { "htmlField": ["description"] },
+            "skill": { "htmlField": ["description"] },
+            "spell": { "htmlField": ["description"] },
+            "language": { "htmlField": ["description"] }
+        }
     },
-    {
-      "lang": "pt-BR",
-      "name": "Português (Brasil)",
-      "path": "dist/locale/pt-BR/config.json"
+    "packs": [],
+    "socket": true,
+    "grid": {
+        "distance": 5,
+        "units": "ft"
     },
-    {
-      "lang": "fr",
-      "name": "Français",
-      "path": "dist/locale/fr/config.json"
-    },
-    {
-      "lang": "ko",
-      "name": "Korean",
-      "path": "dist/locale/ko/config.json"
-    }
-  ],
-  "packs": [
-    {
-      "name": "matrix-actions",
-      "label": "SR5e Matrix Actions",
-      "path": "packs/matrix-actions",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "TRUSTED": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "type": "Item",
-      "system": "shadowrun5e"
-    },
-    {
-      "name": "general-actions",
-      "label": "SR5e General Actions",
-      "path": "packs/general-actions",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "TRUSTED": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "type": "Item",
-      "system": "shadowrun5e"
-    },
-    {
-      "name": "system-macros",
-      "label": "SR5e System Macros",
-      "path": "packs/system-macros",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "TRUSTED": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      },
-      "type": "Macro",
-      "system": "shadowrun5e"
-    }
-  ],
-  "relationships": [
-    {
-      "id": "autocomplete-inline-properties",
-      "type": "module"
-    }
-  ],
-  "socket": true,
-  "manifest": null,
-  "download": null,
-  "protected": false,
-  "initiative": "@initiative.current.base.value + @initiative.current.dice.text - @wounds.value",
-  "gridDistance": 1,
-  "gridUnits": "m",
-  "primaryTokenAttribute": "track.physical",
-  "secondaryTokenAttribute": "track.stun"
+    "primaryTokenAttribute": "health",
+    "secondaryTokenAttribute": "stamina",
+    "url": "https://github.com/Zgrill2/SRFantasy-FoundryVTT",
+    "manifest": "",
+    "download": "",
+    "license": "LICENSE"
 }
