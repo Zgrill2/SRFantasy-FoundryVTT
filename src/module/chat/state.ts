@@ -10,7 +10,7 @@
  * it to reconstruct the pool size by arithmetic on the term data.
  */
 
-import type { Defense, Soak } from '../config';
+import type { Defense, SkillKey, Soak } from '../config';
 
 /** A serialized RollDP, as produced by `roll.toJSON()`. */
 export type RollJSON = Record<string, unknown>;
@@ -44,6 +44,12 @@ export interface AttackerState extends RollState {
     };
     /** Skill and multi-skill cards. */
     label?: string;
+    /** Group checks: the skill everyone is being asked to roll. */
+    skill?: SkillKey;
+    /** Modifiers the GM set on the group check, applied to everyone who rolls in. */
+    modifier?: number;
+    explode?: boolean;
+    applyWounds?: boolean;
     /** DV cards: flat damage with no opposed roll. */
     dv?: number;
     dvSoak?: Soak;
@@ -62,6 +68,17 @@ export interface DefenderState extends RollState {
 
 export interface CardState {
     kind: CardKind;
+    /**
+     * The card is public, but the numbers are not: players see `?` where hits go, while the
+     * GM sees the truth.
+     *
+     * This is not the same as `attacker.blind`, which hides only the attacker's own roll. On
+     * a group check it is the *participants'* hits that must be hidden — knowing you rolled
+     * badly on Perception is itself information.
+     *
+     * (Secret is a third thing again, and needs no state: it is Foundry's own whisper.)
+     */
+    obscured?: boolean;
     attacker: AttackerState;
     /**
      * Keyed by a stable id (token id, else actor id) rather than by array index. The old

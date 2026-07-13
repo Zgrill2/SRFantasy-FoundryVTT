@@ -115,6 +115,20 @@
         margin-bottom: $padding-sm;
     }
 
+    // The GM's prompt row: "Roll Perception", "Soak it".
+    .sr-prompt {
+        display: flex;
+        align-items: center;
+        gap: $padding-sm;
+        margin-bottom: $padding-sm;
+
+        .sr-hint {
+            font-size: 10px;
+            color: $c-tan;
+            font-style: italic;
+        }
+    }
+
     .sr-defenses {
         display: flex;
         flex-wrap: wrap;

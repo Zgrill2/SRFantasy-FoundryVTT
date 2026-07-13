@@ -1,6 +1,7 @@
 import './types/global';
 
 import { registerActorSheet } from './apps/SRActorSheet';
+import { registerSceneControls } from './apps/GmCards';
 import { registerItemSheet } from './apps/SRItemSheet';
 import { registerChatListeners } from './chat/actions';
 import { registerRelay } from './chat/gmRelay';
@@ -66,6 +67,7 @@ function onInit(): void {
 
     registerCardHandlers();
     registerChatListeners();
+    registerSceneControls();
 }
 
 function onReady(): void {

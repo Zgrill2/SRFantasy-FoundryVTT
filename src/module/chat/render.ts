@@ -6,13 +6,22 @@ import type { CardState, DefenderState, RollJSON, RollState } from './state';
 
 const { renderTemplate } = foundry.applications.handlebars;
 
+/**
+ * A GM-posted card asks a question; it does not answer one. A group check or a falling rock
+ * has no roll of its own, so its stored roll is empty.
+ */
+function hasRoll(json: RollJSON | undefined): boolean {
+    return Boolean(json && Object.keys(json).length > 0);
+}
+
 /** Rehydrate a stored roll back into a real RollDP, prototype and all. */
 export function rollFromJson(json: RollJSON): RollDP {
     return (Roll.fromData as any)(json) as RollDP;
 }
 
 function hitsFromJson(json: unknown): number {
-    return rollFromJson(json as RollJSON).hits;
+    const roll = json as RollJSON;
+    return hasRoll(roll) ? rollFromJson(roll).hits : 0;
 }
 
 /** Read a card's state off a message. Returns null for any message that isn't ours. */
@@ -39,8 +48,10 @@ function soakOf(state: CardState, defender: DefenderState): number {
     return (actor?.system as any)?.soaks?.[soakKey]?.value ?? 0;
 }
 
-/** The dice tray for one roll: faces, hits, the odds. */
+/** The dice tray for one roll: faces, hits, the odds. Null when there is no roll to show. */
 function trayFor(state: RollState) {
+    if (!hasRoll(state.roll)) return null;
+
     const roll = rollFromJson(state.roll);
     const reroll = state.reroll ? rollFromJson(state.reroll) : null;
 
@@ -71,6 +82,8 @@ export async function renderCard(state: CardState): Promise<string> {
         allowPassive: DEFENSE_DEFS[key].allowPassive,
     }));
 
+    const isGM = game.user?.isGM ?? false;
+
     return renderTemplate(`${TEMPLATE_PATH}/chat/card.hbs`, {
         state,
         view,
@@ -79,7 +92,9 @@ export async function renderCard(state: CardState): Promise<string> {
         defenderTrays: Object.fromEntries(
             Object.entries(state.defenders).map(([key, d]) => [key, trayFor(d)]),
         ),
-        isGM: game.user?.isGM ?? false,
+        isGM,
+        // An obscured card is public, but its numbers are not. The GM always sees through it.
+        hideNumbers: Boolean(state.obscured) && !isGM,
     });
 }
 

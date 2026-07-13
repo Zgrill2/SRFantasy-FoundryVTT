@@ -54,8 +54,24 @@ export function recompute(
     const defenders = Object.entries(state.defenders).map(([key, d]): DefenderView => {
         const hits = hitsOf(d, hitsFromJson);
 
-        // A DV card has no opposed roll: the damage is flat, soak is all that stands
-        // between you and it.
+        // A group check is not opposed. There is nothing to beat — everyone simply rolls the
+        // named skill and the card reports what they got. Without this branch the party would
+        // all be compared against an attacker score of zero and shown as having "avoided"
+        // something.
+        if (state.kind === 'multi-skill') {
+            return {
+                key,
+                name: d.actor.name,
+                hits,
+                netHits: null,
+                avoided: false,
+                damage: null,
+                applied: false,
+            };
+        }
+
+        // A DV card has no opposed roll either, but for a different reason: the damage is
+        // flat, and soak is all that stands between you and it.
         if (state.kind === 'dv') {
             const flat = dv - soakOf(d);
             return {

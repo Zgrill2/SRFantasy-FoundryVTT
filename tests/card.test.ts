@@ -77,6 +77,60 @@ describe('recompute — attack cards', () => {
     });
 });
 
+describe('recompute — group checks', () => {
+    const groupCheck = (): CardState => ({
+        kind: 'multi-skill',
+        obscured: false,
+        attacker: {
+            actor: { actorId: '', tokenId: null, name: 'Group check', img: '' },
+            blind: false,
+            label: 'Perception',
+            skill: 'perception',
+            // The card asks a question; it has no roll of its own.
+            roll: {},
+        },
+        defenders: {},
+    });
+
+    it('reports what each participant rolled, and nothing more', () => {
+        let state = addDefender(groupCheck(), 't-a', defender('Ana', 4));
+        state = addDefender(state, 't-b', defender('Bo', 1));
+
+        const view = recompute(state, hitsFromJson, () => 5);
+
+        expect(view.defenders.map((d) => [d.name, d.hits])).toEqual([
+            ['Ana', 4],
+            ['Bo', 1],
+        ]);
+    });
+
+    it('marks nobody as avoided — there is nothing to beat', () => {
+        // The attacker has no roll, so the generic opposed path would score it as 0 hits and
+        // declare the entire party to have "avoided" something.
+        const state = addDefender(groupCheck(), 't-a', defender('Ana', 0));
+        const view = recompute(state, hitsFromJson, () => 0);
+
+        expect(view.defenders[0]!.avoided).toBe(false);
+        expect(view.defenders[0]!.netHits).toBeNull();
+    });
+
+    it('never computes damage', () => {
+        const state = addDefender(groupCheck(), 't-a', defender('Ana', 2));
+        const view = recompute(state, hitsFromJson, () => 0);
+
+        expect(view.defenders[0]!.damage).toBeNull();
+        expect(view.defenders[0]!.applied).toBe(false);
+    });
+
+    it('lets a participant reroll their misses', () => {
+        let state = addDefender(groupCheck(), 't-a', defender('Ana', 1));
+        state = applyReroll(state, 't-a', roll(2));
+
+        expect(recompute(state, hitsFromJson, () => 0).defenders[0]!.hits).toBe(3);
+        expect(canReroll(state, 't-a')).toBe(false);
+    });
+});
+
 describe('recompute — DV cards', () => {
     it('applies flat damage against soak, with no opposed roll', () => {
         const state: CardState = {

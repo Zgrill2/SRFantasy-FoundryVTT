@@ -112,6 +112,41 @@ async function gmDefend(p: DefendPayload): Promise<void> {
     await updateCard(msg, addDefender(state, key, defender));
 }
 
+/**
+ * Roll in to a group check.
+ *
+ * The GM names a skill; you bring your own pool. The modifiers the GM set when posting the
+ * card apply to everyone who answers it, so the whole party is rolling the same test.
+ */
+async function gmRollIn(p: { messageId: string; ref: ActorRef }): Promise<void> {
+    const msg = message(p.messageId);
+    const state = msg ? cardState(msg) : null;
+    if (!msg || !state) return;
+
+    const skill = state.attacker.skill;
+    if (!skill) return;
+
+    const key = defenderKey(p.ref);
+    if (hasDefender(state, key)) return; // already rolled; one answer each
+
+    const actor = resolveActor(p.ref);
+    if (!actor) return;
+
+    const sys = actor.system as any;
+    const pool = (sys.skills[skill]?.dicepool ?? 0) + (state.attacker.modifier ?? 0);
+
+    const roll = RollDP.fromPool(pool, {
+        explode: state.attacker.explode ?? false,
+        woundPenalty: (state.attacker.applyWounds ?? true) ? sys.wound_penalty.value : 0,
+    });
+    await roll.evaluate();
+
+    await updateCard(
+        msg,
+        addDefender(state, key, { actor: p.ref, roll: roll.toJSON() as any }),
+    );
+}
+
 /** A DV card has no roll to make: soak is all that stands between you and the damage. */
 async function gmAddSoakTarget(p: { messageId: string; ref: ActorRef }): Promise<void> {
     const msg = message(p.messageId);
@@ -190,6 +225,7 @@ async function gmClearDamage(p: { messageId: string; key: string }): Promise<voi
 
 export function registerCardHandlers(): void {
     onGmAction('defend', gmDefend);
+    onGmAction('rollIn', gmRollIn);
     onGmAction('addSoakTarget', gmAddSoakTarget);
     onGmAction('reroll', gmReroll);
     onGmAction('removeDefender', gmRemoveDefender);

@@ -72,6 +72,16 @@ async function onDefend(event: MouseEvent, target: HTMLElement): Promise<void> {
     }
 }
 
+/** Answer a group check with whatever tokens you have selected. */
+async function onRollIn(_event: MouseEvent, target: HTMLElement): Promise<void> {
+    const messageId = messageIdOf(target);
+    if (!messageId) return;
+
+    for (const ref of selectedActorRefs()) {
+        await requestGmAction('rollIn', { messageId, ref });
+    }
+}
+
 async function onAddSoakTarget(_event: MouseEvent, target: HTMLElement): Promise<void> {
     const messageId = messageIdOf(target);
     if (!messageId) return;
@@ -206,6 +216,7 @@ const CARD_ACTIONS: Record<
     (event: MouseEvent, target: HTMLElement) => Promise<void> | void
 > = {
     defend: onDefend,
+    rollIn: onRollIn,
     addSoakTarget: onAddSoakTarget,
     reroll: onReroll,
     removeDefender: onRemoveDefender,
