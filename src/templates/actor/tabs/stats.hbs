@@ -143,7 +143,7 @@
     <li class="item flexrow" data-item-id="{{i.id}}">
       <span class="item-name">{{i.name}}</span>
       <a class="dicepool rollable" data-action="rollSkill" data-item-id="{{i.id}}"
-         title="Roll {{i.name}}">{{i.system.dicepool}}</a>
+         title="Roll {{i.name}}">{{i.dicepool}}</a>
       {{#if @root.editMode}}
       <div class="item-controls">
         <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>
@@ -191,10 +191,10 @@
     {{#each weapons as |w|}}
     <li class="item flexrow" data-item-id="{{w.id}}">
       <span class="item-name">{{w.name}}</span>
-      <span class="weapon-dv">{{w.system.dv}}</span>
-      <a class="dicepool rollable" data-action="rollAttack" title="Attack with {{w.name}}">{{w.system.dicepool}}</a>
+      <span class="weapon-dv">{{w.dv}}</span>
+      <a class="dicepool rollable" data-action="rollAttack" title="Attack with {{w.name}}">{{w.dicepool}}</a>
       <span class="equipped">
-        <input type="checkbox" data-action="equipWeapon" {{checked w.system.active}} />
+        <input type="checkbox" data-action="equipWeapon" {{checked w.equipped}} />
       </span>
       <div class="item-controls">
         <a data-action="editItem" title="Edit"><i class="fas fa-edit"></i></a>

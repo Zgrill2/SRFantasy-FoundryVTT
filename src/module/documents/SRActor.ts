@@ -1,27 +1,17 @@
-import {
-    BUCKLER_ATTACK_PENALTY,
-    BUCKLER_INDEX,
-    SKILL_GROUPS,
-    SKILL_KEYS,
-    type Ability,
-    type BonusTarget,
-    type SkillKey,
-} from '../config';
+import { SKILL_GROUPS, SKILL_KEYS, type Ability, type BonusTarget, type SkillKey } from '../config';
 import {
     defenses,
     drainResistance,
     healthMax,
-    knowledgeDicepool,
     manaMax,
     shieldBlockBonus,
     skillDicepool,
     soaks,
     staminaMax,
-    weaponDicepool,
-    weaponDv,
     woundPenalty,
     type Abilities,
 } from '../rules/derive';
+import type { SRItem } from './SRItem';
 
 export class SRActor extends Actor {
     /**
@@ -96,10 +86,11 @@ export class SRActor extends Actor {
             sys.wound_penalty.ignore_wounds,
         );
 
-        // 5. Weapons need finished skill pools, so they come last.
-        this.#prepareWeapons(sys, abilities, tradition);
-
-        // 6. The equipped weapon reaches back into Block and Parry.
+        // 5. The equipped weapon reaches back into Block and Parry.
+        //
+        // Item-derived values (weapon DV and attack pool, knowledge-skill pools) are NOT
+        // computed here — they are getters on SRItem, read straight off the finished data
+        // above whenever something asks for them.
         this.#applyEquippedWeapon(sys);
     }
 
@@ -143,33 +134,16 @@ export class SRActor extends Actor {
         }
     }
 
-    #prepareWeapons(sys: any, abilities: Abilities, tradition: number): void {
-        for (const item of this.items) {
-            if (item.type === 'weapon') {
-                const w = item.system as any;
-                w.dv = weaponDv(w.power, abilities[w.attr as Ability] ?? null);
-                w.dicepool = weaponDicepool(w.reach, sys.skills[w.skill as SkillKey].dicepool);
-                continue;
-            }
-
-            if (item.type === 'skill') {
-                const s = item.system as any;
-                const attrValue =
-                    s.attr === 'none' ? null : (abilities[s.attr as Ability] ?? null);
-                s.dicepool = knowledgeDicepool(s.rank, attrValue, tradition);
-            }
-        }
-    }
-
     /**
      * A shield you are actually holding improves your Block; a long weapon improves your
-     * Parry. A Buckler is small enough to keep your weapon hand free, but it fouls your
-     * swing.
+     * Parry.
+     *
+     * These land on the *actor*, which is why they belong here. The matching Buckler penalty
+     * to the weapon's own attack pool lives on the weapon (SRItem#attackPool), so that no
+     * item-derived value is ever written from the actor's pass.
      */
     #applyEquippedWeapon(sys: any): void {
-        const weapon = this.items.find(
-            (i) => i.type === 'weapon' && (i.system as any).active,
-        );
+        const weapon = this.equippedWeapon;
         if (!weapon) return;
 
         const w = weapon.system as any;
@@ -177,14 +151,12 @@ export class SRActor extends Actor {
 
         sys.defenses.block.active += shieldBlockBonus(w.shield);
         sys.defenses.parry.active += w.reach;
-
-        if (w.shield === BUCKLER_INDEX) {
-            w.dicepool -= BUCKLER_ATTACK_PENALTY;
-        }
     }
 
-    /** The equipped weapon, if any. */
-    get equippedWeapon(): Item.Implementation | undefined {
-        return this.items.find((i) => i.type === 'weapon' && (i.system as any).active);
+    /** The equipped weapon, if any. Only one may be equipped at a time. */
+    get equippedWeapon(): SRItem | undefined {
+        return this.items.find(
+            (i) => i.type === 'weapon' && (i.system as any).active,
+        ) as SRItem | undefined;
     }
 }

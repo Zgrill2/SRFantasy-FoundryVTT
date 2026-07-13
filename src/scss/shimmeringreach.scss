@@ -5,10 +5,12 @@
 
 // Sheet styles. Each partial scopes itself to `.shimmeringreach` — @use cannot be nested
 // the way the old @import chain was.
+@use 'components/sheet';
 @use 'components/forms';
 @use 'components/resource';
 @use 'components/items';
 @use 'components/effects';
+@use 'components/card';
 
 // Roboto, fetched at runtime. Sass requires all @use rules to come first, so this plain
 // CSS import sits below them.

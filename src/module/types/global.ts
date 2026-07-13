@@ -17,6 +17,7 @@ import type {
     Weapon,
 } from '../data/item/Items';
 import type { SRActor } from '../documents/SRActor';
+import type { SRItem } from '../documents/SRItem';
 
 declare global {
     interface DataModelConfig {
@@ -35,6 +36,7 @@ declare global {
 
     interface DocumentClassConfig {
         Actor: typeof SRActor;
+        Item: typeof SRItem;
     }
 }
 

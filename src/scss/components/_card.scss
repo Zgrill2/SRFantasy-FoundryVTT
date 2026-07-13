@@ -1,0 +1,199 @@
+@use '../utils' as *;
+
+/** Chat cards. */
+.sr-card {
+    font-family: $font-primary;
+
+    .sr-card-header {
+        align-items: center;
+        gap: $padding-sm;
+        border-bottom: $border-groove;
+        padding-bottom: $padding-sm;
+
+        .portrait {
+            border: 0;
+            border-radius: 3px;
+            flex: 0 0 36px;
+        }
+
+        .titles {
+            flex: 1;
+            line-height: 1.2;
+        }
+
+        .who {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .what {
+            font-size: 12px;
+            color: $c-tan;
+        }
+    }
+
+    // Hits badge. Shift-click rerolls the misses.
+    .hits-block {
+        flex: 0 0 auto;
+        text-align: center;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 3px;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.06);
+        }
+
+        .hits {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .hits-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: $c-tan;
+        }
+    }
+
+    .dice-tray {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        margin: $padding-sm 0;
+
+        &.hidden {
+            display: none;
+        }
+
+        &.small .die {
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            font-size: 11px;
+        }
+
+        .die {
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 12px;
+            border-radius: 3px;
+            background: $c-faint;
+            color: $c-dark;
+
+            // A 5 or a 6 is a hit. Nothing else matters.
+            &.hit {
+                background: #1f7a3d;
+                color: $c-white;
+            }
+
+            // Ones are marked for flavour only — there is no glitch rule.
+            &.one {
+                background: #8b2020;
+                color: $c-white;
+                opacity: 0.75;
+            }
+        }
+
+        .wounded {
+            font-size: 11px;
+            color: #8b2020;
+            align-self: center;
+        }
+    }
+
+    .sr-dv {
+        font-weight: 700;
+        font-size: 12px;
+        margin-bottom: $padding-sm;
+    }
+
+    .sr-defenses {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        margin-bottom: $padding-sm;
+    }
+
+    .sr-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border: 1px solid $c-beige;
+        border-radius: 3px;
+        font-size: 11px;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:hover {
+            background: $c-faint;
+            text-shadow: none;
+        }
+
+        &.active {
+            border-color: #b8860b;
+        }
+
+        &.damage {
+            border-color: #8b2020;
+            color: #8b2020;
+        }
+
+        &.undo {
+            opacity: 0.75;
+        }
+    }
+
+    .sr-defenders {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: $border-groove;
+
+        .sr-defender {
+            padding: $padding-sm 0;
+
+            &.avoided {
+                opacity: 0.65;
+            }
+
+            .row {
+                align-items: center;
+                gap: $padding-sm;
+            }
+
+            .who {
+                flex: 1;
+                font-weight: 700;
+                font-size: 12px;
+            }
+
+            .outcome {
+                font-size: 11px;
+                color: $c-tan;
+            }
+
+            .remove {
+                opacity: 0.5;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    .sr-resolved {
+        font-size: 11px;
+        color: $c-tan;
+        font-style: italic;
+    }
+}

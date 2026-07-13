@@ -1,0 +1,141 @@
+{{!-- One template for every card kind. The card is a pure render of its flag state. --}}
+<div class="sr-card {{state.kind}}">
+
+  {{!-- Attacker --}}
+  <header class="sr-card-header flexrow">
+    <img class="portrait" src="{{state.attacker.actor.img}}" width="36" height="36" />
+    <div class="titles">
+      <h3 class="who">{{state.attacker.actor.name}}</h3>
+      <span class="what">
+        {{#if state.attacker.weapon}}{{state.attacker.weapon.name}}{{else}}{{state.attacker.label}}{{/if}}
+      </span>
+    </div>
+
+    {{!-- A blind roll shows the players nothing but a question mark. --}}
+    <a class="hits-block" data-card-action="reroll"
+       title="{{#if state.attacker.blind}}Hidden{{else}}{{attackerTray.hits}} hits &#10;{{attackerTray.percentile}}% &#10;Shift-click to reroll the {{attackerTray.misses}} misses{{/if}}">
+      {{#if state.attacker.blind}}
+        {{#if isGM}}<span class="hits">{{attackerTray.hits}}</span>{{else}}<span class="hits">?</span>{{/if}}
+      {{else}}
+        <span class="hits">{{attackerTray.hits}}</span>
+      {{/if}}
+      <span class="hits-label">hits</span>
+    </a>
+  </header>
+
+  {{#unless state.attacker.blind}}
+  <div class="dice-tray">
+    {{#each attackerTray.faces as |f|}}
+    <span class="die {{#if f.hit}}hit{{/if}} {{#if f.one}}one{{/if}}">{{f.value}}</span>
+    {{/each}}
+    {{#if attackerTray.woundPenalty}}
+    <span class="wounded" title="Wounds cost {{attackerTray.woundPenalty}} dice">
+      &minus;{{attackerTray.woundPenalty}} wounded
+    </span>
+    {{/if}}
+  </div>
+  {{/unless}}
+
+  {{#if state.attacker.weapon}}
+  <div class="sr-dv">DV {{state.attacker.weapon.dv}}</div>
+  {{/if}}
+
+  {{!-- Drain: mana first, then blood. --}}
+  {{#if (eq state.kind "drain")}}
+    {{#if state.attacker.drain}}
+    <a class="sr-button drain" data-card-action="applyDrain">
+      <i class="fas fa-fire"></i> Take {{state.attacker.drain}} drain
+    </a>
+    {{else}}
+    <div class="sr-resolved">Drain fully resisted.</div>
+    {{/if}}
+  {{/if}}
+
+  {{!-- Defense buttons. Block and Parry have no passive form: you cannot interpose a
+        shield you aren't already moving. Select your token, then click. --}}
+  {{#if (eq state.kind "attack")}}
+  <div class="sr-defenses">
+    {{#each defenses as |d|}}
+      {{#if d.allowPassive}}
+      <a class="sr-button defense passive" data-card-action="defend"
+         data-defense="{{d.key}}" data-state="passive"
+         title="Passive {{d.label}} — no roll cost">
+        {{d.label}}
+      </a>
+      {{/if}}
+      <a class="sr-button defense active" data-card-action="defend"
+         data-defense="{{d.key}}" data-state="active"
+         title="Active {{d.label}} — costs 5 initiative. Ctrl-click for Total Defense (10).">
+        <i class="fas fa-bolt"></i> {{d.label}}
+      </a>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if (eq state.kind "dv")}}
+  <a class="sr-button" data-card-action="addSoakTarget">
+    <i class="fas fa-user-plus"></i> Soak with selected tokens
+  </a>
+  {{/if}}
+
+  {{#if (eq state.kind "multi-skill")}}
+  <a class="sr-button" data-card-action="defend" data-defense="dodge" data-state="passive">
+    <i class="fas fa-dice"></i> Roll in
+  </a>
+  {{/if}}
+
+  {{!-- Defenders --}}
+  {{#if view.defenders.length}}
+  <ol class="sr-defenders">
+    {{#each view.defenders as |d|}}
+    <li class="sr-defender {{#if d.avoided}}avoided{{/if}}" data-defender="{{d.key}}">
+      <div class="row flexrow">
+        <span class="who">{{d.name}}</span>
+
+        {{#unless (eq @root.state.kind "dv")}}
+        <a class="hits-block" data-card-action="reroll" data-defender="{{d.key}}"
+           title="Shift-click to reroll the misses">
+          <span class="hits">{{d.hits}}</span>
+        </a>
+        {{/unless}}
+
+        {{#if d.avoided}}
+        <span class="outcome avoided"><i class="fas fa-wind"></i> Avoided</span>
+        {{else}}
+          {{#if d.netHits}}<span class="outcome">{{d.netHits}} net</span>{{/if}}
+
+          {{#if d.applied}}
+          <a class="sr-button undo" data-card-action="undoDamage" data-defender="{{d.key}}"
+             title="Shift-click to give it back">
+            <i class="fas fa-rotate-left"></i> {{d.dmgSet.hp}} hp / {{d.dmgSet.stam}} stam
+          </a>
+          {{else if d.damage}}
+          <a class="sr-button damage" data-card-action="applyDamage"
+             data-defender="{{d.key}}" data-damage="{{d.damage}}"
+             title="Split to cross the fewest wound thresholds">
+            <i class="fas fa-heart-crack"></i> Take {{d.damage}}
+          </a>
+          {{else}}
+          <span class="outcome soaked">Soaked</span>
+          {{/if}}
+        {{/if}}
+
+        {{#if @root.isGM}}
+        <a class="remove" data-card-action="removeDefender" data-defender="{{d.key}}"
+           title="Remove"><i class="fas fa-xmark"></i></a>
+        {{/if}}
+      </div>
+
+      {{#with (lookup @root.defenderTrays d.key) as |t|}}
+      <div class="dice-tray small">
+        {{#each t.faces as |f|}}
+        <span class="die {{#if f.hit}}hit{{/if}} {{#if f.one}}one{{/if}}">{{f.value}}</span>
+        {{/each}}
+      </div>
+      {{/with}}
+    </li>
+    {{/each}}
+  </ol>
+  {{/if}}
+
+</div>

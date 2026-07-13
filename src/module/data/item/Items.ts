@@ -88,9 +88,8 @@ export const WeaponData = () => ({
     /** Optional sound played when this weapon connects. */
     sound: new StringField({ required: false, initial: '' }),
 
-    // Derived.
-    dv: signedInt(0),
-    dicepool: signedInt(0),
+    // No derived fields here. `dv` and `dicepool` are getters on SRItem — storing them in
+    // the schema meant an item re-preparing on its own wiped them back to zero.
 });
 
 export class Weapon extends ItemModel<ReturnType<typeof WeaponData>> {
@@ -111,8 +110,7 @@ export const KnowledgeSkillData = () => ({
         initial: 'none',
         choices: ['none', ...ABILITIES],
     }),
-    // Derived.
-    dicepool: signedInt(0),
+    // `dicepool` is a getter on SRItem — see the weapon schema above.
 });
 
 export class KnowledgeSkill extends ItemModel<ReturnType<typeof KnowledgeSkillData>> {

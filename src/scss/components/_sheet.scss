@@ -1,0 +1,44 @@
+@use '../utils' as *;
+
+/**
+ * Sheet layout for ApplicationV2.
+ *
+ * V2 renders each PART as a direct child of `.window-content` — there is no `.sheet-body`
+ * wrapper for the old stylesheet to hang a height on, which is why nothing scrolled.
+ */
+
+// Tabbed sheets: header and nav stay put, the active tab is the one thing that scrolls.
+.shimmeringreach.sheet.actor {
+    .window-content {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0;
+        gap: 0;
+    }
+
+    .sheet-header,
+    nav.tabs {
+        flex: 0 0 auto;
+    }
+
+    .sheet-header {
+        padding: $padding-md $padding-md 0;
+    }
+
+    section.tab {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: $padding-md;
+    }
+
+    // V2 shows the active tab, but never let an inactive one take space.
+    section.tab:not(.active) {
+        display: none;
+    }
+}
+
+// Item sheets have no tabs; the whole content just scrolls.
+.shimmeringreach.sheet.item .window-content {
+    overflow-y: auto;
+}

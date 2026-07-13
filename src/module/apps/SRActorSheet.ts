@@ -18,6 +18,16 @@ import {
     type Soak,
 } from '../config';
 import { SYSTEM_NAME, TEMPLATE_PATH } from '../constants';
+import {
+    DEFAULT_MODIFIERS,
+    rollAttack,
+    rollDrain,
+    rollKnowledge,
+    rollSkill,
+    type RollModifiers,
+} from '../chat/rolls';
+import type { SRItem } from '../documents/SRItem';
+import { promptRoll } from './RollDialog';
 
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
@@ -51,6 +61,8 @@ export class SRActorSheet extends ActorSheetBase {
             deleteItem: SRActorSheet.#deleteItem,
             equipWeapon: SRActorSheet.#equipWeapon,
             toggleFeature: SRActorSheet.#toggleFeature,
+            rollSkill: SRActorSheet.#rollSkill,
+            rollAttack: SRActorSheet.#rollAttack,
         },
     };
 
@@ -143,9 +155,24 @@ export class SRActorSheet extends ActorSheetBase {
         // Items, bucketed by type. Spells are a flat list — the old sheet indexed them into
         // a one-element array by spellLevel, so owning any spell threw and the whole sheet
         // failed to render.
-        context.weapons = actor.itemTypes.weapon;
+        //
+        // Weapon DV/pool and knowledge-skill pools are read from SRItem getters, computed
+        // fresh right here. Nothing derived is stored on the item, so nothing can go stale.
+        context.weapons = actor.itemTypes.weapon.map((w) => ({
+            id: w.id,
+            name: w.name,
+            equipped: (w.system as any).active,
+            dv: (w as SRItem).damageValue,
+            dicepool: (w as SRItem).attackPool,
+        }));
+
+        context.knowledgeSkills = actor.itemTypes.skill.map((s) => ({
+            id: s.id,
+            name: s.name,
+            dicepool: (s as SRItem).knowledgePool,
+        }));
+
         context.features = actor.itemTypes.feature;
-        context.knowledgeSkills = actor.itemTypes.skill;
         context.languages = actor.itemTypes.language;
         context.spells = actor.itemTypes.spell;
         context.gear = actor.itemTypes.item;
@@ -214,6 +241,56 @@ export class SRActorSheet extends ActorSheetBase {
         if (!feature) return;
 
         await feature.update({ 'system.active': !(feature.system as any).active } as any);
+    }
+
+    /**
+     * Modifiers come from the keyboard, so the common case stays a single click.
+     * Ctrl hides the roll from the players; Shift opens the dialog for everything else.
+     */
+    static #modifiers(event: MouseEvent): RollModifiers {
+        return { ...DEFAULT_MODIFIERS, blind: event.ctrlKey };
+    }
+
+    static async #rollSkill(this: SRActorSheet, event: MouseEvent, target: HTMLElement) {
+        const mods = event.shiftKey
+            ? await promptRoll(target.title || 'Skill test')
+            : SRActorSheet.#modifiers(event);
+        if (!mods) return;
+
+        // Knowledge skills are items; the fixed skills are not.
+        const item = this.#item(target) as SRItem | undefined;
+        if (item) {
+            await rollKnowledge(this.actor, item, mods);
+            return;
+        }
+
+        const skill = target.dataset.skill as SkillKey | undefined;
+        if (skill) await rollSkill(this.actor, skill, mods);
+    }
+
+    static async #rollAttack(this: SRActorSheet, event: MouseEvent, target: HTMLElement) {
+        const weapon = this.#item(target) as SRItem | undefined;
+        if (!weapon) return;
+
+        const isSpell = (weapon.system as any).skill === 'spellcasting';
+
+        const prompt = event.shiftKey
+            ? await promptRoll(`Attack — ${weapon.name}`, {
+                  showDv: true,
+                  showOverload: isSpell,
+              })
+            : null;
+
+        if (event.shiftKey && !prompt) return; // cancelled
+
+        const mods = prompt ?? SRActorSheet.#modifiers(event);
+        await rollAttack(this.actor, weapon, mods, prompt?.dvModifier ?? 0);
+
+        // Reaching past what you can safely hold costs you afterwards: the Drain card is the
+        // bill, and it arrives immediately.
+        if (prompt?.overload) {
+            await rollDrain(this.actor, prompt.overload, prompt.overloadSoak, mods.explode);
+        }
     }
 
     #item(target: HTMLElement): Item.Implementation | undefined {

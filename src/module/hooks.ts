@@ -2,6 +2,10 @@ import './types/global';
 
 import { registerActorSheet } from './apps/SRActorSheet';
 import { registerItemSheet } from './apps/SRItemSheet';
+import { registerChatListeners } from './chat/actions';
+import { registerRelay } from './chat/gmRelay';
+import { registerCardHandlers } from './chat/handlers';
+import { RollDP } from './dice/RollDP';
 import { SR } from './config';
 import { SYSTEM_NAME } from './constants';
 import { Character } from './data/actor/Character';
@@ -14,6 +18,7 @@ import {
     Weapon,
 } from './data/item/Items';
 import { SRActor } from './documents/SRActor';
+import { SRItem } from './documents/SRItem';
 
 /**
  * Every Hooks registration in the system, so the boot sequence reads top to bottom.
@@ -30,6 +35,7 @@ function onInit(): void {
     (CONFIG as any).SR = SR;
 
     CONFIG.Actor.documentClass = SRActor;
+    CONFIG.Item.documentClass = SRItem;
 
     CONFIG.Actor.dataModels['character'] = Character;
 
@@ -50,10 +56,21 @@ function onInit(): void {
         decimals: 0,
     };
 
+    // Registering the subclass is what lets Roll.fromData rehydrate a stored card roll
+    // back into a RollDP. It resolves the class by NAME, which is why the bundle must not
+    // be minified.
+    CONFIG.Dice.rolls.push(RollDP as any);
+
     registerActorSheet();
     registerItemSheet();
+
+    registerCardHandlers();
+    registerChatListeners();
 }
 
 function onReady(): void {
+    // The socket is only live once the game is ready.
+    registerRelay();
+
     console.log(`${SYSTEM_NAME} | Ready`);
 }
