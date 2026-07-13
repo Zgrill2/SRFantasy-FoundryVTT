@@ -23,6 +23,7 @@ import {
     rollAttack,
     rollDrain,
     rollKnowledge,
+    rollNamedPool,
     rollSkill,
     type RollModifiers,
 } from '../chat/rolls';
@@ -63,6 +64,7 @@ export class SRActorSheet extends ActorSheetBase {
             toggleFeature: SRActorSheet.#toggleFeature,
             rollSkill: SRActorSheet.#rollSkill,
             rollAttack: SRActorSheet.#rollAttack,
+            rollPool: SRActorSheet.#rollPool,
         },
     };
 
@@ -266,6 +268,34 @@ export class SRActorSheet extends ActorSheetBase {
 
         const skill = target.dataset.skill as SkillKey | undefined;
         if (skill) await rollSkill(this.actor, skill, mods);
+    }
+
+    /**
+     * Roll a bare pool the template names for us: a defense, Drain Soak, Luck.
+     *
+     * `data-wounds` decides whether being hurt costs you dice. It does for defenses; it does
+     * not for Drain Soak or Luck.
+     *
+     * Rolling an active defense from here spends no initiative — you are checking what your
+     * Dodge looks like, not throwing yourself aside. Initiative is only paid when you actually
+     * answer an attack card.
+     */
+    static async #rollPool(this: SRActorSheet, event: MouseEvent, target: HTMLElement) {
+        const pool = Number(target.dataset.pool ?? 0);
+        const label = target.dataset.label ?? 'Test';
+        const applyWounds = target.dataset.wounds !== 'false';
+
+        const mods = event.shiftKey
+            ? await promptRoll(label)
+            : { ...SRActorSheet.#modifiers(event), applyWounds };
+        if (!mods) return;
+
+        // The dialog offers a wounds checkbox, but a pool that is never wounded must stay
+        // that way whatever the dialog says.
+        await rollNamedPool(this.actor, label, pool, {
+            ...mods,
+            applyWounds: applyWounds && mods.applyWounds,
+        });
     }
 
     static async #rollAttack(this: SRActorSheet, event: MouseEvent, target: HTMLElement) {

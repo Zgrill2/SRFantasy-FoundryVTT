@@ -18,8 +18,13 @@
       </div>
       {{/each}}
 
+      {{!-- Luck rolls your maximum, so it does not get worse as you spend it; current Luck
+            is your remaining uses, and spending one stays a decision you make by hand.
+            Wounds cost you nothing here — luck is fortune, not fitness. --}}
       <div class="resource flexcol">
-        <label class="resource-label">Luck</label>
+        <a class="resource-label rollable" data-action="rollPool"
+           data-pool="{{system.luck.max.value}}" data-label="Luck" data-wounds="false"
+           title="Roll Luck ({{system.luck.max.value}} dice) — wounds do not apply">Luck</a>
         <div class="resource-content flexrow">
           <input type="number" name="system.luck.current.value" value="{{system.luck.current.value}}" {{#unless isEditable}}disabled{{/unless}} />
           <span class="sep">/</span>

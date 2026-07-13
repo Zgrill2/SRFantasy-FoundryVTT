@@ -59,6 +59,23 @@ export async function rollSkill(
     await postSkillCard(actor, SKILLS[skill].label, roll, mods);
 }
 
+/**
+ * Roll any bare pool the sheet can name — a defense, Drain Soak, Luck.
+ *
+ * These are ordinary tests; they just don't come from the skill list. Whether wounds bite is
+ * the caller's business: your defenses suffer when you're hurt, but Drain Soak and Luck do
+ * not. Luck is fortune, not fitness.
+ */
+export async function rollNamedPool(
+    actor: Actor.Implementation,
+    label: string,
+    pool: number,
+    mods: RollModifiers = DEFAULT_MODIFIERS,
+): Promise<void> {
+    const roll = await rollPool(actor, pool, mods);
+    await postSkillCard(actor, label, roll, mods);
+}
+
 /** A knowledge skill, which is an item rather than a fixed skill. */
 export async function rollKnowledge(
     actor: Actor.Implementation,

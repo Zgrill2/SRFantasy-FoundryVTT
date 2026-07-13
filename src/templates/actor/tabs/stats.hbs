@@ -55,7 +55,8 @@
     {{/each}}
   </div>
 
-  {{!-- Soaks --}}
+  {{!-- Soaks. Armor/Physical/Mental are flat values subtracted from damage, not dice —
+        so they are not rollable. Drain Soak is the one soak you actually roll. --}}
   <h3 class="section-title">Soaks</h3>
   <div class="grid grid-4col soaks">
     {{#each soaks as |s|}}
@@ -66,12 +67,18 @@
     {{/each}}
     <div class="soak flexcol">
       <label>Drain Soak</label>
-      <div class="stat-value">{{system.drainres.value}}</div>
+      {{!-- Wounds do not cost you dice here. --}}
+      <a class="stat-value dicepool rollable" data-action="rollPool"
+         data-pool="{{system.drainres.value}}" data-label="Drain Soak" data-wounds="false"
+         title="Roll Drain Soak">{{system.drainres.value}}</a>
     </div>
   </div>
 
   {{!-- Defences. Block and Parry have no passive form: you cannot interpose a shield
-        you aren't already moving. --}}
+        you aren't already moving.
+
+        Rolling from here costs no initiative — you are seeing what your Dodge looks like,
+        not throwing yourself aside. Initiative is spent only when you answer an attack. --}}
   <h3 class="section-title">Defenses</h3>
   <div class="grid grid-5col defenses">
     {{#each defenses as |d|}}
@@ -79,11 +86,15 @@
       <label>{{d.label}}</label>
       <div class="defense-pools flexrow">
         {{#if d.allowPassive}}
-        <div class="stat-value passive" title="Passive — no roll, no initiative">{{d.passive}}</div>
+        <a class="stat-value passive dicepool rollable" data-action="rollPool"
+           data-pool="{{d.passive}}" data-label="{{d.label}} (Passive)" data-wounds="true"
+           title="Roll passive {{d.label}}">{{d.passive}}</a>
         {{else}}
         <div class="stat-value empty" title="No passive form">—</div>
         {{/if}}
-        <div class="stat-value active" title="Active — costs initiative">{{d.active}}</div>
+        <a class="stat-value active dicepool rollable" data-action="rollPool"
+           data-pool="{{d.active}}" data-label="{{d.label}} (Active)" data-wounds="true"
+           title="Roll active {{d.label}} — costs no initiative from here">{{d.active}}</a>
       </div>
     </div>
     {{/each}}
