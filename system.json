@@ -1,0 +1,30 @@
+{
+  "name": "shimmeringreach",
+  "title": "shimmeringreach",
+  "description": "The SR system for FoundryVTT!",
+  "version": "1.1.0",
+  "minimumCoreVersion": "0.8.3",
+  "compatibleCoreVersion": "0.8.6",
+  "templateVersion": 2,
+  "author": "Ernest Wunder, Dimitri Dolgov, and others",
+  "esmodules": ["module/shimmeringreach.mjs"],
+  "styles": ["css/shimmeringreach.css"],
+  "scripts": [],
+  "packs": [],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "stamina",
+  "socket": true,
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "LICENSE.txt"
+}

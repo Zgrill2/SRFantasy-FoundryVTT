@@ -1,0 +1,53 @@
+ <div class="dialog-content">
+    <form>
+	<div class="row column">
+			<img src="{{actor.data.img}}" class="entity-selectable" title="{{actor.data.name}}" width="40" height="40"/>
+			<div class="display-damage-block" id="myDv">{{actor_info.dv}}</div>
+	</div>
+	<input type="range" min={{slide.min}} max={{slide.max}} value={{slide.value}} class="slider" id="mySlider">
+     
+		<div class="row" style="border:2px solid black; position:relative;">
+			 <div class="stamina-bar" id="green1" style="width:{{disp.greenwidth1}}%">
+			  {{actor_info.newstam}}
+			</div>
+			<div class="stamina-bar-loss" id="green2" style="width:{{disp.greenwidth2}}%">
+			  {{disp.green}}
+			</div>
+			<div class="resource-bar-empty" id="green3" style="width:{{disp.greenwidth3}}%">
+			 
+			</div>
+			<div class="row" style="position:absolute;top:0;left:0;display:flex;width:100%;">
+			{{#each greenwounds as |wound|}}
+				<div style="border-left:1px solid black; height:17px; flex:{{wound}}%;"></div>
+			{{/each}}
+			</div>
+		</div>
+		<div class="row" style="border:2px solid black; position:relative;">
+			 <div class="hp-bar" id="red1" style="width:{{disp.redwidth1}}%">
+			  {{actor_info.newhp}}
+			</div>
+			<div class="hp-bar-loss" id="red2" style="width:{{disp.redwidth2}}%">
+			  {{disp.red}}
+			</div>
+			<div class="resource-bar-empty" id="red3" style="width:{{disp.redwidth3}}%">
+			  
+			</div>
+			<div class="row" style="position:absolute;top:0;left:0;display:flex;width:100%;">
+			{{#each redwounds as |wound|}}
+				<div style="border-left:1px solid black; height:17px; flex-grow:{{wound}};"></div>
+			{{/each}}
+			</div>
+		</div>
+	   <div class="form-group">
+	  
+		<div class="grid grid-2col">
+		
+        <div class="row"><div class="column"><div class="dice-target-block"  style="font-size:1em" title="Dicepool"></div></div>Soak Modifier: </div>
+					
+		
+		<input type="text" id="soakMod"></div>
+      </div>
+<div class="form-group">
+</div>
+
+	</div>

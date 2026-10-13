@@ -1,0 +1,43 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="attributes">Attributes</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+        
+        {{!-- Attributes Tab --}}
+        <div class="tab attributes" data-group="primary" data-tab="attributes">
+            {{!-- As you add new fields, add them in here! --}}
+            <ol class="buff-list">
+                <li class="skill flexrow grid-3col">
+                  <div class="skill-name"><label class="resource-label">Category</label></div>
+                  <div class="skill-attribute"><label class="resource-label">Bonus</label></div>
+                  <div class="skill-attribute"><label class="resource-label">Active</label></div>
+                </li>
+                <li class="skill flexrow grid-3col">
+                    
+                    <input type="text" name="data.category" value="{{data.category}}" data-dtype="String"/>
+                    {{#with data.bonus}}
+                        <input type="text" name="data.bonus" value="{{this}}" data-dtype="Number"/>
+                    {{/with}}
+                    <!-- <select name="data.selection" value="{{data.selection}}">
+                        {{selectOptions data.toggle selected=data.selection localize=true}}
+                    </select> -->
+                    <div class="resource">
+					<input type="checkbox" class="checkbox"  name="data.active" {{checked data.active}}></h4>
+                    </div>
+
+                </li>
+            </ol>
+        </div>
+    </section>
+</form>

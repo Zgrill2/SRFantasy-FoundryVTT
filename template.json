@@ -1,0 +1,380 @@
+{
+  "Actor": {
+    "types": ["character"],
+    "templates": {
+      "base": {
+        "health": {
+          "value": 16,
+          "min": 0,
+          "max": 16
+        },
+        "stamina": {
+          "value": 16,
+          "min": 0,
+          "max": 16
+        },
+        "mana": {
+          "value": 16,
+          "min": 0,
+          "max": 16
+        }
+      }
+    },
+    "character": {
+      "templates": ["base"],
+      "biography": "",
+      "attributes": {
+        "level": {
+          "value": 1
+        }
+      },
+	  "tradition": {
+        "rank": {
+          "value": 1
+        }
+      },
+	  "luck": {
+        "current": {
+          "value": 1
+        },
+		"max": {
+		  "value": 1
+		}
+      },
+	  "drainres": {
+		  "value": 0
+      },
+
+      "abilities": {
+        "bod": {
+          "value": 1
+        },
+        "agi": {
+          "value": 1
+        },
+        "rea": {
+          "value": 1
+        },
+        "str": {
+          "value": 1
+        },
+        "wil": {
+          "value": 1
+        },
+        "int": {
+          "value": 1
+        },
+        "log": {
+          "value": 1
+        },
+        "cha": {
+          "value": 1
+        }
+      },
+	  "soaks": {
+        "armor": {
+          "value": 0,
+		  "name": "Armor Soak"
+        },
+		"physical": {
+          "value": 0,
+		  "name": "Physical Soak"
+        },
+		"mental": {
+          "value": 0,
+		  "name": "Mental Soak"
+        }
+      },
+	  "defenses": {
+		"dodge": {
+          "passive": 0,
+          "active": 0,
+		  "allowpassive": true,
+		  "skill": "dodge",
+		  "name": "Dodge"
+        },
+		"block": {
+          "passive": 0,
+          "active": 0,
+		  "allowpassive": false,
+		  "skill": "weapon_skill",
+		  "name": "Block"
+        },
+		"parry": {
+          "passive": 0,
+          "active": 0,
+		  "allowpassive": false,
+		  "skill": "weapon_skill",
+		  "name": "Parry"
+        },
+		"mental": {
+          "passive": 0,
+          "active": 0,
+		  "allowpassive": true,
+		  "skill": "perserverence",
+		  "name": "Mental Resist"
+        },
+		"physical": {
+          "passive": 0,
+          "active": 0,
+		  "allowpassive": true,
+		  "skill": "perserverence",
+		  "name": "Physical Resist"
+        }
+      },
+	  "skills": {
+        "strongman": {
+          "value": 0,
+		  "attr": "str",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Strongman"
+        },
+		"gymnastics": {
+          "value": 0,
+		  "attr": "agi",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Gymnastics"
+        },
+		"marathoner": {
+          "value": 0,
+		  "attr": "bod",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Marathoner"
+        },
+		"traversal": {
+          "value": 0,
+		  "attr": "rea",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Traversal"
+        },
+		"navigation": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Navigation"
+        },
+		"survival": {
+          "value": 0,
+		  "attr": "wil",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Survival"
+        },
+		"medicine": {
+          "value": 0,
+		  "attr": "log",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Medicine"
+        },
+		"animal_handling": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Animal Handling"
+        },
+		"con": {
+          "value": 0,
+		  "attr": "cha",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Con"
+        },
+		"insight": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+
+		  "name": "Insight"
+        },
+		"intimidation": {
+          "value": 0,
+		  "attr": "cha",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Intimidation"
+        },
+		"negotiation": {
+          "value": 0,
+		  "attr": "cha",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Negoatiation"
+        },
+		"disguise": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Disguise"
+        },
+		"stealth": {
+          "value": 0,
+		  "attr": "agi",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Stealth"
+        },
+		"legerdemain": {
+          "value": 0,
+		  "attr": "agi",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Legerdemain"
+        },
+		"thievery": {
+          "value": 0,
+		  "attr": "agi",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Thievery"
+        },
+		"spellcasting": {
+          "value": 0,
+		  "attr": "log",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Spellcasting"
+        },
+		"perceive_magic": {
+          "value": 0,
+		  "attr": "log",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Perceive Magic"
+        },
+		"weapon_skill": {
+          "value": 0,
+		  "attr": "agi",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Weapon Skill"
+        },
+		"perception": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+		  "dicepool": 0,
+		  "name": "Perception"
+        },
+		"dodge": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+          "hide_dicepool": true,
+		  "dicepool": 0,
+		  "name": "Dodge"
+        },
+		"perserverence": {
+          "value": 0,
+		  "attr": "int",
+		  "isGroupRanked": false,
+          "hide_dicepool": true,
+		  "dicepool": 0,
+		  "name": "Perserverence"
+        }
+      },
+      "skill_groups" : {
+        "athletics": {
+          "value": 0,
+		  "isgroup": true,
+          "members": ["strongman", "gymnastics", "marathoner", "traversal"]
+        },
+        "exploration": {
+          "value": 0,
+		  "isgroup": true,
+          "members": ["navigation", "survival", "medicine", "animal_handling"]
+        },
+        "influence": {
+          "value": 0,
+		  "isgroup": true,
+          "members": ["con", "insight", "intimidation", "negotiation"]
+        },
+        "subterfuge": {
+          "value": 0,
+		  "isgroup": true,
+          "members": ["disguise", "stealth", "legerdemain", "thievery"]
+        },
+        "ungrouped": {
+          "value": 0,
+		  "isgroup": false,
+          "members": ["spellcasting", "perceive_magic", "weapon_skill", "perception", "dodge", "perserverence"]
+        }
+      },
+	  "initiative": {
+		"dice": 1,
+		"bias": 0
+	  },
+	  "wound_penalty": {
+		"value": 0,
+		"ignore_wounds": 0,
+		"resilient_wounds":0
+	  },
+	  "edit_stats": {
+		  "enable": false
+	  }
+    }
+  },
+  "Item": {
+    "types": ["item", "feature", "spell", "weapon", "stats","skill","language"],
+    "templates": {
+      "base": {
+        "description": ""
+      }
+    },
+    "item": {
+      "templates": ["base"],
+      "quantity": 1,
+      "weight": 0,
+      "active": 0
+    },
+    "feature": {
+      "templates": ["base"],
+      "toggle": ["on","off"],
+      "category_map": {
+        "defenses" : ["dodge", "block", "parry", "physical", "mental"],
+        "soaks": ["armor", "physical", "mental"],
+        "skills": ["strongman", "gymnastics", "marathoner", "traversal", "navigation", "survival", "medicine", "animal_handling", "con", "insight", "intimidation", "negotiation", "disguise", "stealth", "legerdemain", "thievery"]
+      },
+      "category": "",
+      "selection": "",
+      "active": true,
+      "bonus": 0
+    },
+	"stats": {
+      "templates": ["base"]
+    },
+	"weapon": {
+      "templates": ["base"],
+	  "reach": 0,
+	  "power": 6,
+	  "handedness": 0,
+	  "shield": 0,
+	  "dicepool": 0,
+	  "dv": 0,
+	  "active": false,
+	  "attr": "str",
+	  "skill": "weapon_skill",
+	  "soak": "armor"
+    },
+	"skill": {
+      "templates": ["base"],
+	  "attr": "none",
+	  "rank": 0,
+	  "dicepool": 0
+    },
+    "spell": {
+      "templates": ["base"],
+      "spellLevel": 1
+    },
+	"language": {
+	}
+  }
+}

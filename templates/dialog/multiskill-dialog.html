@@ -1,0 +1,45 @@
+ <div class="dialog-content">
+    <form>
+	
+      <div class="form-group">
+		<div class="column">
+				
+			{{#each actors as |actor|}}
+			<div class="row">
+				<img src="{{actor.img}}" class="entity-selectable" title="{{actor.name}}" width="40" height="40"/>
+				<input type="checkbox" id="roll_{{actor.id}}" name="roll_{{actor.name}}"><label for="roll_{{actor.name}}">Roll?</label>
+			</div>
+			{{/each}}		
+			
+      </div>
+	  </div>
+<div class="form-group">
+	<div class="row">Skill</div>
+	
+	
+	
+	 <select class="display" id="challenged_skill">
+	 
+		{{#each adude.data.data.skills as |skill key|}}
+			<option value ="{{key}}">{{skill.name}}</option>
+		{{/each}}
+	</select>
+	
+	
+	
+	
+</div>
+<div class="form-group">
+<input type="checkbox" id="wounds" name="chk-wounds" checked><label for="wounds">Wounds?</label>
+<input type="checkbox" id="explode" name="chk-explode"><label for="explode">Explode?</label>
+<input type="checkbox" id="preroll" name="chk-preroll"><label for="preroll">Roll for players?</label>
+</div>
+
+
+<div class="form-group">
+	<input type="radio" name="mode" value="visible" checked /><label for ="mode">Visible</label>
+	<input type="radio" name="mode" value="obscured" /><label for ="mode">Obscured</label>
+	<input type="radio" name="mode" value="secret" /><label for ="mode">Secret</label>
+</div>
+
+	</div>

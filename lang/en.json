@@ -1,0 +1,22 @@
+{
+  "SHIMMERINGREACH.AbilityStr": "Strength",
+  "SHIMMERINGREACH.AbilityCon": "Constitution",
+  "SHIMMERINGREACH.AbilityDex": "Dexterity",
+  "SHIMMERINGREACH.AbilityInt": "Intelligence",
+  "SHIMMERINGREACH.AbilityWis": "Wisdom",
+  "SHIMMERINGREACH.AbilityCha": "Charisma",
+
+  "SHIMMERINGREACH.AbilityStrAbbr": "str",
+  "SHIMMERINGREACH.AbilityConAbbr": "con",
+  "SHIMMERINGREACH.AbilityDexAbbr": "dex",
+  "SHIMMERINGREACH.AbilityIntAbbr": "int",
+  "SHIMMERINGREACH.AbilityWisAbbr": "wis",
+  "SHIMMERINGREACH.AbilityChaAbbr": "cha",
+
+  "SHIMMERINGREACH.EffectCreate": "Create Effect",
+  "SHIMMERINGREACH.EffectToggle": "Toggle Effect",
+  "SHIMMERINGREACH.EffectEdit": "Edit Effect",
+  "SHIMMERINGREACH.EffectDelete": "Delete Effect",
+
+  "SHIMMERINGREACH.Add": "Add"
+}

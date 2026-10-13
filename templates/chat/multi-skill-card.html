@@ -1,0 +1,87 @@
+<div
+    class="shimmeringreach skill-roll-card">
+	
+	
+	<div class="block" data-attacker="true" data-token_id="{{attacker.token_id}}" data-actor_id="{{attacker.actor._id}}">
+		<div class="row">
+				
+				
+				{{#if attacker.actor.name}}
+					<div class="column-left">
+						<div class="roll-card-header">
+							<img src="{{attacker.actor.img}}" class="entity-selectable" title="{{attacker.actor.name}}" width="40" height="40"/>
+						</div>
+					</div>
+				{{/if}}
+				<div class="column-right">
+					<div class="roll-card-header">
+						<div class="skill-title multiskill-roll" data-type="multiskill-card" data-skillname="{{attacker.skillname}}">{{attacker.displayname}}</div>
+					</div>
+				</div>
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
+
+	<div class="grid grid-2col">
+	{{#each defenders as |defender|}}	
+		<div class="block" data-token_id="{{defender.token_id}}" data-actor_id="{{defender.actor._id}}">
+			<div class="row">
+					
+				<div class="column-left">
+					<div class="roll-card-header">
+						<img src="{{defender.actor.img}}" class="entity-selectable" title="{{defender.actor.name}}" width="40" height="40"/>
+						{{#if ../attacker.blind}}
+						<div class="hits-block blind-player">?</div>
+						{{/if}}
+						<div class="hits-block blind-gm" title="Hits&#10;{{diceroll._percentileText}}">{{defender.display_hits}}</div>
+						
+						<div class="fas fa-times spacer-40 delete-defender" width="40" height="40" data-token-id="{{defender.token_id}}" data-actor-id="{{defender.actor._id}}"></div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="roll dice-roll-content">
+				{{#each defender.diceroll.terms as |term|}}
+				{{#each term.results as |results|}}
+				{{#if results.success}}
+				
+				<div class="dice-roll-box-green">{{results.result}}</div>
+				{{else}}
+					{{#if results.failure}}
+					<div class="dice-roll-box-red">{{results.result}}</div>
+					{{else}}
+					<div class="dice-roll-box">{{results.result}}</div>
+					{{/if}}
+				{{/if}}
+				{{/each}}
+				{{/each}}
+					
+					
+			</div>
+			
+			<div class="roll dice-roll-content">
+				{{#each defender.reroll.terms as |term|}}
+				{{#each term.results as |results|}}
+				{{#if results.success}}
+				
+				<div class="dice-roll-box-green">{{results.result}}</div>
+				{{else}}
+					{{#if results.failure}}
+					<div class="dice-roll-box-red">{{results.result}}</div>
+					{{else}}
+					<div class="dice-roll-box">{{results.result}}</div>
+					{{/if}}
+				{{/if}}
+				{{/each}}
+				{{/each}}
+			</div>
+		</div>
+	{{/each}}
+	</div>
+	
+</div>

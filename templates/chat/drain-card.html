@@ -1,0 +1,63 @@
+<div
+    class="shimmeringreach drain-roll-card"
+
+>	<div class="block" data-actor_id="{{actor._id}}" data-token_id="{{token_id}}" data-drain="{{overload_applied}}">
+	<div class="row">
+
+				<div class="column-left">
+					<div class="roll-card-header">
+						<img src="{{actor.img}}" class="entity-selectable" title="{{actor.name}}" width="40" height="40"/>
+						<div class="hits-block" title="Hits&#10;{{diceroll._percentileText}}">{{display_hits}}</div>
+						<div class="drain-block" title="Overload">{{overload}}</div>
+						<div class="incoming-drain-block" title="Drain">{{overload_applied}}</div>
+					</div>
+				</div>
+				<!--
+				<div class="column-right">
+					<div class="roll-card-header">
+						<div class="skill-title">Drain</div>
+					</div>
+				</div>-->
+
+	</div>
+
+	<div class="roll dice-roll-content">
+		    {{#each diceroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+
+
+		</div>
+
+		<div class="roll dice-roll-content">
+		    {{#each reroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+		</div>
+	</div>
+
+
+
+</div> 

@@ -1,0 +1,135 @@
+<div
+    class="shimmeringreach roll-card"
+	
+>	<div class="block" data-attacker="true" data-token_id="{{attacker.token_id}}" data-actor_id="{{attacker.actor._id}}">
+	<div class="row">
+	  <div class="column-left">
+			<div class="roll-card-header">
+				<img src="{{attacker.actor.img}}" class="entity-selectable" title="{{attacker.actor.name}}" width="40" height="40"/> 
+				<img src="{{attacker.weapon.img}}" class="entity-selectable" title="{{attacker.weapon.name}}" width="40" height="40"/>
+			</div>
+		
+			<div class="roll-card-header">
+				<div class="dv-block" title="DV">{{attacker.display_dv}}</div>
+				<div class="hits-block" title="Hits&#10;{{attacker.diceroll._percentileText}}" data-attacker="true">{{attacker.display_hits}}</div>
+			</div>
+	  </div>
+	  <div class="column-right">
+			<div class="row">
+				<img src="/modules/game-icons-net/whitetransparent/dodging.svg" class="defense-block roll-button" title="Passive Dodge" data-type="attack-card" data-defense="dodge" data-state="passive"/>
+				<img src="/modules/game-icons-net/whitetransparent/dodging.svg" class="defense-block-active roll-button" title="Active Dodge" data-type="attack-card" data-defense="dodge" data-state="active"/>
+				<img src="/modules/game-icons-net/whitetransparent/attached-shield.svg" class="defense-block-active roll-button" title="Block" data-type="attack-card" data-defense="block" data-state="active"/>
+				<img src="/modules/game-icons-net/whitetransparent/sword-clash.svg" class="defense-block-active roll-button" title="Parry" data-type="attack-card" data-defense="parry" data-state="active"/>
+			</div>
+			<div class="row">
+				<img src="/modules/game-icons-net/whitetransparent/abdominal-armor.svg" class="defense-block roll-button" title="Passive Physical" data-type="attack-card" data-defense="physical" data-state="passive"/>
+				<img src="/modules/game-icons-net/whitetransparent/abdominal-armor.svg" class="defense-block-active roll-button" title="Active Physical" data-type="attack-card" data-defense="physical" data-state="active"/>
+				<img src="/modules/game-icons-net/whitetransparent/brain.svg" class="defense-block roll-button" title="Passive Mental" data-type="attack-card" data-defense="mental" data-state="passive"/>
+				<img src="/modules/game-icons-net/whitetransparent/brain.svg" class="defense-block-active roll-button" title="Active Mental" data-type="attack-card" data-defense="mental" data-state="active"/>
+			</div>
+		</div>
+	</div>
+	
+	<div class="roll dice-roll-content">
+		    {{#each attacker.diceroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+			
+			
+		</div>
+		
+		<div class="roll dice-roll-content">
+		    {{#each attacker.reroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+		</div>
+	</div>
+	{{#each defenders as |defender|}}
+	<div class="block" data-token_id="{{defender.token_id}}" data-actor_id="{{defender.actor._id}}" data-dv="{{defender.damage}}">
+		<div class="row">
+			<div class="column-left">
+				<div class="roll-card-header">
+					<img src="{{defender.actor.img}}" class="entity-selectable" title="{{defender.actor.name}}" width="40" height="40">
+					<div class="hits-block" title="Hits&#10;{{defender.diceroll._percentileText}}" style="background-image: url({{defender.icon}}); filter:brightness(55%)sepia(0.5) hue-rotate({{hue}}deg);">{{defender.display_hits}}</div>
+				
+				</div>
+			</div>
+			<div class="column-right">
+				<div class="roll-card-header">
+				
+					{{#if defender.avoided}}
+					<div class="spacer-40"></div>
+					<div class="spacer-40"></div>
+					{{else}}
+					<div class="net-hits-block" title="Net Hits">{{defender.net_hits}}</div>
+						{{#if defender.dmgSet}}
+							<div class="undo-damage-block" title="Undo Damage">{{defender.dmgSet.stam}}/{{defender.dmgSet.hp}}</div>
+						{{else}}
+							<div class="incoming-damage-block" title="Incoming Damage">{{defender.damage}}</div>
+						{{/if}}
+					{{/if}}
+					<div class="fas fa-times spacer-40 delete-defender" width="40" height="40" data-token-id="{{defender.token_id}}" data-actor-id="{{defender.actor._id}}"></div>
+				</div>
+			</div>
+			
+			
+		</div>
+		<div class="roll dice-roll-content">
+		    {{#each defender.diceroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+		</div>
+		<div class="roll dice-roll-content">
+		    {{#each defender.reroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+		</div>
+	</div>
+	{{/each}}
+	
+	
+</div>

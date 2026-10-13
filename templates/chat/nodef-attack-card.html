@@ -1,0 +1,65 @@
+<div
+    class="shimmeringreach roll-card"
+	
+>	<div class="block" data-attacker="true" data-token_id="{{attacker.token_id}}" data-actor_id="{{attacker.actor._id}}">
+	<div class="row">
+			
+			
+			<div class="column-left">
+				<div class="roll-card-header">
+					{{#if attacker.actor.name}}
+					<img src="{{attacker.actor.img}}" class="entity-selectable" title="{{attacker.actor.name}}" width="40" height="40"/>
+					{{/if}}
+					{{#if attacker.weapon}}
+					<img src="{{attacker.weapon.img}}" class="entity-selectable" title="{{attacker.weapon.name}}" width="40" height="40"/>
+					{{/if}}
+					<div class="dv-onlysoak-block" title="DV">{{attacker.display_dv}}</div>
+					<div class="empty-block dvsoak" style="background-image: url({{attacker.damageTypeIcon}}); filter:brightness(60%)sepia(0.5) hue-rotate(150deg);" title="{{attacker.damageTypeLabel}}"></div>
+				</div>
+			</div>
+				
+				
+			<div class="column-right">
+				<div class="roll-card-header">
+					<div class="skill-title">{{attacker.displayname}}</div>
+				</div>
+			</div>
+		
+	  
+	</div>
+	
+	
+		
+		
+	</div>
+	{{#each defenders as |defender|}}
+	<div class="block" data-token_id="{{defender.token_id}}" data-actor_id="{{defender.actor._id}}" data-dv="{{defender.damage}}">
+		<div class="row">
+			<div class="column-left">
+				<div class="roll-card-header">
+					<img src="{{defender.actor.img}}" class="entity-selectable" title="{{defender.actor.name}}" width="40" height="40">
+					
+				
+				</div>
+			</div>
+			<div class="column-right">
+				<div class="roll-card-header">
+				
+					{{#if defender.dmgSet}}
+						<div class="undo-damage-block" title="Undo Damage">{{defender.dmgSet.stam}}/{{defender.dmgSet.hp}}</div>
+					{{else}}
+						<div class="incoming-damage-block" title="Incoming Damage">{{defender.damage}}</div>
+					{{/if}}
+					<div class="fas fa-times spacer-40 delete-defender" width="40" height="40" data-token-id="{{defender.token_id}}" data-actor-id="{{defender.actor._id}}"></div>
+				</div>
+			</div>
+			
+			
+		</div>
+		
+		
+	</div>
+	{{/each}}
+	
+	
+</div>

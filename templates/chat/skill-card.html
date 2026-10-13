@@ -1,0 +1,64 @@
+<div
+    class="shimmeringreach skill-roll-card"
+	
+>	<div class="block">
+	<div class="row">
+			
+				<div class="column-left">
+					<div class="roll-card-header">
+						<img src="{{actor.img}}" class="entity-selectable" title="{{actor.name}}" width="40" height="40"/>
+						{{#if blind}}
+						<div class="hits-block blind-player">?</div>
+						{{/if}}
+						<div class="hits-block blind-gm" title="Hits&#10;{{diceroll._percentileText}}">{{display_hits}}</div>
+					</div>
+				</div>
+				<div class="column-right">
+					<div class="roll-card-header">
+						<div class="skill-title">{{displayname}}</div>
+					</div>
+				</div>
+				
+			
+	</div>
+	
+	<div class="roll dice-roll-content">
+		    {{#each diceroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+			
+			
+		</div>
+		
+		<div class="roll dice-roll-content">
+		    {{#each reroll.terms as |term|}}
+            {{#each term.results as |results|}}
+			{{#if results.success}}
+			
+			<div class="dice-roll-box-green">{{results.result}}</div>
+			{{else}}
+				{{#if results.failure}}
+				<div class="dice-roll-box-red">{{results.result}}</div>
+				{{else}}
+				<div class="dice-roll-box">{{results.result}}</div>
+				{{/if}}
+			{{/if}}
+			{{/each}}
+			{{/each}}
+		</div>
+	</div>
+	
+	
+	
+</div>

@@ -1,0 +1,121 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+			<div class="grid grid-2col">
+              <div class="resource">
+                <label class="resource-label">Power</label>
+                  <input type="text" name="data.power" value="{{data.power}}" data-dtype="Number"/>
+              </div>
+
+              {{#ifEquals data.skill "weapon_skill"}}
+
+              <div class="resource">
+                <label class="resource-label">Reach</label>
+                  <input type="text" name="data.reach" value="{{data.reach}}" data-dtype="Number"/>
+              </div>
+
+			  <div class="resource">
+                  <label for="data.handedness" class="resource-label">Size</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+				  <select class="display" name="data.handedness">
+							{{#select data.handedness}}
+							<option value="0">Light</option>
+							<option value="1">One Handed</option>
+							<option value="2">Two Handed</option>
+							{{/select}}
+						</select>
+                  </div>
+              </div>
+			  
+			  <div class="resource">
+                  <label for="data.Shield" class="resource-label">Shield</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+						<select class="display" name="data.shield">
+							{{#select data.shield}}
+							<option value="0">None</option>
+							<option value="1">Buckler</option>
+							<option value="2">Medium</option>
+							<option value="3">Heavy</option>
+							<option value="4">Tower</option>
+							{{/select}}
+						</select>
+						
+                  </div>
+              </div>
+			  
+              {{/ifEquals}}
+				
+			  
+			  <div class="resource">
+                  <label for="data.attr" class="resource-label">Attribute</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+				  <select class="display" name="data.attr">
+							{{#select data.attr}}
+							<option value="bod">BOD</option>
+							<option value="agi">AGI</option>
+							<option value="rea">REA</option>
+							<option value="str">STR</option>
+							<option value="wil">WIL</option>
+							<option value="int">INT</option>
+							<option value="log">LOG</option>
+							<option value="cha">CHA</option>
+							<option value="none">NONE</option>
+							{{/select}}
+						</select>
+                  </div>
+              </div>
+			  
+			  <div class="resource">
+                  <label for="data.skill" class="resource-label">Skill</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+				  <select class="display" name="data.skill">
+							{{#select data.skill}}
+							<option value="weapon_skill">Weapon Skill</option>
+							<option value="spellcasting">Spellcasting</option>
+							{{/select}}
+						</select>
+                  </div>
+              </div>
+			  
+			  <div class="resource">
+                  <label for="data.soak" class="resource-label">Soak</label>
+                  <div class="resource-content flexrow flex-center flex-between">
+				  <select class="display" name="data.soak">
+							{{#select data.soak}}
+							<option value="armor">Armor Soak</option>
+							<option value="physical">Physical Soak</option>
+							<option value="mental">Mental Soak</option>
+							{{/select}}
+						</select>
+                  </div>
+              </div>
+			  <div class="resource">
+				  <input type="text" id="sound" value="{{data.sound}}" name="data.sound">
+				  {{filePicker target="data.sound" type="sound"}}
+			  </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Description</a>
+        <a class="item" data-tab="attributes">Attributes</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+
+        {{!-- Description Tab --}}
+        <div class="tab" data-group="primary" data-tab="description">
+            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        </div>
+
+        {{!-- Attributes Tab --}}
+        <div class="tab attributes" data-group="primary" data-tab="attributes">
+            {{!-- As you add new fields, add them in here! --}}
+        </div>
+    </section>
+</form>
